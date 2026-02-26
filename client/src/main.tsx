@@ -1,31 +1,34 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { Auth0Provider } from '@auth0/auth0-react';
-import './index.css'
-import App from './App.tsx'
-import Account from './components/account.tsx'
-import FormattedExerciseCreator from './components/exxercise-creator.tsx';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Auth0Provider, type AppState } from '@auth0/auth0-react';
+import { Provider } from 'react-redux';
+import { store } from './store/index.ts';
+import './index.css';
+import router from './router.tsx';
 
-const router = createBrowserRouter([
-  {path: '/', element: <App />},
-  {path: '/account/:id', element: <Account />, loader: async ({ params }) => {
-    // You can fetch user data here if needed
-    return { id: params.id };
-  }, children: [{path: 'exercise-creator', element: <FormattedExerciseCreator />}]}
-]);
+const onRedirectCallback = (appState?: AppState) => {
+  window.history.replaceState(
+    {},
+    document.title,
+    appState?.returnTo || window.location.pathname
+  );
+};
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    
-    <Auth0Provider
-    domain="dev-qx8ucycogsprxmxn.us.auth0.com"
-    clientId="5pvtkb0JFkxfs8ZzTTmlrs48r5tawUX8"
-    authorizationParams={{
-      redirect_uri: window.location.origin
-    }}
-  >
-    <RouterProvider router={router}/>
-  </Auth0Provider>,
-  </StrictMode>,
-)
+    <Provider store={store}>
+      <Auth0Provider
+        domain="dev-qx8ucycogsprxmxn.us.auth0.com"
+        clientId="5pvtkb0JFkxfs8ZzTTmlrs48r5tawUX8"
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+        }}
+        onRedirectCallback={onRedirectCallback}
+      >
+        <RouterProvider router={router} />
+      </Auth0Provider>
+    </Provider>
+  </StrictMode>
+);

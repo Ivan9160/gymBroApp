@@ -1,7 +1,7 @@
 import { Injectable, UsePipes } from '@nestjs/common';
 import { User } from 'generated/prisma';
 import { PrismaService } from 'src/prisma.service';
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto, TUpdateUserDto } from './user.dto';
 
 
 @Injectable()
@@ -25,37 +25,51 @@ export class UserService {
             stats: {
             create: {
                 weight: dto.weight,
-                fatPercentage: dto.fatPercentage,
                 goal: dto.goal,
 
-                workoutList: {
-                create: {
-                    
-                },
-                },
+                
             },
             },
         },
-        include: {
+
+        });
+    }
+    update(id: number, dto: TUpdateUserDto) {
+        return this.prisma.user.update({
+            where : { id },
+        data: {
+            name: dto.name,
+            email:dto.email,
+            age: dto.age,
+            gender: dto.gender,
+            height: dto.height,
+
             stats: {
-            include: {
-                workoutList: true,
-            },
-            },
+        update: {
+          data: {
+            weight: dto.weight,
+            goal: dto.goal,
+          },
         },
+      },
+        },
+
         });
     }
 
     async findByAuth0Id(auth0Id: string) { 
-        return await this.prisma.user.findUnique({
+        console.log('Finding user with auth0Id:', auth0Id);
+        const user = await this.prisma.user.findUnique({
             where: { auth0Id },
             include: {
                 stats: {
-                    include:{workoutList: true}
+                    
                 }
             }
             
         });
+        console.log('Found user:', user);
+        return user;
         
     }
 }

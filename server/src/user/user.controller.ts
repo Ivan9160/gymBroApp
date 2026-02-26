@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './user.dto';
 import { ModifyUserRequestPipe } from './user.modify-request.pipe';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UserService) {}
     @Get()
     findAll() {
         return this.userService.findAll();
@@ -17,8 +17,13 @@ export class UserController {
     }
 
     @Post()
-    @UsePipes(ModifyUserRequestPipe)
     create(@Body() dto: CreateUserDto) {
         return this.userService.create(dto);
     }
+    @Put(':id')
+    @UsePipes(ModifyUserRequestPipe)
+    update(@Param('id') id: number, @Body() dto: CreateUserDto) {
+        return this.userService.update(id, dto);
+    }
+
 }

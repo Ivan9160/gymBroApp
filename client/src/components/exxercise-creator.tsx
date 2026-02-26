@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Button, FloatingLabel } from "react-bootstrap";
 
 interface ExerciseData {
     name: string;
@@ -7,69 +7,52 @@ interface ExerciseData {
     group: string;
     weight: number;
     reps: number;
-  }
+}
 
 function ExerciseCreator() {
     const [exerciseData, setExerciseData] = useState<ExerciseData>({
         name: '',
         note: '',
-        group: 'Cardio',
+        group: 'Strength',
         weight: 0,
         reps: 0
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setExerciseData({
-            ...exerciseData,
-            [name]: value
-        });
-    }
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            console.log("Exercise Created:", exerciseData);
-        };
+        e.preventDefault();
+        console.log(exerciseData);
+    };
 
-  return (
-    <div>
-      <h1>Formatted Exercise Creator</h1>
-      <p>This component will help you create formatted exercises.</p>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="exerciseName">
-          <Form.Label>Exercise Name</Form.Label>
-          <Form.Control type="text" placeholder="Enter exercise name" />
-        </Form.Group>
+    return (
+        <div className="p-3">
+            <h2 className="mb-4">New Exercise</h2>
+            <Form onSubmit={handleSubmit} className="bg-secondary bg-opacity-10 p-4 rounded-4">
+                <FloatingLabel label="Exercise Name" className="mb-3 text-dark">
+                    <Form.Control type="text" placeholder="Squats" />
+                </FloatingLabel>
 
-        <Form.Group controlId="exerciseDescription">
-          <Form.Label>Note</Form.Label>
-          <Form.Control as="textarea" rows={3} placeholder="Enter exercise note" />
-        </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Muscle Group</Form.Label>
+                    <Form.Select className="py-3 rounded-3">
+                        <option>Strength</option>
+                        <option>Cardio</option>
+                        <option>Flexibility</option>
+                    </Form.Select>
+                </Form.Group>
 
-        <Form.Group controlId="exerciseGroup">
-          <Form.Label>Group</Form.Label>
-          <Form.Control as="select">
-            <option>Cardio</option>
-            <option>Strength</option>
-            <option>Flexibility</option>
-            <option>Balance</option>
-          </Form.Control>
-        </Form.Group>
+                <div className="d-flex gap-3 mb-4">
+                    <FloatingLabel label="Weight (kg)" className="w-100 text-dark">
+                        <Form.Control type="number" />
+                    </FloatingLabel>
+                    <FloatingLabel label="Reps" className="w-100 text-dark">
+                        <Form.Control type="number" />
+                    </FloatingLabel>
+                </div>
 
-        <Form.Group controlId="exerciseWeight">
-          <Form.Label>Weight</Form.Label>
-          <Form.Control type="number" placeholder="Enter weight" />
-        </Form.Group>
-
-        <Form.Group controlId="exerciseReps">
-            <Form.Label>Reps</Form.Label>
-            <Form.Control type="number" placeholder="Enter number of reps" />
-        </Form.Group>
-
-        <button type="submit" className="btn btn-primary">Create Exercise</button>	
-      </Form>
-    </div>
-  );
+                <Button type="submit" className="w-100 py-3 rounded-3">Add Exercise</Button>
+            </Form>
+        </div>
+    );
 }
 
 export default ExerciseCreator;

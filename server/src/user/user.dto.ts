@@ -9,7 +9,6 @@ export class CreateUserDto{
     @IsNumber() height: number
 
     weight: number;
-    fatPercentage: number;
     goal: string;
 
     workoutId: number;
