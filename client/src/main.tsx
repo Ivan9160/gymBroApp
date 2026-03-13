@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Auth0Provider, type AppState } from '@auth0/auth0-react';
 import { Provider } from 'react-redux';
-import { store } from './store/index.ts';
+import { store } from './store/store.ts';
 import './index.css';
 import router from './router.tsx';
 
@@ -20,11 +20,14 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <Auth0Provider
-        domain="dev-qx8ucycogsprxmxn.us.auth0.com"
-        clientId="5pvtkb0JFkxfs8ZzTTmlrs48r5tawUX8"
+        domain={import.meta.env.VITE_AUTH0_DOMAIN}
+        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
         authorizationParams={{
           redirect_uri: window.location.origin,
+          audience: import.meta.env.VITE_AUTH0_AUDIENCE,
         }}
+        cacheLocation="localstorage" 
+        useRefreshTokens={true}     
         onRedirectCallback={onRedirectCallback}
       >
         <RouterProvider router={router} />

@@ -7,11 +7,15 @@ const LoginMenu = () => {
   return (
     <div className="App flex min-h-screen rounded-xl items-center justify-center bg-gray-100 p-4">
       <div className="mx-auto w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl text-center">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-2">GymBro</h2> 
+        <h2 className="text-3xl font-extrabold !text-gray-900 mb-2">GymBro</h2> 
         <p className="text-gray-600 text-sm mb-8 font-medium">Elevate your training today</p>
 
           <button 
-            onClick={() => loginWithRedirect()}
+            onClick={() => loginWithRedirect({
+                authorizationParams: {
+                  connection: 'google-oauth2',
+                },
+              })}
             className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 shadow-md"
           >
             Log In

@@ -1,29 +1,29 @@
 import { Injectable, UsePipes } from '@nestjs/common';
-import { User } from 'generated/prisma';
 import { PrismaService } from 'src/prisma.service';
-import { CreateUserDto, TUpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 
 
 @Injectable()
 export class UserService {
     constructor(private readonly prisma: PrismaService){}
     findAll() {
+        
         return this.prisma.user.findMany();
     }
-
+    
     
     create(dto: CreateUserDto) {
         return this.prisma.user.create({
         data: {
             name: dto.name,
-            email:dto.email,
             auth0Id:dto.auth0Id,
-            age: dto.age,
-            gender: dto.gender,
-            height: dto.height,
+            
 
-            stats: {
+            userProfile: {
             create: {
+                age: dto.age,
+                gender: dto.gender,
+                height: dto.height,
                 weight: dto.weight,
                 goal: dto.goal,
 
@@ -33,24 +33,26 @@ export class UserService {
         },
 
         });
+
+        
     }
-    update(id: number, dto: TUpdateUserDto) {
+    update(id: number, dto: UpdateUserDto) {
         return this.prisma.user.update({
             where : { id },
-        data: {
-            name: dto.name,
-            email:dto.email,
-            age: dto.age,
-            gender: dto.gender,
-            height: dto.height,
-
-            stats: {
-        update: {
-          data: {
-            weight: dto.weight,
-            goal: dto.goal,
-          },
-        },
+            data: {
+                name: dto.name,
+                role:dto.role,
+                
+                userProfile: {
+                    update: {
+                    data: {
+                        age: dto.age,
+                        gender: dto.gender,
+                        height: dto.height,
+                        weight: dto.weight,
+                        goal: dto.goal,
+                    },
+                },
       },
         },
 
@@ -62,7 +64,7 @@ export class UserService {
         const user = await this.prisma.user.findUnique({
             where: { auth0Id },
             include: {
-                stats: {
+                userProfile: {
                     
                 }
             }

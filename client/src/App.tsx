@@ -1,12 +1,12 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 import { Container, Nav } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginMenu from './components/login';
 import Logout from './components/logout';
 import { UserDataForm } from './components/userDataForm.tsx';
 import { useSelector } from 'react-redux';
-import Account from './components/account.tsx';
 import { Link, Outlet } from 'react-router-dom';
 
 

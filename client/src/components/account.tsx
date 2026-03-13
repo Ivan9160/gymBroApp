@@ -1,16 +1,42 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Container, Card, Row, Col, ListGroup, Button } from "react-bootstrap";
+import { Container, Card, Row, Col, ListGroup, Button, Form } from "react-bootstrap";
 import LogoutButton from "./logout";
+import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../api/exerciseApi"
+import { setWorkoutId, setWorkoutStartTime, setWorkoutSets } from "../store/slices/workoutSlice";
+import { setSetExerciseId, setSetMuscleGroup, setSetWeight, setSetReps } from "../store/slices/setSlice";
+import {WorkoutTimer} from "./workoutTimer";
+import type { Set } from "../types";
+import axios from "axios";
+import ActiveWorkout from "./activeWorkout";
 
 function Account() {
     const user = useSelector((state: any) => state.user);
+    const set = useSelector((state: any) => state.set);
+    const workout = useSelector((state: any) => state.workout);
+    const dispatch = useDispatch();
 
-        return (
+    const { data: exercises } = useGetExercisesQuery();
+    const { data: exerciseGroups } = useGetExerciseGroupsQuery();
+    console.log(exercises, exerciseGroups);
+    const startWorkout = () => {
+        const newWorkout = axios.post(import.meta.env.VITE_API_URL+"/workout", {
+            date: new Date().toISOString(),
+            userId: user.id
+        }).then(response => {
+            const createdWorkout = response.data;
+            dispatch(setWorkoutId(createdWorkout.id));
+            dispatch(setWorkoutStartTime(createdWorkout.createdAt));
+        }).catch(error => {
+            console.error("Error starting workout:", error);
+        });
+    }
+
+    return (
         <Container className="py-5 ">
             <Row className="justify-content-center">
                 <Col md={8} lg={6}>
-                    <Card className="shadow-lg border-0 rounded-4 overflow-hidden">
+                    <Card className="shadow-lg border-0 rounded-4 overflow-hidden mb-4">
                         <Card.Header className="bg-primary text-white text-center py-4">
                             <h2 className="mb-0">Profile</h2>
                         </Card.Header>
@@ -45,11 +71,14 @@ function Account() {
                             </ListGroup>
 
                             <div className="d-grid gap-2">
-                                <Link to="/exercise-creator" className="text-decoration-none d-grid">
-                                    <Button variant="outline-primary" className="rounded-pill">
-                                        + Create Exercise
-                                    </Button>
-                                </Link>
+                               { user.role=="ADMIN" ?
+                                 <Link to="/exercise-creator" className="text-decoration-none d-grid">
+                                         <Button variant="outline-primary" className="rounded-pill">
+                                             + Create new Exercise
+                                         </Button>
+                                     </Link>
+                                 : null
+                                 }
                                 <Link to="/editProfile" className="text-decoration-none d-grid">
                                     <Button variant="outline-primary" className="rounded-pill">
                                         Edit Profile
@@ -60,10 +89,25 @@ function Account() {
                             </div>
                         </Card.Body>
                     </Card>
+
+                    {!workout.id ? (
+                        <Button 
+                            variant="success" 
+                            size="lg" 
+                            className="w-100 rounded-4 py-3 shadow" 
+                            onClick={() => startWorkout()}
+                            type="button"
+                        >
+                            🚀 Start New workout
+                        </Button>
+                    ) : (
+                        <ActiveWorkout />
+                    )}
                 </Col>
             </Row>
         </Container>
     );
 }
+
 
 export default Account;

@@ -8,9 +8,12 @@ import { PrismaService } from './prisma.service';
 import { WorkoutModule } from './workout/workout.module';
 import { SetModule } from './set/set.module';
 import { SetService } from './set/set.service';
+import { AuthModule } from './auth/auth.module';
+import { ExerciseModule } from './exercise/exercise.module';
+import { ExerciseGroupModule } from './exercise-group/exerciseGroup.module';
 
 @Module({
-  imports: [UserModule, WorkoutModule, SetModule],
+  imports: [UserModule, WorkoutModule, SetModule, AuthModule, ExerciseModule, ExerciseGroupModule],
   controllers: [AppController],
   providers: [PrismaService, AppService],
 })

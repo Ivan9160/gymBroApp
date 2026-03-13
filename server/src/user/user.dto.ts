@@ -1,8 +1,13 @@
 import { IsNumber, IsString } from "class-validator"
 
+enum Role {
+    USER = "USER",
+    ADMIN = "ADMIN"
+}
+
 export class CreateUserDto{
     @IsString() name: string
-    @IsString() email: string
+    @IsString() role: Role
     @IsString() auth0Id: string
     @IsNumber() age: number
     @IsString() gender: string
@@ -14,4 +19,4 @@ export class CreateUserDto{
     workoutId: number;
 }
 
-export type TUpdateUserDto = Partial<CreateUserDto>
+export type UpdateUserDto = Partial<CreateUserDto>

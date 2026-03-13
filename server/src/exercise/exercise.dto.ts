@@ -4,7 +4,7 @@ import { IsNumber, IsString } from "class-validator"
 
 export class CreateExerciseDto{
     @IsString() name: string;
-    @IsString() group: string;
+    @IsNumber() groupId: number;
     @IsString() video: string;
 }
 

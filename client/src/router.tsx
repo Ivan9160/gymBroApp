@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import ExerciseCreator from "./components/exxercise-creator";
+import ExerciseCreator from "./components/exerciseCreator";
 import { UserDataForm } from "./components/userDataForm";
 import Account from "./components/account";
 

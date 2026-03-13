@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import {
     setUserId,
-    setUserEmail,
+    setUserRole,
     setUserName,
     setUserAuth0Id,
     setUserAge,
@@ -14,18 +14,19 @@ import {
     setUserHeight,
     setUserWeight,
     setUserGoal
-} from '../store/index.ts';
+} from '../store/slices/userSlice';
+
 
 export function UserDataForm({ status }: { status: string }) {
-    const { user, isAuthenticated, isLoading } = useAuth0();
+    const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    
     
     const reduxUser = useSelector((state: any) => state.user);
     const [dbLoading, setdbLoading] = useState(true);
     const API_URL = import.meta.env.VITE_API_URL;
 
-    const handleEmailChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserEmail(e.target.value));
     const handleNameChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserName(e.target.value));
     const handleAgeChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserAge(Number(e.target.value) || null));
     const handleGenderChange = (val: 'female' | 'male') => dispatch(setUserGender(val));
@@ -33,44 +34,46 @@ export function UserDataForm({ status }: { status: string }) {
     const handleWeightChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserWeight(Number(e.target.value) || null));
     const handleGoalChange = (val: 'lose' | 'maintain' | 'gain') => dispatch(setUserGoal(val as any));
         
-      useEffect(() => {
-    const fetchData = async () => {
-        
-      if (isAuthenticated && reduxUser.id == null) {
-        try {
-          const fullUrl = `${API_URL}/user/${user?.sub}`;
-          console.log("Fetching user data for auth0Id:", fullUrl);  
-          setdbLoading(true);
-          const response = await axios.get(fullUrl, {
+    useEffect(() => {
+        const fetchData = async () => {
             
-          });
-            if (response.data) {
-              setdbLoading(false);
-              const userData = response.data;
-              dispatch(setUserId(userData.id));
-              dispatch(setUserEmail(userData.email));
-              dispatch(setUserName(userData.name));
-              dispatch(setUserAuth0Id(userData.auth0Id));
-              dispatch(setUserAge(userData.age));
-              dispatch(setUserGender(userData.gender));
-              dispatch(setUserHeight(userData.height));
-              dispatch(setUserWeight(userData.stats.weight));
-              dispatch(setUserGoal(userData.stats.goal));
-              console.log("User data loaded into Redux:", userData);
-              navigate('/account');
-            }
-            else {
-              setdbLoading(false);
-            }
-              
-          
+        if (isAuthenticated && reduxUser.id == null) {
+            try {
+            const fullUrl = `${API_URL}/user/${user?.sub}`;
+            const token =  await getAccessTokenSilently();
+            setdbLoading(true);
+            const response = await axios.get(fullUrl, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+                if (response.data) {
+                setdbLoading(false);
+                const userData = response.data;
+                dispatch(setUserId(userData.id));
+                dispatch(setUserRole(userData.role));
+                dispatch(setUserName(userData.name));
+                dispatch(setUserAuth0Id(userData.auth0Id));
+                dispatch(setUserAge(userData.userProfile.age));
+                dispatch(setUserGender(userData.userProfile.gender));
+                dispatch(setUserHeight(userData.userProfile.height));
+                dispatch(setUserWeight(userData.userProfile.weight));
+                dispatch(setUserGoal(userData.userProfile.goal));
+                console.log("User data loaded into Redux:", userData);
+                navigate('/account');
+                }
+                else {
+                setdbLoading(false);
+                }
+                
+            
 
-          console.log("Server response:", response.data);
-        } catch (error) {
-          console.error("Request error:", error);
+            console.log("Server response:", response.data);
+            } catch (error) {
+            console.error("Request error:", error);
+            }
         }
-      }
-    };
+        };
 
     fetchData();
   }, [isAuthenticated]);
@@ -84,7 +87,7 @@ export function UserDataForm({ status }: { status: string }) {
             
             const method = reduxUser.id == null ? 'POST' : 'PUT';
             const requestPath = reduxUser.id == null ? '/user' : `/user/${reduxUser.id}`;
-            const auth0Id = user.sub || '';
+            const token =  await getAccessTokenSilently();
             const requestData = { 
                 ...reduxUser, 
                 auth0Id: user.sub 
@@ -92,7 +95,10 @@ export function UserDataForm({ status }: { status: string }) {
             console.log('Submitting user data:', requestData);
             const response = await fetch(`${API_URL}${requestPath}`, {
                 method: method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
                 body: JSON.stringify(requestData),
             });
 
@@ -106,7 +112,7 @@ export function UserDataForm({ status }: { status: string }) {
             console.error(error);
         }
     };
-    if (dbLoading) {
+    if (dbLoading&& !reduxUser.id) {
         return <div className="bg-dark vh-100 text-white d-flex justify-content-center align-items-center">Loading...</div>;
     }
     return (
@@ -117,9 +123,6 @@ export function UserDataForm({ status }: { status: string }) {
             </FloatingLabel>
             <FloatingLabel label="Age" className="mb-3 text-dark">
                 <Form.Control type="number" defaultValue={reduxUser.age || ''} onBlur={handleAgeChange} required />
-            </FloatingLabel>
-            <FloatingLabel label="Email" className="mb-3 text-dark">
-                <Form.Control type="email" defaultValue={reduxUser.email || ''} onBlur={handleEmailChange} required />
             </FloatingLabel>
         </div>
 

@@ -12,14 +12,16 @@ export class ExerciseService {
             name: dto.name,
             video: dto.video || "",
             exerciseGroup: {
-                connect: { name: dto.group },
+                connect: { id: dto.groupId },
             },
         },
   })
   }
 
   findAll() {
-    return `This action returns all exercise`;
+    return this.prisma.exercise.findMany({
+      include: { exerciseGroup: true }
+    });
   }
 
   findOne(id: number) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { CreateWorkoutDto } from './workout.dto';
+import { CreateWorkoutDto, UpdateWorkoutDto } from './workout.dto';
 
 @Injectable()
 export class WorkoutService {
@@ -8,8 +8,18 @@ export class WorkoutService {
     create(dto: CreateWorkoutDto) {
         return this.prisma.workout.create({
             data:{
-                date: dto.date,
-                userId: dto.userId,
+                user_id: dto.userId,
+                status: dto.status,
+                finishedAt: dto.finishedAt
+            }
+        })
+    }
+    finishWorkout(id: number, body: UpdateWorkoutDto) {
+        return this.prisma.workout.update({
+            where: { id },
+            data: {
+                status: body.status,
+                finishedAt: body.finishedAt
             }
         })
     }
