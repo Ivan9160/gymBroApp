@@ -1,11 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Card, Row, Col, ListGroup, Button, Form } from "react-bootstrap";
-import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../api/exerciseApi"
-import { setWorkoutId, setWorkoutStartTime, setWorkoutSets } from "../store/slices/workoutSlice";
-import { setSetExerciseId, setSetMuscleGroup, setSetWeight, setSetReps } from "../store/slices/setSlice";
+import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../../api/exerciseApi"
+import { setWorkoutId, setWorkoutStartTime, setWorkoutSets } from "../../store/slices/workoutSlice";
+import { setSetExerciseId, setSetMuscleGroup, setSetWeight, setSetReps } from "../../store/slices/setSlice";
 import {WorkoutTimer} from "./workoutTimer";
-import type { Set } from "../types";
+import type { Set } from "../../types";
 import axios from "axios";
+import { useState } from "react";
+import { FinishWorkoutModal } from "./finishWorkoutModal";
+import { SwipeableList } from "react-swipeable-list";
+import { SwipeableSetItem } from "./swipeableSetItem";
+import { AnimatePresence, motion } from "framer-motion";
 
 function ActiveWorkout() {
     const set = useSelector((state: any) => state.set);
@@ -14,7 +19,9 @@ function ActiveWorkout() {
 
     const { data: exercises } = useGetExercisesQuery();
     const { data: exerciseGroups } = useGetExerciseGroupsQuery();
-    console.log(exercises, exerciseGroups);
+
+    const [showConfirmFinishWorkout, setShowConfirmFinishWorkout] = useState(false);
+
     const handleAddSet = () => {
         if (set.exerciseId && set.muscleGroupId  && set.reps) {
             axios.post(import.meta.env.VITE_API_URL+"/set", {
@@ -36,6 +43,18 @@ function ActiveWorkout() {
             } );
         }
     };
+    const handleDeleteSet = async (setId: number) => {
+        try {
+            const updatedSets = workout.sets.filter((s:Set) => s.id !== setId)
+            dispatch(setWorkoutSets(updatedSets));
+            await axios.delete(import.meta.env.VITE_API_URL+`/set/${+setId}`);
+            
+        } catch (error) {
+            console.error("Error deleting set:", error);
+        }
+    };
+
+
     const finishWorkout = () => {
         axios.put(import.meta.env.VITE_API_URL+`/workout/${workout.id}`, {
             status: "COMPLETED",
@@ -44,6 +63,7 @@ function ActiveWorkout() {
             dispatch(setWorkoutId(null));
             dispatch(setWorkoutStartTime(null));
             dispatch(setWorkoutSets([]));
+            setShowConfirmFinishWorkout(false);
         }).catch(error => {
             console.error("Error finishing workout:", error);
         });
@@ -95,7 +115,8 @@ function ActiveWorkout() {
                                 <Form.Label>Weight (kg)</Form.Label>
                                 <Form.Control 
                                     type="number" 
-                                    value={set.weight || 0}
+                                    placeholder="Bodyweight/0"
+                                    value={set.weight === 0 ? '' : set.weight}
                                     onChange={(e) => dispatch(setSetWeight(Number(e.target.value)))}
                                 />
                             </Col>
@@ -103,7 +124,8 @@ function ActiveWorkout() {
                                 <Form.Label>Reps</Form.Label>
                                 <Form.Control 
                                     type="number" 
-                                    value={set.reps || 0}
+                                    placeholder="0"
+                                    value={set.reps === null ? '' : set.reps}
                                     onChange={(e) => dispatch(setSetReps(Number(e.target.value)))}
                                 />
                             </Col>
@@ -119,25 +141,39 @@ function ActiveWorkout() {
                         </Button>
                     </Form>
 
-                    {workout.sets.length > 0 && (
-                        <ListGroup className="mb-3 border-0">
-                            {workout.sets.map((s: Set, idx: number) => (
-                                <ListGroup.Item key={idx} className="d-flex justify-content-between align-items-center bg-light border-0 mb-2 rounded-3">
-                                    <div>
-                                        <small className="text-muted d-block">{s.exerciseGroupId}</small>
-                                        <strong className="text-primary">{exercises?.[exercises.findIndex((e) => e.id === s.exerciseId)]?.name}</strong>
-                                    </div>
-                                    <span className="badge bg-primary rounded-pill">{s.weight===0 ? 'Bodyweight' : s.weight + ' kg'}  x {s.reps}</span>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                     {workout.sets.length > 0 && (
+                        <div className="mt-4">  
+                            <h6 className="mb-3">Current Sets (swipe to delete):</h6>
+                            <AnimatePresence initial={false}>
+                                {workout.sets.map((s: Set, idx: number) => (
+                                <motion.div
+                                    key={s.id}
+                                    initial={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <SwipeableSetItem
+                                    set={s}
+                                    exerciseName={exercises?.find(e => e.id === s.exerciseId)?.name}
+                                    setNumber={idx + 1}
+                                    onDelete={handleDeleteSet}
+                                    />
+                                </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </div>
                     )}
 
                     <div className="d-flex gap-2 mt-4">
-                        <Button variant="success" type="button" className="w-50" onClick={finishWorkout}>
+                        <Button variant="success" type="button" className="w-50" onClick={() => setShowConfirmFinishWorkout(true)}>
                             Finish Workout
                         </Button>
                     </div>
+                    <FinishWorkoutModal
+                        show={showConfirmFinishWorkout}
+                        onHide={() => setShowConfirmFinishWorkout(false)}
+                        onConfirm={finishWorkout}
+                    />
                 </Card.Body>
             </Card>
         </Container>

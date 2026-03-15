@@ -18,4 +18,12 @@ export class SetService {
             }
         })
     }
+    delete(id: number) {
+        console.log("Deleting set with id:", id);
+        return this.prisma.set.delete({
+            where: {
+                id: id
+            }
+        })
+    }
 }

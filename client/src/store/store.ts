@@ -25,7 +25,6 @@ const localStorageMiddleware = (store:any) => (next:any) => (action:any) => {
     const result = next(action);
     const state = store.getState();
     const stateToSave = {
-        user: state.user,
         workout: state.workout,
         set: state.set,
     }

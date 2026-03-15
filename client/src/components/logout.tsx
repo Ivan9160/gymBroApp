@@ -1,12 +1,16 @@
-import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const LogoutButton = () => {
   const { logout } = useAuth0();
+  const handleLogout = () => {
+    logout({ logoutParams: { returnTo: window.location.origin } 
+    });
+    localStorage.clear();
+  }
 
   return (
     <button 
-      onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+      onClick={handleLogout}
       className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-red-600 transition-all duration-200"
     >
       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

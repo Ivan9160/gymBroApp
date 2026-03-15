@@ -20,7 +20,7 @@ function App() {
       <header className="mx-auto mt-0 p-0   ">
         <Container className="d-flex !border-bottom-1 justify-content-center " >
           <Nav >
-            {reduxUser.id !=null? (
+            {reduxUser.id ? (
               <Nav.Link as={Link} to="/account" className="text-white !text-xl  w-[20%]">Account</Nav.Link>
             ) : (
               isAuthenticated ? <Logout /> : <LoginMenu />

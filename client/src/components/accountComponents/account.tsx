@@ -1,18 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Container, Card, Row, Col, ListGroup, Button, Form } from "react-bootstrap";
-import LogoutButton from "./logout";
-import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../api/exerciseApi"
-import { setWorkoutId, setWorkoutStartTime, setWorkoutSets } from "../store/slices/workoutSlice";
-import { setSetExerciseId, setSetMuscleGroup, setSetWeight, setSetReps } from "../store/slices/setSlice";
-import {WorkoutTimer} from "./workoutTimer";
-import type { Set } from "../types";
+import { Container, Card, Row, Col, ListGroup, Button} from "react-bootstrap";
+import LogoutButton from "../logout";
+import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../../api/exerciseApi"
+import { setWorkoutId, setWorkoutStartTime} from "../../store/slices/workoutSlice";
 import axios from "axios";
 import ActiveWorkout from "./activeWorkout";
 
 function Account() {
     const user = useSelector((state: any) => state.user);
-    const set = useSelector((state: any) => state.set);
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
 
@@ -20,7 +16,7 @@ function Account() {
     const { data: exerciseGroups } = useGetExerciseGroupsQuery();
     console.log(exercises, exerciseGroups);
     const startWorkout = () => {
-        const newWorkout = axios.post(import.meta.env.VITE_API_URL+"/workout", {
+        axios.post(import.meta.env.VITE_API_URL+"/workout", {
             date: new Date().toISOString(),
             userId: user.id
         }).then(response => {
