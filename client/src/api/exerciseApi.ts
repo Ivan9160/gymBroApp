@@ -4,7 +4,16 @@ import { type ExerciseGroup, type Exercise } from '../types'
 const baseUrl = import.meta.env.VITE_API_URL
 export const exerciseApi = createApi({
     reducerPath: 'exerciseApi',
-    baseQuery: fetchBaseQuery({baseUrl: baseUrl}),
+    baseQuery: fetchBaseQuery({
+        baseUrl: baseUrl,
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+            return headers;
+        }
+    }),
     tagTypes: ['Exercises', 'ExerciseGroups'],
     endpoints: (builder) => ({
         getExercises: builder.query<Exercise[], void>({

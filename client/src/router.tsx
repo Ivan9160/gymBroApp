@@ -3,6 +3,7 @@ import App from "./App";
 import ExerciseCreator from "./components/exerciseCreator";
 import { UserDataForm } from "./components/userDataForm";
 import Account from "./components/accountComponents/account";
+import WorkoutHistory from "./components/workoutHistory";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: 'editProfile',
         element: <UserDataForm status="existing" />,
+      },
+      {
+        path: 'history',
+        element: <WorkoutHistory />,
       },
     ],
   },

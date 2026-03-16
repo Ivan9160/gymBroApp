@@ -41,6 +41,7 @@ export function UserDataForm({ status }: { status: string }) {
             try {
             const fullUrl = `${API_URL}/user/${user?.sub}`;
             const token =  await getAccessTokenSilently();
+            localStorage.setItem("token", token);
             setdbLoading(true);
             const response = await axios.get(fullUrl, {
                 headers: {

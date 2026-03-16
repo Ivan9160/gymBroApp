@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 
-import { CreateExerciseDto,UpdateExerciseDto } from './exercise.dto';
+import { CreateExerciseDto,UpdateExerciseDto } from './dto/exercise.dto';
 
 @Injectable()
 export class ExerciseService {
@@ -12,7 +12,7 @@ export class ExerciseService {
             name: dto.name,
             video: dto.video || "",
             exerciseGroup: {
-                connect: { id: dto.groupId },
+                connect: { id: dto.groupId},
             },
         },
   })

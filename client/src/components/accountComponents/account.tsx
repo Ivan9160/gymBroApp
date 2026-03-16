@@ -18,8 +18,14 @@ function Account() {
     const startWorkout = () => {
         axios.post(import.meta.env.VITE_API_URL+"/workout", {
             date: new Date().toISOString(),
+            
             userId: user.id
-        }).then(response => {
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        },
+        ).then(response => {
             const createdWorkout = response.data;
             dispatch(setWorkoutId(createdWorkout.id));
             dispatch(setWorkoutStartTime(createdWorkout.createdAt));
@@ -67,22 +73,31 @@ function Account() {
                             </ListGroup>
 
                             <div className="d-grid gap-2">
-                               { user.role=="ADMIN" ?
-                                 <Link to="/exercise-creator" className="text-decoration-none d-grid">
-                                         <Button variant="outline-primary" className="rounded-pill">
-                                             + Create new Exercise
-                                         </Button>
-                                     </Link>
-                                 : null
-                                 }
-                                <Link to="/editProfile" className="text-decoration-none d-grid">
+                                <Link to="/history" className="text-decoration-none d-grid">
+                                    <Button variant="primary" className="rounded-pill shadow-sm">
+                                        📊 Workout History
+                                    </Button>
+                                </Link>
+
+                                {user.role === "ADMIN" && (
+                                    <Link to="/exercise-creator" className="text-decoration-none d-grid mt-1">
+                                        <Button variant="outline-primary" className="rounded-pill">
+                                            + Create new Exercise
+                                        </Button>
+                                    </Link>
+                                )}
+
+                                <Link to="/editProfile" className="text-decoration-none d-grid mt-1">
                                     <Button variant="outline-primary" className="rounded-pill">
                                         Edit Profile
                                     </Button>
                                 </Link>
+                                
                                 <hr />
                                 <LogoutButton />
                             </div>
+
+
                         </Card.Body>
                     </Card>
 

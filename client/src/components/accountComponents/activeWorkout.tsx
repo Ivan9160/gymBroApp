@@ -11,6 +11,7 @@ import { FinishWorkoutModal } from "./finishWorkoutModal";
 import { SwipeableList } from "react-swipeable-list";
 import { SwipeableSetItem } from "./swipeableSetItem";
 import { AnimatePresence, motion } from "framer-motion";
+import { header } from "framer-motion/client";
 
 function ActiveWorkout() {
     const set = useSelector((state: any) => state.set);
@@ -29,6 +30,10 @@ function ActiveWorkout() {
                 weight: set.weight,
                 reps: set.reps,
                 workoutId: workout.id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
             }).then(response => {
                 const createdSet: Set = response.data;
                 const newSets = [...workout.sets, createdSet];
@@ -47,7 +52,11 @@ function ActiveWorkout() {
         try {
             const updatedSets = workout.sets.filter((s:Set) => s.id !== setId)
             dispatch(setWorkoutSets(updatedSets));
-            await axios.delete(import.meta.env.VITE_API_URL+`/set/${+setId}`);
+            await axios.delete(import.meta.env.VITE_API_URL+`/set/${+setId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
             
         } catch (error) {
             console.error("Error deleting set:", error);
@@ -58,7 +67,12 @@ function ActiveWorkout() {
     const finishWorkout = () => {
         axios.put(import.meta.env.VITE_API_URL+`/workout/${workout.id}`, {
             status: "COMPLETED",
+            
             finishedAt: new Date().toISOString()
+        },{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
         }).then(response => {
             dispatch(setWorkoutId(null));
             dispatch(setWorkoutStartTime(null));
