@@ -8,6 +8,10 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
+      https: {
+        key: path.resolve(__dirname, '../localhost-key.pem'),
+        cert: path.resolve(__dirname, '../localhost.pem'),
+      },
       proxy: {
         '/api': {
           target: env.VITE_API_URL, 
