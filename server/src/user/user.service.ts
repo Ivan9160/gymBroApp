@@ -41,7 +41,7 @@ export class UserService {
             where : { id },
             data: {
                 name: dto.name,
-                role:dto.role,
+                role:"USER",
                 
                 userProfile: {
                     update: {

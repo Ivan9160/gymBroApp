@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "mkcert": "^3.2.0",
     "react-redux": "^9.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.2.0"
   }
 }
