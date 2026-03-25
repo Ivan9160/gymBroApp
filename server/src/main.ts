@@ -4,15 +4,19 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
 
+
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   
-  const keyPath = process.env.SSL_KEY_PATH || '../../localhost-key.pem';
-  const certPath = process.env.SSL_CERT_PATH || '../../localhost.pem';
+  const keyPath = process.env.SSL_KEY_PATH ;
+  const certPath = process.env.SSL_CERT_PATH ;
+    if (!keyPath || !certPath) {
+      throw new Error('❌ SSL_KEY_PATH or SSL_CERT_PATH is not defined in .env');
+  }
 
   const httpsOptions = {
-    key: fs.readFileSync(path.resolve(__dirname, keyPath)),
-    cert: fs.readFileSync(path.resolve(__dirname, certPath)),
+    key: fs.readFileSync(path.resolve('', keyPath)),
+    cert: fs.readFileSync(path.resolve('', certPath)),
   };
 
   const app = await NestFactory.create(AppModule, {
@@ -22,7 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGIN || "https://localhost:5173",
+    origin: process.env.VITE_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

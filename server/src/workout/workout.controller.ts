@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Post, Put, UseGuards, UsePipes } from '@nestjs/common';
-import { IsDate, IsString } from 'class-validator';
 import { CreateWorkoutDto, UpdateWorkoutDto } from './workout.dto';
 import { WorkoutService } from './workout.service';
 import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
