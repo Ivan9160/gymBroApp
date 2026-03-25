@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Card, Row, Col, ListGroup, Button, Form } from "react-bootstrap";
+import { Container, Card, Row, Col, Button, Form } from "react-bootstrap";
 import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../../api/exerciseApi"
 import { setWorkoutId, setWorkoutStartTime, setWorkoutSets } from "../../store/slices/workoutSlice";
 import { setSetExerciseId, setSetMuscleGroup, setSetWeight, setSetReps } from "../../store/slices/setSlice";
@@ -8,10 +8,8 @@ import type { Set } from "../../types";
 import axios from "axios";
 import { useState } from "react";
 import { FinishWorkoutModal } from "./finishWorkoutModal";
-import { SwipeableList } from "react-swipeable-list";
 import { SwipeableSetItem } from "./swipeableSetItem";
 import { AnimatePresence, motion } from "framer-motion";
-import { header } from "framer-motion/client";
 
 function ActiveWorkout() {
     const set = useSelector((state: any) => state.set);
@@ -73,7 +71,7 @@ function ActiveWorkout() {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
-        }).then(response => {
+        }).then(() => {
             dispatch(setWorkoutId(null));
             dispatch(setWorkoutStartTime(null));
             dispatch(setWorkoutSets([]));

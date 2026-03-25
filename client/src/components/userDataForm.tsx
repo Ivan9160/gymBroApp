@@ -17,7 +17,7 @@ import {
 } from '../store/slices/userSlice';
 
 
-export function UserDataForm({ status }: { status: string }) {
+export function UserDataForm({}: { status: string }) {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const dispatch = useDispatch();

@@ -23,11 +23,7 @@ export const WorkoutTimer = () => {
         const seconds = totalSeconds % 60;
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
-    const hours = Math.floor(secondsElapsed / 3600);
-    const minutes = Math.floor((secondsElapsed % 3600) / 60);
-    const seconds = secondsElapsed % 60;
 
-    const parts = [hours, minutes, seconds].map(part => part.toString().padStart(2, '0'));
     return (
         <div style={{ 
             fontFamily: 'monospace', 

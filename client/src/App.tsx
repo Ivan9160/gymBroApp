@@ -11,7 +11,7 @@ import { Link, Outlet } from 'react-router-dom';
 
 
 function App() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated,} = useAuth0();
   const reduxUser = useSelector((state: any) => state.user);
 
 
