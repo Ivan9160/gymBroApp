@@ -10,11 +10,12 @@ export default defineConfig(({ mode }) => {
   const keyPath = path.resolve(__dirname, env.VITE_SSL_KEY_NAME);
   const certPath = path.resolve(__dirname, env.VITE_SSL_CERT_NAME);
 
+
   return {
     plugins: [react()] as PluginOption[],
-    
+
     server: {
-      host: '0.0.0.0', 
+      host: '0.0.0.0',
       port: 5173,
       https: {
         key: fs.readFileSync(keyPath),
@@ -24,7 +25,7 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_API_URL,
           changeOrigin: true,
-          secure: false, 
+          secure: false,
         }
       }
     },

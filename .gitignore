@@ -1,7 +1,8 @@
-.vscode/
-.DS_Store
-localhost-key.pem
-localhost.pem
-mkcert.exe
-node_modules/
-setup-ssl.js
+.vscode/                                                  
+.DS_Store                                                 
+mkcert.exe                                              
+node_modules/                                            
+setup-ssl.js                                              
+client/*.pem                                              
+server/*.pem                                              
+*.pem 

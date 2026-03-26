@@ -3,17 +3,15 @@ import { AppModule } from './app.module';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
-
+import * as dotenv from 'dotenv';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  
-  const keyPath = process.env.SSL_KEY_PATH ;
-  const certPath = process.env.SSL_CERT_PATH ;
-    if (!keyPath || !certPath) {
-      throw new Error('❌ SSL_KEY_PATH or SSL_CERT_PATH is not defined in .env');
-  }
 
+  const envPath = path.resolve(process.cwd(), '.env');
+  const envConfig = dotenv.parse(fs.readFileSync(envPath));
+  const keyPath = envConfig.SSL_KEY_PATH;
+  const certPath = envConfig.SSL_CERT_PATH;
   const httpsOptions = {
     key: fs.readFileSync(path.resolve('', keyPath)),
     cert: fs.readFileSync(path.resolve('', certPath)),
@@ -33,8 +31,12 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3000;
+  app.use((req, res, next) => {
+  logger.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
   await app.listen(port);
-  
+
   logger.log(`🚀 Server running on https://100.93.105.118:${port}/api`);
 }
 bootstrap();
