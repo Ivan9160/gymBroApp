@@ -8,26 +8,19 @@ import * as dotenv from 'dotenv';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
-  const envPath = path.resolve(process.cwd(), '.env');
-  const envConfig = dotenv.parse(fs.readFileSync(envPath));
-  const keyPath = envConfig.SSL_KEY_PATH;
-  const certPath = envConfig.SSL_CERT_PATH;
-  const httpsOptions = {
-    key: fs.readFileSync(path.resolve('', keyPath)),
-    cert: fs.readFileSync(path.resolve('', certPath)),
-  };
+  
 
-  const app = await NestFactory.create(AppModule, {
-    httpsOptions,
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
 
+  (app.getHttpAdapter() as any).getInstance().set('trust proxy', true);
   app.enableCors({
     origin: process.env.VITE_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
+
   });
 
   const port = process.env.PORT ?? 3000;
@@ -37,6 +30,6 @@ async function bootstrap() {
 });
   await app.listen(port);
 
-  logger.log(`🚀 Server running on https://100.93.105.118:${port}/api`);
+  logger.log(`🚀 Server running on http://100.93.105.118:${port}/api`);
 }
 bootstrap();
