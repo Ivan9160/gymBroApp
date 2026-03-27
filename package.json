@@ -9,7 +9,7 @@
     "@vitejs/plugin-basic-ssl": "^2.2.0"
   },
   "scripts": {
-    "start:all": "concurrently \"npm run dev --prefix frontend\" \"npm run start:dev --prefix backend\" \"npm run nginx:start\"",
+    "start:all": "concurrently \"cd server && npm run start:dev\" \"cd client && npm run dev\" \"npm run nginx:start\"",
     "nginx:start": "node ./scripts/start-nginx.js"
   }
 }
