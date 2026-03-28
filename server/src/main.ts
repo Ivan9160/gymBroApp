@@ -16,7 +16,7 @@ async function bootstrap() {
 
   (app.getHttpAdapter() as any).getInstance().set('trust proxy', true);
   app.enableCors({
-    origin: process.env.VITE_URL,
+    origin: [process.env.VITE_URL, 'https://gymbro-tracker.pp.ua'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

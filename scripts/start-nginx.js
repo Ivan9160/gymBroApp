@@ -17,14 +17,14 @@ async function startNginx() {
     const nginxExeDir = 'C:\\nginx';
     nginxCmd = `cd /d ${nginxExeDir} && start nginx -c "${configPath}"`;
   } else {
-    nginxCmd = 'sudo nginx -t && sudo systemctl reload nginx';
+    nginxCmd = `sudo nginx -t -c "${configPath}" && (sudo nginx -s reload -c "${configPath}" || sudo nginx -c "${configPath}")`;
   }
 
   try {
     console.log(`🚀 Attempt to reload Nginx with config: ${configPath}`);
-    
+
     await execAsync(nginxCmd);
-    
+
     console.log('✅ Nginx is sucessfully reloaded ');
   } catch (error) {
     if (isWindows && error.message.includes('already exists')) {

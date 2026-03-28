@@ -6,7 +6,9 @@ export default defineConfig({
   plugins: [react()] as PluginOption[],
 
   server: {
-    
+    allowedHosts: [
+      'gymbro-tracker.pp.ua'
+    ],
     host: '127.0.0.1', 
     port: 5173,
   },
