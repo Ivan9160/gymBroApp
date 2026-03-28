@@ -60,7 +60,6 @@ export function UserDataForm({}: { status: string }) {
                 dispatch(setUserHeight(userData.userProfile.height));
                 dispatch(setUserWeight(userData.userProfile.weight));
                 dispatch(setUserGoal(userData.userProfile.goal));
-                console.log("User data loaded into Redux:", userData);
                 navigate('/account');
                 }
                 else {
@@ -69,7 +68,6 @@ export function UserDataForm({}: { status: string }) {
                 
             
 
-            console.log("Server response:", response.data);
             } catch (error) {
             console.error("Request error:", error);
             }
@@ -93,7 +91,6 @@ export function UserDataForm({}: { status: string }) {
                 ...reduxUser, 
                 auth0Id: user.sub 
             };
-            console.log('Submitting user data:', requestData);
             const response = await fetch(`${API_URL}${requestPath}`, {
                 method: method,
                 headers: { 
@@ -106,7 +103,6 @@ export function UserDataForm({}: { status: string }) {
             if (response.ok) {
                 const data = await response.json();
                 dispatch(setUserId(data.id));
-                console.log('User data saved successfully:', data);
                 navigate('/account');
             }
         } catch (error) {

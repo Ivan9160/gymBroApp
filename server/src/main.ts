@@ -29,7 +29,6 @@ async function bootstrap() {
   next();
 });
   await app.listen(port);
-
-  logger.log(`🚀 Server running on http://100.93.105.118:${port}/api`);
+  logger.log(`Server is running on port ${port}`);
 }
 bootstrap();

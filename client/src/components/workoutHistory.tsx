@@ -39,7 +39,6 @@ const WorkoutHistory =  () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        console.log("Fetched workout history:", response.data);
         setHistory(response.data.sort((a: Workout, b: Workout) => 
           new Date(b.finishedAt).getTime() - new Date(a.finishedAt).getTime()
         ));

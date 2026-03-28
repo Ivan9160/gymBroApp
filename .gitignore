@@ -6,3 +6,4 @@ setup-ssl.js
 client/*.pem                                              
 server/*.pem                                              
 *.pem 
+nginx/mime.types

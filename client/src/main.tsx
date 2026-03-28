@@ -25,9 +25,11 @@ createRoot(document.getElementById('root')!).render(
         authorizationParams={{
           redirect_uri: window.location.origin,
           audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+          connection: 'google-oauth2',
         }}
         cacheLocation="localstorage" 
         useRefreshTokens={true}     
+        useRefreshTokensFallback={true}
         onRedirectCallback={onRedirectCallback}
       >
         <RouterProvider router={router} />
