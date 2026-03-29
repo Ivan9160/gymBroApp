@@ -17,7 +17,7 @@ module.exports = {
     },
     {
       name: "gymbro-nginx",
-      script: "./scripts/nginx-start.js",
+      script: "./scripts/start-nginx.js",
       autorestart: false
     }
   ]

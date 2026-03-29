@@ -1,7 +1,5 @@
 import { IsNumber, IsString } from "class-validator"
 
-
-
 export class CreateExerciseDto{
     @IsString() name: string;
     @IsNumber() groupId: number;

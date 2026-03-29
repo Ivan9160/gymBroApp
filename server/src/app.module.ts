@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
+import { UserModule } from './resources/user/user.module';
 import { PrismaService } from './prisma.service';
-import { WorkoutModule } from './workout/dto/workout.module';
-import { SetModule } from './set/set.module';
+import { WorkoutModule } from './resources/workout/dto/workout.module';
+import { SetModule } from './resources/set/set.module';
 import { AuthModule } from './auth/auth.module';
-import { ExerciseModule } from './exercise/exercise.module';
-import { ExerciseGroupModule } from './exercise-group/exerciseGroup.module';
+import { ExerciseModule } from './resources/exercise/exercise.module';
+import { ExerciseGroupModule } from './resources/exercise-group/exerciseGroup.module';
 
 @Module({
   imports: [UserModule, WorkoutModule, SetModule, AuthModule, ExerciseModule, ExerciseGroupModule],
