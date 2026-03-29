@@ -15,7 +15,7 @@ async function startNginx() {
 
   if (isWindows) {
     const nginxExeDir = 'C:\\nginx';
-    nginxCmd = `cd /d ${nginxExeDir} && start nginx -c "${configPath}"`;
+    nginxCmd = `cd /d ${nginxExeDir} && nginx -c "${configPath}"`;
   } else {
     nginxCmd = `sudo nginx -t -c "${configPath}" && (sudo nginx -s reload -c "${configPath}" || sudo nginx -c "${configPath}")`;
   }
@@ -38,6 +38,7 @@ async function startNginx() {
       console.error(`❌ Error: ${error.message}`);
     }
   }
+  setInterval(() => {}, 1000);
 }
 
 startNginx();

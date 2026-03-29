@@ -3,13 +3,20 @@
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
     "mkcert": "^3.2.0",
-    "react-redux": "^9.2.0"
+    "pm2": "^6.0.14",
+    "react-redux": "^9.2.0",
+    "serve": "^14.2.6"
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^2.2.0"
   },
   "scripts": {
-    "start:all": "concurrently \"cd server && npm run start:dev\" \"cd client && npm run dev\" \"npm run nginx:start\"",
-    "nginx:start": "node ./scripts/start-nginx.js"
+    "nginx:start": "node scripts/start-nginx.js",
+    "build:all": "cd server && npm run build && cd ../client && npm run build",
+    "start:all": "concurrently --kill-others \"cd server && npm run start:dev\" \"cd client && npm run dev\" \"npm run nginx:start\"",
+    "start:prod": "concurrently \"cd server && npm run start:prod\" \"npm run nginx:start\"",
+    "pm2:start": "pm2 start npm --name \"gymbro-stack\" -- run start:all",
+    "pm2:stop": "pm2 delete gymbro-stack",
+    "pm2:logs": "pm2 logs gymbro-stack"
   }
 }

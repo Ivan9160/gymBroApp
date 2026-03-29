@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:prod": "serve -s dist -l 5173"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.4.0",
@@ -20,7 +21,8 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.7.1",
     "react-swipeable-list": "^1.10.0",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "serve": "^14.2.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
