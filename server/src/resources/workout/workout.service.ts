@@ -15,9 +15,12 @@ export class WorkoutService {
             }
         })
     }
-    finishWorkout(id: number, body: UpdateWorkoutDto) {
+    finishWorkout(id: number, userId: number, body: UpdateWorkoutDto) {
         return this.prisma.workout.update({
-            where: { id },
+            where: { 
+                id,
+                user_id: userId
+             },
             data: {
                 status: body.status,
                 finishedAt: body.finishedAt

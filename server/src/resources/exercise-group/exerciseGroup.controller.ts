@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ExerciseGroupService } from './exerciseGroup.service';
 import { CreateExerciseGroupDto,UpdateExerciseGroupDto } from './exerciseGroup.dto';
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Role } from 'src/common/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -15,12 +15,10 @@ export class ExerciseGroupController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  
   create(@Body() createExerciseGroupDto: CreateExerciseGroupDto) {
     return this.exerciseService.create(createExerciseGroupDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll() {
     return this.exerciseService.findAll();
@@ -28,21 +26,21 @@ export class ExerciseGroupController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.exerciseService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.exerciseService.findOne(id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExerciseGroupDto: UpdateExerciseGroupDto) {
-    return this.exerciseService.update(+id, updateExerciseGroupDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateExerciseGroupDto: UpdateExerciseGroupDto) {
+    return this.exerciseService.update(id, updateExerciseGroupDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.exerciseService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.exerciseService.remove(id);
   }
 }

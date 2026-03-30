@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, UseGuards, UsePipes } from '@nestjs/common';
 import { CreateWorkoutDto, UpdateWorkoutDto } from './dto/workout.dto';
 import { WorkoutService } from './workout.service';
 import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
@@ -7,9 +7,10 @@ import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User} from 'generated/prisma';
 
 @Controller('workout')
+@UseGuards(AuthGuard('jwt'))
 export class WorkoutController {
     constructor(private readonly workoutService: WorkoutService){}
-    @UseGuards(AuthGuard('jwt'))
+    
     @Post()
     create(
         @Body() dto: CreateWorkoutDto,
@@ -18,13 +19,15 @@ export class WorkoutController {
         return this.workoutService.create(dto, user.id)
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
-    @UsePipes(ParseParamToIntPipe)
-    finishWorkout(@Param('id') id: number, @Body() body: UpdateWorkoutDto){
-        return this.workoutService.finishWorkout(id, body)
+    finishWorkout(
+        @Param('id', ParseIntPipe) id: number, 
+        @Body() body: UpdateWorkoutDto,
+        @CurrentUser() user: User
+    ){
+        return this.workoutService.finishWorkout(id, user.id, body)
     }
-    @UseGuards(AuthGuard('jwt'))
+
     @Get('me')
     findAllByUserId(@CurrentUser() user: User){
         return this.workoutService.findAllByUserId(user.id)

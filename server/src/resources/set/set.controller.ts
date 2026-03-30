@@ -1,23 +1,28 @@
-import { Body, Controller, Delete, Param, Post, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
 import { SetService } from './set.service';
 import { CreateSetDto } from './dto/set.dto';
-import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'generated/prisma/wasm';
 
 @Controller('set')
+@UseGuards(AuthGuard('jwt'))
 export class SetController {
     constructor(private readonly setService: SetService) { }
     
-    @UseGuards(AuthGuard('jwt'))
     @Post()
-    create(@Body() dto: CreateSetDto) {
-        return this.setService.create(dto)
+    create(
+        @Body() dto: CreateSetDto,
+        @CurrentUser() user: User
+    ) {
+        return this.setService.create(dto, user.id);
     }
     
-    @UseGuards(AuthGuard('jwt'))
-    @UsePipes(ParseParamToIntPipe)
     @Delete(':id')
-    delete(@Param('id') id: number) {
-        return this.setService.delete(id);
+    delete(
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser() user: User
+    ) {
+        return this.setService.delete(id, user.id);
     }
 }

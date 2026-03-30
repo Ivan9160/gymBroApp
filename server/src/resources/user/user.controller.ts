@@ -10,28 +10,26 @@ import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User} from 'generated/prisma';
 
 @Controller('user')
+@UseGuards(AuthGuard('jwt'))
 export class UserController {
     constructor(private readonly userService: UserService) {}
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(RolesGuard)
     @Get()
     @Roles(Role.ADMIN)
     findAll() {
         return this.userService.findAll();
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Get('me')
     getUserByAuth0Id(@CurrentUser() user: User) {
         return user;
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Post()
     create(@Body() dto: CreateUserDto) {
         return this.userService.create(dto);
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Put('me')
     update(@CurrentUser() user: User, @Body() dto: CreateUserDto) {
         return this.userService.update(user.id, dto);

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateSetDto } from './dto/set.dto';
 
@@ -6,23 +6,28 @@ import { CreateSetDto } from './dto/set.dto';
 export class SetService {
     constructor(private readonly prisma: PrismaService) { }
     
-    create(dto: CreateSetDto) {
-        return this.prisma.set.create({
-            data: {
-                exerciseId: dto.exerciseId,
-                workoutId: dto.workoutId,
-                weight: dto.weight,
-                reps: dto.reps,
-                notes: dto.notes
-                
+    create(dto: CreateSetDto, userId: number) {
+        const workout = this.prisma.workout.findFirst({
+            where: {
+                id: dto.workoutId,
+                user_id: userId
             }
+        });
+        if (!workout) {
+            throw new ForbiddenException("Workout not found or does not belong to the user");
+        }
+        return this.prisma.set.create({
+            data: dto
         })
     }
-    delete(id: number) {
+    delete(id: number, userId: number) {
         console.log("Deleting set with id:", id);
-        return this.prisma.set.delete({
+        return this.prisma.set.deleteMany({
             where: {
-                id: id
+                id: id,
+                workout: {
+                    user_id: userId
+                }
             }
         })
     }
