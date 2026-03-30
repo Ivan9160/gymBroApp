@@ -18,8 +18,6 @@ function Account() {
     const startWorkout = () => {
         axios.post(import.meta.env.VITE_API_URL+"/workout", {
             date: new Date().toISOString(),
-            
-            userId: user.id
         }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`

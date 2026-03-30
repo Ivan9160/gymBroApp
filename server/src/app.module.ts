@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './resources/user/user.module';
 import { PrismaService } from './prisma.service';
-import { WorkoutModule } from './resources/workout/dto/workout.module';
+import { WorkoutModule } from './resources/workout/workout.module';
 import { SetModule } from './resources/set/set.module';
 import { AuthModule } from './auth/auth.module';
 import { ExerciseModule } from './resources/exercise/exercise.module';

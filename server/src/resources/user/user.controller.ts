@@ -6,6 +6,8 @@ import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/common/role.enum';
+import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
+import { User} from 'generated/prisma';
 
 @Controller('user')
 export class UserController {
@@ -18,9 +20,9 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get(':auth0Id')
-    getUserByAuth0Id(@Param('auth0Id') auth0Id: string) {
-        return this.userService.findByAuth0Id(auth0Id);
+    @Get('me')
+    getUserByAuth0Id(@CurrentUser() user: User) {
+        return user;
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -30,10 +32,9 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Put(':id')
-    @UsePipes(ParseParamToIntPipe)
-    update(@Param('id') id: number, @Body() dto: CreateUserDto) {
-        return this.userService.update(id, dto);
+    @Put('me')
+    update(@CurrentUser() user: User, @Body() dto: CreateUserDto) {
+        return this.userService.update(user.id, dto);
     }
 
 }

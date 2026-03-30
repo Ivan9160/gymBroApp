@@ -1,9 +1,8 @@
 import { Type } from "class-transformer";
-import { IsDate, IsEnum, IsNumber, IsOptional} from "class-validator";
-import { WorkoutStatus } from "./dto/workoutStatus.enum";
+import { IsDate, IsEnum,  IsOptional} from "class-validator";
+import { WorkoutStatus } from "./workoutStatus.enum";
 
 export class CreateWorkoutDto{
-    @IsNumber() userId: number
     @IsOptional() @IsDate() @Type(() => Date) finishedAt?: Date
     @IsEnum(WorkoutStatus) status: WorkoutStatus
 }

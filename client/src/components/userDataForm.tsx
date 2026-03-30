@@ -39,7 +39,7 @@ export function UserDataForm({}: { status: string }) {
             
         if (isAuthenticated && reduxUser.id == null) {
             try {
-            const fullUrl = `${API_URL}/user/${user?.sub}`;
+            const fullUrl = `${API_URL}/user/me`;
             const token =  await getAccessTokenSilently();
             localStorage.setItem("token", token);
             setdbLoading(true);
@@ -85,7 +85,7 @@ export function UserDataForm({}: { status: string }) {
             const API_URL = import.meta.env.VITE_API_URL;
             
             const method = reduxUser.id == null ? 'POST' : 'PUT';
-            const requestPath = reduxUser.id == null ? '/user' : `/user/${reduxUser.id}`;
+            const requestPath = reduxUser.id == null ? '/user' : `/user/me`;
             const token =  await getAccessTokenSilently();
             const requestData = { 
                 ...reduxUser, 

@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 import { UserService } from 'src/resources/user/user.service';
+import { use } from 'passport';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -27,10 +28,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (!user) {
             throw new UnauthorizedException('User not found');
         }
-        return {
-            id: user.id,
-            auth0Id: user.auth0Id,
-            role: user.role,
-        }
+        return user;
     }
 }

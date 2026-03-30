@@ -34,7 +34,7 @@ const WorkoutHistory =  () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/workout/user/${user.id}`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/workout/me`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
