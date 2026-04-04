@@ -2,6 +2,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const LoginMenu = () => {
   const { loginWithRedirect } = useAuth0();
+  const handleLogin = () => {
+    sessionStorage.setItem('isLoggingIn', 'true');
+    loginWithRedirect({
+      authorizationParams: {
+        connection: 'google-oauth2',
+      },
+    });
+  }
 
   return (
     <div className="App flex min-h-screen rounded-xl items-center justify-center bg-gray-100 p-4">
@@ -10,11 +18,7 @@ const LoginMenu = () => {
         <p className="text-gray-600 text-sm mb-8 font-medium">Elevate your training today</p>
 
           <button 
-            onClick={() => loginWithRedirect({
-                authorizationParams: {
-                  connection: 'google-oauth2',
-                },
-              })}
+            onClick={() => handleLogin()}
             className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 shadow-md"
           >
             Log In

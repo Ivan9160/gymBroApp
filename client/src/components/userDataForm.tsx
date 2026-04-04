@@ -49,18 +49,22 @@ export function UserDataForm({}: { status: string }) {
                 },
             });
                 if (response.data) {
-                setdbLoading(false);
-                const userData = response.data;
-                dispatch(setUserId(userData.id));
-                dispatch(setUserRole(userData.role));
-                dispatch(setUserName(userData.name));
-                dispatch(setUserAuth0Id(userData.auth0Id));
-                dispatch(setUserAge(userData.userProfile.age));
-                dispatch(setUserGender(userData.userProfile.gender));
-                dispatch(setUserHeight(userData.userProfile.height));
-                dispatch(setUserWeight(userData.userProfile.weight));
-                dispatch(setUserGoal(userData.userProfile.goal));
-                navigate('/account');
+                    const isLoggingIn = sessionStorage.getItem('isLoggingIn');
+                    setdbLoading(false);
+                    const userData = response.data;
+                    dispatch(setUserId(userData.id));
+                    dispatch(setUserRole(userData.role));
+                    dispatch(setUserName(userData.name));
+                    dispatch(setUserAuth0Id(userData.auth0Id));
+                    dispatch(setUserAge(userData.userProfile.age));
+                    dispatch(setUserGender(userData.userProfile.gender));
+                    dispatch(setUserHeight(userData.userProfile.height));
+                    dispatch(setUserWeight(userData.userProfile.weight));
+                    dispatch(setUserGoal(userData.userProfile.goal));
+                    if( isLoggingIn) {
+                        sessionStorage.removeItem('isLoggingIn');
+                        navigate('/account');
+                    }
                 }
                 else {
                 setdbLoading(false);
