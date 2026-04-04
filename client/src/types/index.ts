@@ -19,7 +19,24 @@ export interface Set{
 }
 
 export interface Workout {
+  id: number;
+  createdAt: Date;
+  finishedAt: Date;
+  sets: {
     id: number;
-    date: string;
-    sets: Set[];
+    weight: number;
+    reps: number;
+    exercise: {
+      id: number;
+      name: string;
+      exerciseGroup: {
+        id: number;
+        name: string;
+      };
+    };
+  }[]
+};
+
+export interface WorkoutHistory {
+    workouts: Workout[];
 }

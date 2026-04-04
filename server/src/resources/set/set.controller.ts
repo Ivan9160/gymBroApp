@@ -5,7 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'generated/prisma/wasm';
 
-@Controller('set')
+@Controller('sets')
 @UseGuards(AuthGuard('jwt'))
 export class SetController {
     constructor(private readonly setService: SetService) { }

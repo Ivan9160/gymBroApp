@@ -23,7 +23,7 @@ function ActiveWorkout() {
 
     const handleAddSet = () => {
         if (set.exerciseId && set.muscleGroupId  && set.reps) {
-            axios.post(import.meta.env.VITE_API_URL+"/set", {
+            axios.post(import.meta.env.VITE_API_URL+"/sets", {
                 exerciseId: set.exerciseId,
                 weight: set.weight,
                 reps: set.reps,
@@ -50,7 +50,7 @@ function ActiveWorkout() {
         try {
             const updatedSets = workout.sets.filter((s:Set) => s.id !== setId)
             dispatch(setWorkoutSets(updatedSets));
-            await axios.delete(import.meta.env.VITE_API_URL+`/set/${+setId}`, {
+            await axios.delete(import.meta.env.VITE_API_URL+`/sets/${+setId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
@@ -63,7 +63,7 @@ function ActiveWorkout() {
 
 
     const finishWorkout = () => {
-        axios.put(import.meta.env.VITE_API_URL+`/workout/${workout.id}`, {
+        axios.put(import.meta.env.VITE_API_URL+`/workouts/${workout.id}`, {
             status: "COMPLETED",
             
             finishedAt: new Date().toISOString()

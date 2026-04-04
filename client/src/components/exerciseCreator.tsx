@@ -2,18 +2,20 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useState } from "react";
 import { Form, Button, FloatingLabel } from "react-bootstrap";
+import { useGetExerciseGroupsQuery } from "../api/exerciseApi";
 
 interface ExerciseData {
     name: string;
-    group: string;
+    groupId: number;
 }
 
-const muscleGroups = ["Chest", "Triceps", "Back", "Biceps", "Legs", "Shoulders", "Core"];
 
 function ExerciseCreator() {
+    const { data: exerciseGroups } = useGetExerciseGroupsQuery();
+    console.log(exerciseGroups);
     const [exerciseData, setExerciseData] = useState<ExerciseData>({
         name: '',
-        group: muscleGroups[0],
+        groupId: exerciseGroups?.[0]?.id || 0,
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,16 +34,16 @@ function ExerciseCreator() {
 
                 <Form.Group className="mb-3">
                     <Form.Label className="text-light fs-5">Muscle Group</Form.Label>
-                    <Form.Select className="py-3 rounded-3 " value={exerciseData.group} onChange={(e) => setExerciseData({...exerciseData, group: e.target.value})}>
-                        {muscleGroups.map(group => (
-                            <option key={group}>{group}</option>
+                    <Form.Select className="py-3 rounded-3 " value={exerciseData.groupId} onChange={(e) => setExerciseData({...exerciseData, groupId: parseInt(e.target.value)})}>
+                        {exerciseGroups?.map((group: any) => (
+                            <option key={group.id}>{group.name}</option>
                         ))}
                     </Form.Select>
                 </Form.Group>
 
                 <Button type="submit" className="w-100 py-3 rounded-3" onClick={async () => {
                     try {
-                        const response = await axios.post(import.meta.env.VITE_API_URL+"/exercise", exerciseData, {
+                        const response = await axios.post(import.meta.env.VITE_API_URL+"/exercises", exerciseData, {
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${await getAccessTokenSilently()}`

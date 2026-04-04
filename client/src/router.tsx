@@ -3,7 +3,8 @@ import App from "./App";
 import ExerciseCreator from "./components/exerciseCreator";
 import { UserDataForm } from "./components/userDataForm";
 import Account from "./components/accountComponents/account";
-import WorkoutHistory from "./components/workoutHistory";
+import WorkoutHistory from "./components/workoutHistoryComponents/workoutHistory";
+import WorkoutDetails from "./components/workoutHistoryComponents/workoutReviewComponents/workoutDetails";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: 'history',
         element: <WorkoutHistory />,
+      },
+      {
+        path: 'history/review',
+        element: <WorkoutDetails />,
       },
     ],
   },

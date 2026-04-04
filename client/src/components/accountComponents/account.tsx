@@ -12,11 +12,10 @@ function Account() {
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
 
-    const { data: exercises } = useGetExercisesQuery();
-    const { data: exerciseGroups } = useGetExerciseGroupsQuery();
-    console.log(exercises, exerciseGroups);
+    useGetExercisesQuery();
+    useGetExerciseGroupsQuery();
     const startWorkout = () => {
-        axios.post(import.meta.env.VITE_API_URL+"/workout", {
+        axios.post(import.meta.env.VITE_API_URL+"/workouts", {
             date: new Date().toISOString(),
         }, {
             headers: {

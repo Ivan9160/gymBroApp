@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User} from 'generated/prisma';
 
-@Controller('workout')
+@Controller('workouts')
 @UseGuards(AuthGuard('jwt'))
 export class WorkoutController {
     constructor(private readonly workoutService: WorkoutService){}
@@ -28,7 +28,7 @@ export class WorkoutController {
         return this.workoutService.finishWorkout(id, user.id, body)
     }
 
-    @Get('me')
+    @Get()
     findAllByUserId(@CurrentUser() user: User){
         return this.workoutService.findAllByUserId(user.id)
     }

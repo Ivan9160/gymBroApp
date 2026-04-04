@@ -9,7 +9,7 @@ import { Role } from 'src/common/role.enum';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User} from 'generated/prisma';
 
-@Controller('user')
+@Controller('users')
 @UseGuards(AuthGuard('jwt'))
 export class UserController {
     constructor(private readonly userService: UserService) {}

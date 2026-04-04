@@ -7,7 +7,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
 
-@Controller('exercise')
+@Controller('exercises')
 export class ExerciseController {
   constructor(private readonly exerciseService: ExerciseService) {}
 

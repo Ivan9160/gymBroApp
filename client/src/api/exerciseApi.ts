@@ -17,7 +17,7 @@ export const exerciseApi = createApi({
     tagTypes: ['Exercises', 'ExerciseGroups'],
     endpoints: (builder) => ({
         getExercises: builder.query<Exercise[], void>({
-            query: () => '/exercise',
+            query: () => '/exercises',
             providesTags: ['Exercises']
         }),
         getExerciseGroups: builder.query<ExerciseGroup[], void>({
