@@ -22,7 +22,9 @@ function ActiveWorkout() {
     const [showConfirmFinishWorkout, setShowConfirmFinishWorkout] = useState(false);
 
     const handleAddSet = () => {
-        if (set.exerciseId && set.muscleGroupId  && set.reps) {
+        if (
+            isSetValid()
+        ) {
             axios.post(import.meta.env.VITE_API_URL+"/sets", {
                 exerciseId: set.exerciseId,
                 weight: set.weight,
@@ -59,6 +61,11 @@ function ActiveWorkout() {
         } catch (error) {
             console.error("Error deleting set:", error);
         }
+    };
+    const isSetValid = () => {
+        return (set.exerciseId && set.muscleGroupId  && set.reps && exercises?.find(e => e.id === set.exerciseId)?.isBodyweight)       
+        || (set.exerciseId && set.muscleGroupId  && set.reps && set.weight);
+
     };
 
 
@@ -125,12 +132,22 @@ function ActiveWorkout() {
                         <Row>
                             <Col>
                                 <Form.Label>Weight (kg)</Form.Label>
-                                <Form.Control 
-                                    type="number" 
-                                    placeholder="Bodyweight/0"
-                                    value={set.weight === 0 ? '' : set.weight}
-                                    onChange={(e) => dispatch(setSetWeight(Number(e.target.value)))}
-                                />
+                                {exercises?.find(e => e.id === set.exerciseId)?.isBodyweight ? (
+                                    <Form.Control 
+                                        type="number"
+                                        placeholder="Bodyweight(0)/additional weight"
+                                        value={set.weight === 0 ? '' : set.weight}
+                                        onChange={(e) => dispatch(setSetWeight(Number(e.target.value)))}
+                                    />
+                                ) : (
+                                    <Form.Control 
+                                        type="number" 
+                                        placeholder="0"
+                                        value={set.weight === 0 ? '' : set.weight}
+                                        onChange={(e) => dispatch(setSetWeight(Number(e.target.value)))}
+                                    />
+                                )}
+                               
                             </Col>
                             <Col>
                                 <Form.Label>Reps</Form.Label>
@@ -147,7 +164,7 @@ function ActiveWorkout() {
                             className="w-100 mt-3 rounded-pill"
                             onClick={handleAddSet}
                             type="button"
-                            disabled={!set.exerciseId || !set.muscleGroupId || !set.reps}
+                            disabled={!isSetValid()}
                         >
                             Add Set
                         </Button>

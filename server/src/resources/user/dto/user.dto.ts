@@ -2,16 +2,16 @@ import { IsNumber, IsString } from "class-validator"
 
 
 export class CreateUserDto{
-    @IsString() name: string
-    @IsString() auth0Id: string
-    @IsNumber() age: number
-    @IsString() gender: string
-    @IsNumber() height: number
+    @IsString() name!: string
+    @IsString() auth0Id!: string
+    @IsNumber() age!: number
+    @IsString() gender!: string
+    @IsNumber() height!: number
 
-    weight: number;
-    goal: string;
+    @IsNumber() weight!: number
+    @IsString() goal!: string
 
-    workoutId: number;
+    @IsNumber() workoutId!: number;
 }
 
 export type UpdateUserDto = Partial<CreateUserDto>

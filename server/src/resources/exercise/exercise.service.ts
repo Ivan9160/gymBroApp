@@ -11,6 +11,7 @@ export class ExerciseService {
         data: {
             name: dto.name,
             video: dto.video || "",
+            isBodyweight: dto.isBodyweight || false,
             exerciseGroup: {
                 connect: { id: dto.groupId},
             },

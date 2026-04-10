@@ -3,6 +3,7 @@ export interface Exercise {
     name: string;
     video: string;
     exerciseGroupId: number;
+    isBodyweight: boolean;
 }
 export interface ExerciseGroup {
     id: number;
