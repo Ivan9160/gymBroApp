@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Form, FloatingLabel, Stack, Button, Row, Col, ButtonGroup } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -33,6 +33,8 @@ export function UserDataForm({}: { status: string }) {
     const handleHeightChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserHeight(Number(e.target.value) || null));
     const handleWeightChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserWeight(Number(e.target.value) || null));
     const handleGoalChange = (val: 'lose' | 'maintain' | 'gain') => dispatch(setUserGoal(val as any));
+
+    const location = useLocation();
         
     useEffect(() => {
         const fetchData = async () => {
@@ -49,7 +51,6 @@ export function UserDataForm({}: { status: string }) {
                 },
             });
                 if (response.data) {
-                    const isLoggingIn = sessionStorage.getItem('isLoggingIn');
                     setdbLoading(false);
                     const userData = response.data;
                     dispatch(setUserId(userData.id));
@@ -61,8 +62,7 @@ export function UserDataForm({}: { status: string }) {
                     dispatch(setUserHeight(userData.userProfile.height));
                     dispatch(setUserWeight(userData.userProfile.weight));
                     dispatch(setUserGoal(userData.userProfile.goal));
-                    if( isLoggingIn) {
-                        sessionStorage.removeItem('isLoggingIn');
+                    if( location.pathname === '/') {
                         navigate('/account');
                     }
                 }
