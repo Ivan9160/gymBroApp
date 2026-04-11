@@ -16,7 +16,7 @@ function ActiveWorkout() {
     const set = useSelector((state: any) => state.set);
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
-    const {t, i18n } = useTranslation();
+    const {t } = useTranslation();
 
     const { data: exercises } = useGetExercisesQuery();
     const { data: exerciseGroups } = useGetExerciseGroupsQuery();
@@ -111,7 +111,7 @@ function ActiveWorkout() {
                                 onChange={setExerciseGroup}
                             >
                                 {exerciseGroups?.map(group => (
-                                    <option key={group.id} value={group.id}>{group.name}</option>
+                                    <option key={group.id} value={group.id}>{t(`database.exercise_groups.${group.name}`)}</option>
                                 ))}
                             </Form.Select>
                         </Form.Group>
@@ -125,7 +125,7 @@ function ActiveWorkout() {
                             >
                                 {exercises?.map(exercise => (
                                     exercise.exerciseGroupId === set.muscleGroupId ?
-                                    <option key={exercise.id} value={exercise.id}>{exercise.name}</option>
+                                    <option key={exercise.id} value={exercise.id}>{t(`database.exercises.${exercise.name}`) || exercise.name}</option>
                                     : null
                                 ))}
                             </Form.Select>

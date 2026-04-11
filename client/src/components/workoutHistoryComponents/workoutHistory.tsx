@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 const WorkoutHistory =  () => {
   const {data: workoutHistory = [], isLoading} = useGetWorkoutsQuery();
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   
   if (isLoading) {
     return (

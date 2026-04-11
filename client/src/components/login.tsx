@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 const LoginMenu = () => {
   const { loginWithRedirect } = useAuth0();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const handleLogin = () => {
     sessionStorage.setItem('isLoggingIn', 'true');
     loginWithRedirect({

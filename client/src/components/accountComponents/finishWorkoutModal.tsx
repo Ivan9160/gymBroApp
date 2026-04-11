@@ -8,7 +8,7 @@ interface Props{
 }
 
 export const FinishWorkoutModal = ({show, onHide, onConfirm}: Props) => {
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
     return (
         <Modal show={show} onHide = {onHide} centered className='rounded-4'>
             <Modal.Header closeButton className='border-0'>

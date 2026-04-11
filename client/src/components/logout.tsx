@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 const LogoutButton = () => {
   const { logout } = useAuth0();
-  const { t, i18n } = useTranslation();
+  const { t} = useTranslation();
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } 
     });

@@ -1,11 +1,16 @@
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+interface ExerciseProps {
+    exerciseIndex: number;
+    exerciseName: string;
+    currentExerciseSets: any[];
+}
 
-export function Exercise(exerciseIndex: number, exerciseName: string, currentExerciseSets: any[]) {
-    const {t, i18n} = useTranslation();
+export function Exercise({exerciseIndex, exerciseName, currentExerciseSets}: ExerciseProps) {
+    const {t} = useTranslation();
     return (
         <div key={exerciseIndex} className="mt-3">
-            <h6 className="fw-bold text-dark mb-2">{exerciseName}</h6>
+            <h6 className="fw-bold text-dark mb-2">{t(`database.exercises.${exerciseName}`) || exerciseName}</h6>
             <Table hover borderless responsive className="mb-0 align-middle">
                         <thead className="text-muted small">
                             <tr>

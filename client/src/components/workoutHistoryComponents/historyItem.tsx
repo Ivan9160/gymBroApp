@@ -5,15 +5,15 @@ import { useTranslation } from "react-i18next";
 
 export const WorkoutHistoryItem = ({ workout }: { workout: Workout }) => {
   const navigate = useNavigate();
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const displayDate = (startDateFromServer: string, endDateFromServer: string) => {
       const startDate = new Date(startDateFromServer);
       const endDate = new Date(endDateFromServer);
       const hours = Math.floor((endDate.getTime() - startDate.getTime()) / 3600000);
       const minutes = Math.round(((endDate.getTime() - startDate.getTime()) % 3600000) / 60000);
-      return startDate.toLocaleDateString()+", Started at "
-      +startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })+ ". Duration: "
-      +(hours>0?hours+"h ": "")+minutes+"min";
+      return startDate.toLocaleDateString()+", " + t('workout_history.at') + " "
+      +startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })+ ". " + t('workout_history.duration') + ": "
+      +(hours>0?hours+" "+t('workout_history.hours'): "")+minutes+" "+t('workout_history.minutes');
     }
   return (
     <Card className="mb-3 border-0 shadow-sm rounded-4 overflow-hidden">
@@ -27,7 +27,8 @@ export const WorkoutHistoryItem = ({ workout }: { workout: Workout }) => {
                       }
                     </span>
                     <Badge bg="primary" pill>
-                      {t('workout_history.sets', { count: workout.sets.length })}
+                      {t('workout_history.sets')  }
+                      {": " + workout.sets.length}
                     </Badge>
                   </div>
                 </Card.Header>

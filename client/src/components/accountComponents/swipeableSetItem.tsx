@@ -12,7 +12,7 @@ interface Props {
 
 export const SwipeableSetItem = ({ set, exerciseName, setNumber, onDelete }: Props) => {
   const controls = useAnimation();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleDragEnd = async (_: any, info: any) => {
     if (info.offset.x < -150) {
@@ -52,7 +52,7 @@ export const SwipeableSetItem = ({ set, exerciseName, setNumber, onDelete }: Pro
           style={{ minHeight: "60px", cursor: "grab" }}
         >
           <div className="text-start">
-            <strong className="text-primary">{exerciseName}</strong>
+            <strong className="text-primary">{t(`database.exercises.${exerciseName}`) || exerciseName}</strong>
             <div className="text-muted" style={{ fontSize: "0.8rem" }}>
               {set.weight === 0 ? t('set_item.bodyweight') : `${set.weight} ${t('workout_details.table.kg')}`} x {set.reps}
             </div>

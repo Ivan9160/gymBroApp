@@ -33,8 +33,7 @@
       "weight_placeholder": "0",
       "reps_label": "Reps",
       "reps_placeholder": "0",
-      "add_set_button": "Add Set",
-      "add_set_btn": "Add Set"
+      "add_set_button": "Add Set"
     },
     "no_sets": "No sets added yet. Add your first exercise!"
   },
@@ -43,6 +42,14 @@
     "reps_count": "{{count}} reps",
     "bodyweight": "Bodyweight",
     "deleting": "Deletion..."
+  },
+  "modals": {
+    "finish_workout": {
+      "title": "Finish Workout",
+      "body": "Are you sure you want to finish your workout? Your workout will be saved.",
+      "cancel": "Cancel",
+      "confirm": "Finish Workout"
+    }
   },
   "user_form": {
     "loading": "Loading...",
@@ -121,7 +128,10 @@
     "completed": "Completed",
     "back_to_history": "Back to History",
     "duration": "Duration",
-    "exercises": "Exercises"
+    "exercises": "Exercises",
+    "at": "Started at",
+    "hours": "h ",
+    "minutes": "min"
   },
   "workout_details": {
     "back_to_history": "Back to History",
@@ -140,6 +150,59 @@
       "bodyweight": "Bodyweight",
       "kg": "kg",
       "reps_unit": "reps"
+    }
+  },
+  "database": {
+    "genders": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "goals": {
+      "lose": "Lose weight",
+      "maintain": "Maintain weight",
+      "gain": "Gain weight"
+    },
+    "exercise_groups": {
+      "Chest": "Chest",
+      "Triceps": "Triceps",
+      "Back": "Back",
+      "Biceps": "Biceps",
+      "Legs": "Legs",
+      "Shoulders": "Shoulders",
+      "Core": "Core"
+    },
+    "exercises": {
+      "Chest Fly Machine": "Chest Fly Machine",
+      "Cable Triceps Pushdown": "Cable Triceps Pushdown",
+      "Overhead Cable Extension": "Overhead Cable Extension",
+      "Skull Crushers": "Skull Crushers",
+      "Deadlift": "Deadlift",
+      "Lat Pulldown": "Lat Pulldown",
+      "Horizontal Cable Row": "Horizontal Cable Row",
+      "Bicep Curls": "Bicep Curls",
+      "Hammer Curls": "Hammer Curls",
+      "Barbell Curls": "Barbell Curls",
+      "Preacher Curls": "Preacher Curls",
+      "Leg Press": "Leg Press",
+      "Lying Leg Curl": "Lying Leg Curl",
+      "Calf Raises": "Calf Raises",
+      "Overhead Press (Military Press)": "Overhead Press (Military Press)",
+      "Lateral Raises": "Lateral Raises",
+      "Front Raises": "Front Raises",
+      "Rear Delt Fly": "Rear Delt Fly",
+      "Cable Crunches": "Cable Crunches",
+      "Bench Press": "Bench Press",
+      "Dumbbell Bench Press": "Dumbbell Bench Press",
+      "Dips": "Dips",
+      "Diamond Push-ups": "Diamond Push-ups",
+      "Pull-ups": "Pull-ups",
+      "Dumbbell Bent Over Row": "Dumbbell Bent Over Row",
+      "Chin-ups": "Chin-ups",
+      "Squats": "Squats",
+      "Hanging Leg Raises": "Hanging Leg Raises",
+      "Ab Wheel Rollouts": "Ab Wheel Rollouts",
+      "Plank": "Plank",
+      "Push Ups": "Push Ups"
     }
   }
 }

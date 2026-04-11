@@ -12,7 +12,7 @@ function Account() {
     const user = useSelector((state: any) => state.user);
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
-    const { t, i18n } = useTranslation(); 
+    const { t} = useTranslation(); 
 
     useGetExercisesQuery();
     useGetExerciseGroupsQuery();
@@ -55,7 +55,7 @@ function Account() {
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
                                     <span className="text-secondary">{t('user_form.gender')}:</span>
-                                    <span className="fw-bold text-capitalize">{user.gender || '—'}</span>
+                                    <span className="fw-bold ">{t(`database.genders.${user.gender}`) || '—'}</span>
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
                                     <span className="text-secondary">{t('user_form.height')}:</span>
@@ -67,7 +67,7 @@ function Account() {
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
                                     <span className="text-secondary">{t('user_form.goal')}:</span>
-                                    <span className="fw-bold text-success text-capitalize">{user.goal || '—'}</span>
+                                    <span className="fw-bold text-success ">{t(`database.goals.${user.goal}`) || '—'}</span>
                                 </ListGroup.Item>
                             </ListGroup>
 

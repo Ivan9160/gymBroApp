@@ -22,7 +22,7 @@ export function UserDataForm({}: { status: string }) {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { t, i18n } = useTranslation(); 
+    const { t} = useTranslation(); 
     
     
     const reduxUser = useSelector((state: any) => state.user);

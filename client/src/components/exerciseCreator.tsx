@@ -14,7 +14,7 @@ interface ExerciseData {
 function ExerciseCreator() {
     const { data: exerciseGroups } = useGetExerciseGroupsQuery();
     const { getAccessTokenSilently } = useAuth0();
-    const { t, i18n } = useTranslation();       
+    const { t } = useTranslation();       
 
     const [showSuccess, setShowSuccess] = useState(false);
     
@@ -84,7 +84,7 @@ function ExerciseCreator() {
                         onChange={(e) => setExerciseData({...exerciseData, groupId: parseInt(e.target.value)})}
                     >
                         {exerciseGroups?.map((group: any) => (
-                            <option key={group.id} value={group.id}>{group.name}</option>
+                            <option key={group.id} value={group.id}>{t(`database.exercise_groups.${group.name}`)}</option>
                         ))}
                     </Form.Select>
                 </Form.Group>

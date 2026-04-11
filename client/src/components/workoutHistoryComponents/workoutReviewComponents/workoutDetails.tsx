@@ -13,7 +13,7 @@ function WorkoutDetails() {
     const {data: exercises} = useGetExercisesQuery() || [];
     const {data: exerciseGroups} = useGetExerciseGroupsQuery() || [];
 
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
     const currentWorkoutGroups = exerciseGroups?.filter(
         group => workout.sets.some(
             (set: Set) => exercises?.find(
@@ -49,7 +49,7 @@ function WorkoutDetails() {
                         <Card.Header className="bg-primary text-white p-4 border-0">
                             <Row className="align-items-center">
                                 <Col>
-                                    <h2 className="mb-1 fw-bold">{workout.name || "Workout Session"}</h2>
+                                    <h2 className="mb-1 fw-bold">{t('workout_details.default_name')}</h2>
                                     <div className="d-flex align-items-center opacity-75">
                                         <Calendar className="me-2" />
                                         <span>{formatDate(workout.createdAt)}</span>
@@ -87,7 +87,15 @@ function WorkoutDetails() {
                                 const currentGroupExercises = currentWorkoutExercises?.filter(ex => ex.exerciseGroupId === group.id) || [];
                                 const groupSets = workout.sets.filter((set: Set) => currentGroupExercises.some(ex => ex.id === set.exerciseId));
                                 
-                                return Group(group, groupIndex, groupSets, currentGroupExercises);
+                                return (
+                                    <Group
+                                        key={group.id}
+                                        group={group}
+                                        groupIndex={groupIndex}
+                                        groupSets={groupSets}
+                                        currentGroupExercises={currentGroupExercises}
+                                    />
+                                    );
                             })}
                         </Card.Body>
                     </Card>

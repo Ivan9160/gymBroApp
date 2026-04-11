@@ -13,13 +13,13 @@
     "welcome": "З поверненням,",
     "stats_title": "Ваша статистика",
     "workouts_history": "Історія тренувань",
-    "create_exercise": "+ Створити вправу",
+    "create_exercise": "+ Створити нову вправу",
     "edit_profile": "Редагувати профіль",
     "start_workout_btn": "🚀 Почати тренування"
   },
   "active_workout": {
     "title": "Активне тренування",
-    "timer_label": "Минуло часу:",
+    "timer_label": "Часу минуло:",
     "current_sets": "Поточні підходи",
     "finish_btn": "Завершити тренування",
     "cancel_btn": "Скасувати",
@@ -33,8 +33,7 @@
       "weight_placeholder": "0",
       "reps_label": "Повторення",
       "reps_placeholder": "0",
-      "add_set_button": "Додати підхід",
-      "add_set_btn": "Додати підхід"
+      "add_set_button": "Додати підхід"
     },
     "no_sets": "Підходів ще не додано. Додайте свою першу вправу!"
   },
@@ -43,6 +42,14 @@
     "reps_count": "{{count}} повт.",
     "bodyweight": "Власна вага",
     "deleting": "Видалення..."
+  },
+  "modals": {
+    "finish_workout": {
+      "title": "Завершити тренування",
+      "body": "Ви впевнені, що хочете завершити тренування? Результати будуть збережені.",
+      "cancel": "Скасувати",
+      "confirm": "Завершити"
+    }
   },
   "user_form": {
     "loading": "Завантаження...",
@@ -75,11 +82,11 @@
     "subtitle": "Покращуй свої тренування вже сьогодні",
     "or": "або",
     "signup": "Зареєструватися",
-    "terms": "Продовжуючи, ви погоджуєтесь з нашими Умовами надання послуг."
+    "terms": "Продовжуючи, ви погоджуєтеся з нашими Умовами надання послуг."
   },
   "exercise_creator": {
     "title": "Нова вправа",
-    "success": "Вправу {{name}} успішно створено!",
+    "success": "Вправу {{name}} було успішно створено!",
     "name_label": "Назва вправи",
     "name_placeholder": "Жим штанги",
     "muscle_group": "Група м'язів",
@@ -112,19 +119,22 @@
     "view_detailed": "Детальний огляд",
     "total_volume": "Загальний об'єм",
     "exercises_summary": "Огляд вправ",
-    "sets": "Підходів",
+    "sets": "Підходи",
     "set": "ПІДХІД",
     "weight": "ВАГА",
     "reps": "ПОВТОРЕННЯ",
     "kg": "кг",
     "bodyweight": "Власна вага",
     "completed": "Завершено",
-    "back_to_history": "До історії",
+    "back_to_history": "Назад до історії",
     "duration": "Тривалість",
-    "exercises": "Вправи"
+    "exercises": "Вправи",
+    "at": "Початок о",
+    "hours": "год ",
+    "minutes": "хв"
   },
   "workout_details": {
-    "back_to_history": "До історії",
+    "back_to_history": "Назад до історії",
     "default_name": "Тренування",
     "status_completed": "Завершено",
     "duration": "Тривалість",
@@ -140,6 +150,59 @@
       "bodyweight": "Власна вага",
       "kg": "кг",
       "reps_unit": "повт."
+    }
+  },
+  "database": {
+    "genders": {
+      "male": "Чоловіча",
+      "female": "Жіноча"
+    },
+    "goals": {
+      "lose": "Схуднення",
+      "maintain": "Підтримка ваги",
+      "gain": "Набір маси"
+    },
+    "exercise_groups": {
+      "Chest": "Грудні",
+      "Triceps": "Трицепс",
+      "Back": "Спина",
+      "Biceps": "Біцепс",
+      "Legs": "Ноги",
+      "Shoulders": "Плечі",
+      "Core": "Прес/Кор"
+    },
+    "exercises": {
+      "Chest Fly Machine": "Метелик (тренажер)",
+      "Cable Triceps Pushdown": "Розгинання рук на блоці",
+      "Overhead Cable Extension": "Розгинання рук з-за голови (блок)",
+      "Skull Crushers": "Французький жим",
+      "Deadlift": "Станова тяга",
+      "Lat Pulldown": "Тяга верхнього блоку",
+      "Horizontal Cable Row": "Тяга горизонтального блоку",
+      "Bicep Curls": "Згинання рук на біцепс",
+      "Hammer Curls": "Молотки",
+      "Barbell Curls": "Згинання рук зі штангою",
+      "Preacher Curls": "Згинання рук на лаві Скотта",
+      "Leg Press": "Жим ногами",
+      "Lying Leg Curl": "Згинання ніг лежачи",
+      "Calf Raises": "Підйоми на носки",
+      "Overhead Press (Military Press)": "Армійський жим",
+      "Lateral Raises": "Розведення гантелей в сторони",
+      "Front Raises": "Підйоми перед собою",
+      "Rear Delt Fly": "Махи на задню дельту",
+      "Cable Crunches": "Скручування на блоці",
+      "Bench Press": "Жим штанги лежачи",
+      "Dumbbell Bench Press": "Жим гантелей лежачи",
+      "Dips": "Віджимання на брусах",
+      "Diamond Push-ups": "Алмазні віджимання",
+      "Pull-ups": "Підтягування",
+      "Dumbbell Bent Over Row": "Тяга гантелі в нахилі",
+      "Chin-ups": "Підтягування вузьким хватом",
+      "Squats": "Присідання",
+      "Hanging Leg Raises": "Підйом ніг у висі",
+      "Ab Wheel Rollouts": "Ролик для преса",
+      "Plank": "Планка",
+      "Push Ups": "Віджимання від підлоги"
     }
   }
 }
