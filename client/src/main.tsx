@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store.ts';
 import './index.css';
 import router from './router.tsx';
+import './localization/i18n.ts';
 
 const onRedirectCallback = (appState?: AppState) => {
   window.history.replaceState(

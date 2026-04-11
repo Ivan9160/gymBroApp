@@ -6,11 +6,13 @@ import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../../api/exercis
 import { setWorkoutId, setWorkoutStartTime} from "../../store/slices/workoutSlice";
 import axios from "axios";
 import ActiveWorkout from "./activeWorkout";
+import { useTranslation } from "react-i18next";
 
 function Account() {
     const user = useSelector((state: any) => state.user);
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
+    const { t, i18n } = useTranslation(); 
 
     useGetExercisesQuery();
     useGetExerciseGroupsQuery();
@@ -37,7 +39,7 @@ function Account() {
                 <Col md={8} lg={6}>
                     <Card className="shadow-lg border-0 rounded-4 overflow-hidden mb-4">
                         <Card.Header className="bg-primary text-white text-center py-4">
-                            <h2 className="mb-0">Profile</h2>
+                            <h2 className="mb-0">{t('user_form.title_profile')}</h2>
                         </Card.Header>
                         
                         <Card.Body className="p-4">
@@ -48,23 +50,23 @@ function Account() {
 
                             <ListGroup variant="flush" className="mb-4">
                                 <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">Age:</span>
-                                    <span className="fw-bold">{user.age || '—'} years</span>
+                                    <span className="text-secondary">{t('user_form.age')}:</span>
+                                    <span className="fw-bold">{user.age || '—'} {t('user_form.years')}</span>
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">Gender:</span>
+                                    <span className="text-secondary">{t('user_form.gender')}:</span>
                                     <span className="fw-bold text-capitalize">{user.gender || '—'}</span>
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">Height:</span>
-                                    <span className="fw-bold">{user.height || '—'} cm</span>
+                                    <span className="text-secondary">{t('user_form.height')}:</span>
+                                    <span className="fw-bold">{user.height || '—'} {t('user_form.cm')}</span>
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">Weight:</span>
-                                    <span className="fw-bold">{user.weight || '—'} kg</span>
+                                    <span className="text-secondary">{t('user_form.weight')}:</span>
+                                    <span className="fw-bold">{user.weight || '—'} {t('user_form.kg')}</span>
                                 </ListGroup.Item>
                                 <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">Goal:</span>
+                                    <span className="text-secondary">{t('user_form.goal')}:</span>
                                     <span className="fw-bold text-success text-capitalize">{user.goal || '—'}</span>
                                 </ListGroup.Item>
                             </ListGroup>
@@ -72,21 +74,21 @@ function Account() {
                             <div className="d-grid gap-2">
                                 <Link to="/history" className="text-decoration-none d-grid">
                                     <Button variant="primary" className="rounded-pill shadow-sm">
-                                        📊 Workout History
+                                        📊 {t('user_form.workout_history')}
                                     </Button>
                                 </Link>
 
                                 {user.role === "ADMIN" && (
                                     <Link to="/exercise-creator" className="text-decoration-none d-grid mt-1">
                                         <Button variant="outline-primary" className="rounded-pill">
-                                            + Create new Exercise
+                                            + {t('user_form.create_exercise')}
                                         </Button>
                                     </Link>
                                 )}
 
                                 <Link to="/editProfile" className="text-decoration-none d-grid mt-1">
                                     <Button variant="outline-primary" className="rounded-pill">
-                                        Edit Profile
+                                        {t('user_form.edit_profile')}
                                     </Button>
                                 </Link>
                                 
@@ -106,7 +108,7 @@ function Account() {
                             onClick={() => startWorkout()}
                             type="button"
                         >
-                            🚀 Start New workout
+                            🚀 {t('user_form.start_workout')}
                         </Button>
                     ) : (
                         <ActiveWorkout />

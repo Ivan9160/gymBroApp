@@ -1,6 +1,7 @@
 import { motion, useAnimation } from "framer-motion";
 import { ListGroup } from "react-bootstrap";
 import type { Set } from "../../types";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   set: Set;
@@ -11,6 +12,7 @@ interface Props {
 
 export const SwipeableSetItem = ({ set, exerciseName, setNumber, onDelete }: Props) => {
   const controls = useAnimation();
+  const { t, i18n } = useTranslation();
 
   const handleDragEnd = async (_: any, info: any) => {
     if (info.offset.x < -150) {
@@ -34,7 +36,7 @@ export const SwipeableSetItem = ({ set, exerciseName, setNumber, onDelete }: Pro
         color: "white",
         fontWeight: "bold"
       }}>
-        Deletion...
+        {t('active_workout.swipe_to_delete')}
       </div>
 
       <motion.div
@@ -52,10 +54,10 @@ export const SwipeableSetItem = ({ set, exerciseName, setNumber, onDelete }: Pro
           <div className="text-start">
             <strong className="text-primary">{exerciseName}</strong>
             <div className="text-muted" style={{ fontSize: "0.8rem" }}>
-              {set.weight === 0 ? "Bodyweight" : `${set.weight} kg`} x {set.reps}
+              {set.weight === 0 ? t('set_item.bodyweight') : `${set.weight} ${t('workout_details.table.kg')}`} x {set.reps}
             </div>
           </div>
-          <span className="badge bg-primary rounded-pill">Set {setNumber}</span>
+          <span className="badge bg-primary rounded-pill">{t('set_item.set_label')} {setNumber}</span>
         </ListGroup.Item>
       </motion.div>
     </div>

@@ -15,12 +15,14 @@ import {
     setUserWeight,
     setUserGoal
 } from '../store/slices/userSlice';
+import { useTranslation } from 'react-i18next';
 
 
 export function UserDataForm({}: { status: string }) {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { t, i18n } = useTranslation(); 
     
     
     const reduxUser = useSelector((state: any) => state.user);
@@ -114,44 +116,44 @@ export function UserDataForm({}: { status: string }) {
         }
     };
     if (dbLoading&& !reduxUser.id) {
-        return <div className="bg-dark vh-100 text-white d-flex justify-content-center align-items-center">Loading...</div>;
+        return <div className="bg-dark vh-100 text-white d-flex justify-content-center align-items-center">{t('user_form.loading')}</div>;
     }
     return (
     <Form className="w-100 mx-auto min-h-screen" style={{ maxWidth: "500px" }} onSubmit={handleSubmit}>
         <div className="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4">
-            <FloatingLabel label="Name" className="mb-3 text-dark">
+            <FloatingLabel label={t('user_form.name')} className="mb-3 text-dark">
                 <Form.Control defaultValue={reduxUser.name || ''} onBlur={handleNameChange} required />
             </FloatingLabel>
-            <FloatingLabel label="Age" className="mb-3 text-dark">
+            <FloatingLabel label={t('user_form.age')} className="mb-3 text-dark">
                 <Form.Control type="number" defaultValue={reduxUser.age || ''} onBlur={handleAgeChange} required />
             </FloatingLabel>
         </div>
 
         <div className="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4 text-gray-100">
-            <Form.Label>Gender</Form.Label>
+            <Form.Label>{t('user_form.gender')}</Form.Label>
             <ButtonGroup className="w-100 mb-4">
                 <Button 
                     variant={reduxUser.gender === 'male' ? 'primary' : 'outline-primary'} 
                     onClick={() => handleGenderChange('male')}
                 >
-                    Male
+                    {t('user_form.male')}
                 </Button>
                 <Button 
                     variant={reduxUser.gender === 'female' ? 'primary' : 'outline-primary'} 
                     onClick={() => handleGenderChange('female')}
                 >
-                    Female
+                    {t('user_form.female')}
                 </Button>
             </ButtonGroup>
             
             <Row>
                 <Col>
-                    <FloatingLabel label="Height (cm)" className="text-dark">
+                    <FloatingLabel label={t('user_form.height')} className="text-dark">
                         <Form.Control type="number" defaultValue={reduxUser.height || ''} onBlur={handleHeightChange} required />
                     </FloatingLabel>
                 </Col>
                 <Col>
-                    <FloatingLabel label="Weight (kg)" className="text-dark">
+                    <FloatingLabel label={t('user_form.weight')} className="text-dark">
                         <Form.Control type="number" defaultValue={reduxUser.weight || ''} onBlur={handleWeightChange} required />
                     </FloatingLabel>
                 </Col>
@@ -159,7 +161,7 @@ export function UserDataForm({}: { status: string }) {
         </div>
 
         <div className="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4 text-center text-gray-100">
-            <Form.Label className="d-block text-start">Goal</Form.Label>
+            <Form.Label className="d-block text-start">{t('user_form.goal')}</Form.Label>
             <Stack gap={2}>
                 {['lose', 'maintain', 'gain'].map((g) => (
                     <Button 
@@ -167,14 +169,14 @@ export function UserDataForm({}: { status: string }) {
                         variant={reduxUser.goal === g ? 'primary' : 'outline-light'} 
                         onClick={() => handleGoalChange(g as any)}
                     >
-                        {g.charAt(0).toUpperCase() + g.slice(1)} weight
+                        {t(`user_form.goals.${g}`)}
                     </Button>
                 ))}
             </Stack>
         </div>
 
         <Button type="submit" size="lg" className="w-100 rounded-pill py-3">
-            {reduxUser.id == null ? 'Create Profile' : 'Update Profile'}
+            {reduxUser.id == null ? t('user_form.title_create') : t('user_form.title_update')}
         </Button>
     </Form>
 );

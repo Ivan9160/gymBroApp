@@ -10,11 +10,13 @@ import { useState } from "react";
 import { FinishWorkoutModal } from "./finishWorkoutModal";
 import { SwipeableSetItem } from "./swipeableSetItem";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 function ActiveWorkout() {
     const set = useSelector((state: any) => state.set);
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
+    const {t, i18n } = useTranslation();
 
     const { data: exercises } = useGetExercisesQuery();
     const { data: exerciseGroups } = useGetExerciseGroupsQuery();
@@ -97,13 +99,13 @@ function ActiveWorkout() {
         <Container className="py-5 ">
             <Card className="shadow-lg border-0 rounded-4">
                 <Card.Header className="bg-dark text-white py-3">
-                    <h4 className="mb-0">Active Workout</h4>
+                    <h4 className="mb-0">{t('active_workout.title')}</h4>
                     <WorkoutTimer />
                 </Card.Header>
                 <Card.Body>
                     <Form className="mb-4">
                         <Form.Group className="mb-3">
-                            <Form.Label>Muscle Group</Form.Label>
+                            <Form.Label>{t('active_workout.form.exercise_label')}</Form.Label>
                             <Form.Select 
                                 value={set.muscleGroupId || 1}
                                 onChange={setExerciseGroup}
@@ -115,7 +117,7 @@ function ActiveWorkout() {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Exercise</Form.Label>
+                            <Form.Label>{t('active_workout.form.exercise_label')}</Form.Label>
                             <Form.Select 
                                 disabled={!set.muscleGroupId}
                                 value={set.exerciseId || 1}
@@ -131,18 +133,18 @@ function ActiveWorkout() {
 
                         <Row>
                             <Col>
-                                <Form.Label>Weight (kg)</Form.Label>
+                                <Form.Label>{t('active_workout.form.weight_label')}</Form.Label>
                                 {exercises?.find(e => e.id === set.exerciseId)?.isBodyweight ? (
                                     <Form.Control 
                                         type="number"
-                                        placeholder="Bodyweight(0)/additional weight"
+                                        placeholder={t('active_workout.form.weight_placeholder')}
                                         value={set.weight === 0 ? '' : set.weight}
                                         onChange={(e) => dispatch(setSetWeight(Number(e.target.value)))}
                                     />
                                 ) : (
                                     <Form.Control 
                                         type="number" 
-                                        placeholder="0"
+                                        placeholder={t('active_workout.form.reps_placeholder')}
                                         value={set.weight === 0 ? '' : set.weight}
                                         onChange={(e) => dispatch(setSetWeight(Number(e.target.value)))}
                                     />
@@ -150,7 +152,7 @@ function ActiveWorkout() {
                                
                             </Col>
                             <Col>
-                                <Form.Label>Reps</Form.Label>
+                                <Form.Label>{t('active_workout.form.reps_label')}</Form.Label>
                                 <Form.Control 
                                     type="number" 
                                     placeholder="0"
@@ -166,13 +168,13 @@ function ActiveWorkout() {
                             type="button"
                             disabled={!isSetValid()}
                         >
-                            Add Set
+                            {t('active_workout.form.add_set_button')}
                         </Button>
                     </Form>
 
                      {workout.sets.length > 0 && (
                         <div className="mt-4">  
-                            <h6 className="mb-3">Current Sets (swipe to delete):</h6>
+                            <h6 className="mb-3">{t('active_workout.current_sets')}</h6>
                             <AnimatePresence initial={false}>
                                 {workout.sets.map((s: Set, idx: number) => (
                                 <motion.div
@@ -195,7 +197,7 @@ function ActiveWorkout() {
 
                     <div className="d-flex gap-2 mt-4">
                         <Button variant="success" type="button" className="w-50" onClick={() => setShowConfirmFinishWorkout(true)}>
-                            Finish Workout
+                            {t('active_workout.finish_btn')}
                         </Button>
                     </div>
                     <FinishWorkoutModal

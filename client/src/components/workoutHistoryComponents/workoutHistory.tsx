@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGetWorkoutsQuery} from "../../api/workoutHistoryApi";
 import type { Workout } from "../../types";
 import { WorkoutHistoryItem } from "./historyItem";
+import { useTranslation } from "react-i18next";
 
 
 
 const WorkoutHistory =  () => {
   const {data: workoutHistory = [], isLoading} = useGetWorkoutsQuery();
-
+  const {t, i18n} = useTranslation();
   
   if (isLoading) {
     return (
@@ -26,21 +27,21 @@ const WorkoutHistory =  () => {
           <div className="d-flex align-items-center mb-4">
             <Link to="/account">
               <Button variant="link" className="text-decoration-none p-0 me-3 text-primary">
-                &larr; Back
+                &larr; {t('workout_history.back_to_account')}
               </Button>
             </Link>
-            <h2 className="fw-bold mb-0 text-white">Workout History</h2>
+            <h2 className="fw-bold mb-0 text-white">{t('workout_history.title')}</h2>
           </div>
 
           <AnimatePresence>
             {workoutHistory.length === 0 ? (
               <Card className="text-center p-5 border-0 shadow-sm rounded-4">
                 <Card.Body>
-                  <h4 className="text-muted">No workouts found</h4>
-                  <p>Time to hit the gym!</p>
+                  <h4 className="text-muted">{t('workout_history.empty_title')}</h4>
+                  <p>{t('workout_history.empty_message')}</p>
                   <Link to="/account">
                     <Button variant="success" className="rounded-pill px-4">
-                      Start First Workout
+                      {t('workout_history.start_first_workout')}
                     </Button>
                   </Link>
                 </Card.Body>

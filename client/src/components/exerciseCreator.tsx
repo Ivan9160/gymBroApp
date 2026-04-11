@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Form, Button, FloatingLabel, Alert } from "react-bootstrap";
 import { useGetExerciseGroupsQuery } from "../api/exerciseApi";
+import { useTranslation } from "react-i18next";
 
 interface ExerciseData {
     name: string;
@@ -13,6 +14,7 @@ interface ExerciseData {
 function ExerciseCreator() {
     const { data: exerciseGroups } = useGetExerciseGroupsQuery();
     const { getAccessTokenSilently } = useAuth0();
+    const { t, i18n } = useTranslation();       
 
     const [showSuccess, setShowSuccess] = useState(false);
     
@@ -57,17 +59,17 @@ function ExerciseCreator() {
 
     return (
         <div className="p-3">
-            <h2 className="mb-4 text-light">New Exercise</h2>
+            <h2 className="mb-4 text-light">{t('exercise_creator.title')}</h2>
             {showSuccess && (
                 <Alert variant="success" onClose={() => setShowSuccess(false)} dismissible>
-                    Exercise <strong>{exerciseData.name}</strong> was created successfully!
+                    {t('exercise_creator.success', { name: exerciseData.name })}
                 </Alert>
             )}
             <Form onSubmit={handleSubmit} className="bg-secondary bg-opacity-10 p-4 rounded-4">
-                <FloatingLabel label="Exercise Name" className="mb-3 text-dark">
+                <FloatingLabel label={t('exercise_creator.name_label')} className="mb-3 text-dark">
                     <Form.Control 
                         type="text" 
-                        placeholder="Bench press" 
+                        placeholder={t('exercise_creator.name_placeholder')} 
                         value={exerciseData.name} 
                         onChange={(e) => setExerciseData({...exerciseData, name: e.target.value})} 
                         required
@@ -75,7 +77,7 @@ function ExerciseCreator() {
                 </FloatingLabel>
 
                 <Form.Group className="mb-3">
-                    <Form.Label className="text-light fs-5">Muscle Group</Form.Label>
+                    <Form.Label className="text-light fs-5">{t('exercise_creator.muscle_group')}</Form.Label>
                     <Form.Select 
                         className="py-3 rounded-3" 
                         value={exerciseData.groupId} 
@@ -91,7 +93,7 @@ function ExerciseCreator() {
                     <Form.Check 
                         type="checkbox"
                         id="bodyweight-checkbox"
-                        label="Bodyweight exercise"
+                        label={t('exercise_creator.bodyweight')}
                         className="text-light fs-6"
                         checked={exerciseData.isBodyweight}
                         onChange={(e) => setExerciseData({...exerciseData, isBodyweight: e.target.checked})}
@@ -99,7 +101,7 @@ function ExerciseCreator() {
                 </Form.Group>
 
                 <Button type="submit" className="w-100 py-3 rounded-3">
-                    Add Exercise
+                    {t('exercise_creator.submit')}
                 </Button>
             </Form>
         </div>

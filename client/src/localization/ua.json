@@ -1,0 +1,145 @@
+{
+  "nav": {
+    "account": "Акаунт",
+    "login": "Увійти",
+    "logout": "Вийти",
+    "back": "Назад"
+  },
+  "app": {
+    "authenticated_user": "Авторизований користувач: {{name}}",
+    "login_prompt": "Будь ласка, увійдіть, щоб почати тренування"
+  },
+  "account": {
+    "welcome": "З поверненням,",
+    "stats_title": "Ваша статистика",
+    "workouts_history": "Історія тренувань",
+    "create_exercise": "+ Створити вправу",
+    "edit_profile": "Редагувати профіль",
+    "start_workout_btn": "🚀 Почати тренування"
+  },
+  "active_workout": {
+    "title": "Активне тренування",
+    "timer_label": "Минуло часу:",
+    "current_sets": "Поточні підходи",
+    "finish_btn": "Завершити тренування",
+    "cancel_btn": "Скасувати",
+    "swipe_to_delete": "Видалення...",
+    "finish_modal_title": "Завершити тренування",
+    "finish_modal_body": "Ви впевнені, що хочете завершити тренування? Ваші результати будуть збережені.",
+    "form": {
+      "exercise_label": "Оберіть вправу",
+      "exercise_placeholder": "Оберіть вправу...",
+      "weight_label": "Вага (кг)",
+      "weight_placeholder": "0",
+      "reps_label": "Повторення",
+      "reps_placeholder": "0",
+      "add_set_button": "Додати підхід",
+      "add_set_btn": "Додати підхід"
+    },
+    "no_sets": "Підходів ще не додано. Додайте свою першу вправу!"
+  },
+  "set_item": {
+    "set_label": "Підхід",
+    "reps_count": "{{count}} повт.",
+    "bodyweight": "Власна вага",
+    "deleting": "Видалення..."
+  },
+  "user_form": {
+    "loading": "Завантаження...",
+    "title_profile": "Профіль користувача",
+    "title_create": "Створити профіль",
+    "title_update": "Оновити профіль",
+    "name": "Ім'я",
+    "age": "Вік",
+    "years": "років",
+    "gender": "Стать",
+    "male": "Чоловіча",
+    "female": "Жіноча",
+    "height": "Зріст",
+    "cm": "см",
+    "weight": "Вага",
+    "kg": "кг",
+    "goal": "Ціль",
+    "workout_history": "Історія тренувань",
+    "create_exercise": "Створити нову вправу",
+    "edit_profile": "Редагувати профіль",
+    "start_workout": "Почати тренування",
+    "goals": {
+      "lose": "Схуднення",
+      "maintain": "Підтримка ваги",
+      "gain": "Набір маси"
+    }
+  },
+  "login": {
+    "title": "GymBro",
+    "subtitle": "Покращуй свої тренування вже сьогодні",
+    "or": "або",
+    "signup": "Зареєструватися",
+    "terms": "Продовжуючи, ви погоджуєтесь з нашими Умовами надання послуг."
+  },
+  "exercise_creator": {
+    "title": "Нова вправа",
+    "success": "Вправу {{name}} успішно створено!",
+    "name_label": "Назва вправи",
+    "name_placeholder": "Жим штанги",
+    "muscle_group": "Група м'язів",
+    "bodyweight": "Вправа з власною вагою",
+    "submit": "Додати вправу"
+  },
+  "history": {
+    "title": "Історія тренувань",
+    "no_workouts": "Тренувань не знайдено",
+    "hit_gym": "Час до залу!",
+    "start_first": "Почати перше тренування",
+    "sets_count_one": "1 Підхід",
+    "sets_count_other": "{{count}} Підходів",
+    "empty_workout": "Порожнє тренування",
+    "more_exercises": "та ще {{count}}...",
+    "view_review": "Детальний огляд",
+    "duration": "Тривалість",
+    "started_at": "Початок о",
+    "exercise_num": "Вправа №{{index}}"
+  },
+  "workout_history": {
+    "title": "Історія тренувань",
+    "back_to_account": "Назад",
+    "empty_title": "Тренувань не знайдено",
+    "empty_message": "Час до залу!",
+    "start_first_workout": "Почати перше тренування",
+    "set_number": "Вправа №{{number}}",
+    "empty": "Порожнє тренування",
+    "more": "та ще {{count}}...",
+    "view_detailed": "Детальний огляд",
+    "total_volume": "Загальний об'єм",
+    "exercises_summary": "Огляд вправ",
+    "sets": "Підходів",
+    "set": "ПІДХІД",
+    "weight": "ВАГА",
+    "reps": "ПОВТОРЕННЯ",
+    "kg": "кг",
+    "bodyweight": "Власна вага",
+    "completed": "Завершено",
+    "back_to_history": "До історії",
+    "duration": "Тривалість",
+    "exercises": "Вправи"
+  },
+  "workout_details": {
+    "back_to_history": "До історії",
+    "default_name": "Тренування",
+    "status_completed": "Завершено",
+    "duration": "Тривалість",
+    "exercises_count": "Вправи",
+    "total_volume": "Загальний об'єм",
+    "summary_title": "Огляд вправ",
+    "sets_label_one": "1 підхід",
+    "sets_label_other": "{{count}} підходів",
+    "table": {
+      "set": "ПІДХІД",
+      "weight": "ВАГА",
+      "reps": "ПОВТ.",
+      "bodyweight": "Власна вага",
+      "kg": "кг",
+      "reps_unit": "повт."
+    }
+  }
+}

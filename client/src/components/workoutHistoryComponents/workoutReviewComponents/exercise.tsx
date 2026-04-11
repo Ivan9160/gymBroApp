@@ -1,15 +1,17 @@
 import { Table } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 export function Exercise(exerciseIndex: number, exerciseName: string, currentExerciseSets: any[]) {
+    const {t, i18n} = useTranslation();
     return (
         <div key={exerciseIndex} className="mt-3">
             <h6 className="fw-bold text-dark mb-2">{exerciseName}</h6>
             <Table hover borderless responsive className="mb-0 align-middle">
                         <thead className="text-muted small">
                             <tr>
-                                <th style={{ width: '20%' }}>SET</th>
-                                <th>WEIGHT</th>
-                                <th>REPS</th>
+                                <th style={{ width: '20%' }}>{t('workout_history.set')}</th>
+                                <th>{t('workout_history.weight')}</th>
+                                <th>{t('workout_history.reps')}</th>
                             </tr>
                         </thead>
                     <tbody>
@@ -21,14 +23,14 @@ export function Exercise(exerciseIndex: number, exerciseName: string, currentExe
                                 {set.weight ? (
                                     <div>
                                         {set.weight}
-                                        <span className="text-muted small"> kg</span>
+                                        <span className="text-muted small"> {t('workout_history.kg')}</span>
                                     </div>
                                 ) : (
-                                    <span>Bodyweight</span>
+                                    <span>{t('workout_history.bodyweight')}</span>
                                 )}
                             </td>
                             <td>
-                                {set.reps} <span className="text-muted small">reps</span>
+                                {set.reps} <span className="text-muted small"> {t('workout_history.reps')}</span>
                             </td>
                         </tr>
                         

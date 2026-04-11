@@ -1,9 +1,11 @@
 import { Badge, Button, Card, ListGroup } from "react-bootstrap";
 import type { Workout } from "../../types";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const WorkoutHistoryItem = ({ workout }: { workout: Workout }) => {
   const navigate = useNavigate();
+  const {t, i18n} = useTranslation();
   const displayDate = (startDateFromServer: string, endDateFromServer: string) => {
       const startDate = new Date(startDateFromServer);
       const endDate = new Date(endDateFromServer);
@@ -25,7 +27,7 @@ export const WorkoutHistoryItem = ({ workout }: { workout: Workout }) => {
                       }
                     </span>
                     <Badge bg="primary" pill>
-                      {workout.sets.length} Sets
+                      {t('workout_history.sets', { count: workout.sets.length })}
                     </Badge>
                   </div>
                 </Card.Header>
@@ -34,18 +36,18 @@ export const WorkoutHistoryItem = ({ workout }: { workout: Workout }) => {
                     {workout.sets.length > 0 ? (
                       workout.sets.slice(0, 3).map((set: any, index: number) => (
                         <ListGroup.Item key={set.id} className="px-0 py-2 border-0 d-flex justify-content-between">
-                          <span className="text-dark">Exercise# {index + 1}: {set.exercise.name}</span>
+                          <span className="text-dark">{t('workout_history.set_number', { number: index + 1 })}: {set.exercise.name}</span>
                           <span className="fw-bold">
                             {(set.weight>0 ? set.weight + " kg x ":"Bodyweight x ") +set.reps}
                           </span>
                         </ListGroup.Item>
                       ))
                     ) : (
-                      <span className="text-muted italic">Empty workout</span>
+                      <span className="text-muted italic">{t('workout_history.empty')}</span>
                     )}
                     {workout.sets.length > 3 && (
                       <div className="text-center mt-2">
-                        <small className="text-muted">and {workout.sets.length - 3} more...</small>
+                        <small className="text-muted">{t('workout_history.more', { count: workout.sets.length - 3 })}</small>
                       </div>
                     )}
                   </ListGroup>
@@ -57,7 +59,7 @@ export const WorkoutHistoryItem = ({ workout }: { workout: Workout }) => {
                       className="rounded-pill fw-bold"
                       onClick={() => navigate(`/history/review`, { state: { workout } })}
                   >
-                      View Detailed Review
+                      {t('workout_history.view_detailed')}
                   </Button>
             </Card.Footer>
               </Card>

@@ -1,0 +1,145 @@
+{
+  "nav": {
+    "account": "Account",
+    "login": "Log In",
+    "logout": "Log Out",
+    "back": "Back"
+  },
+  "app": {
+    "authenticated_user": "Authenticated user: {{name}}",
+    "login_prompt": "Please log in to start training"
+  },
+  "account": {
+    "welcome": "Welcome back,",
+    "stats_title": "Your Statistics",
+    "workouts_history": "Workouts History",
+    "create_exercise": "+ Create new Exercise",
+    "edit_profile": "Edit Profile",
+    "start_workout_btn": "🚀 Start New workout"
+  },
+  "active_workout": {
+    "title": "Active Workout",
+    "timer_label": "Time elapsed:",
+    "current_sets": "Current Sets",
+    "finish_btn": "Finish Workout",
+    "cancel_btn": "Cancel",
+    "swipe_to_delete": "Deletion...",
+    "finish_modal_title": "Finish Workout",
+    "finish_modal_body": "Are you sure you want to finish your workout? Your workout will be saved.",
+    "form": {
+      "exercise_label": "Select Exercise",
+      "exercise_placeholder": "Choose an exercise...",
+      "weight_label": "Weight (kg)",
+      "weight_placeholder": "0",
+      "reps_label": "Reps",
+      "reps_placeholder": "0",
+      "add_set_button": "Add Set",
+      "add_set_btn": "Add Set"
+    },
+    "no_sets": "No sets added yet. Add your first exercise!"
+  },
+  "set_item": {
+    "set_label": "Set",
+    "reps_count": "{{count}} reps",
+    "bodyweight": "Bodyweight",
+    "deleting": "Deletion..."
+  },
+  "user_form": {
+    "loading": "Loading...",
+    "title_profile": "User Profile",
+    "title_create": "Create Profile",
+    "title_update": "Update Profile",
+    "name": "Name",
+    "age": "Age",
+    "years": "years",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "height": "Height",
+    "cm": "cm",
+    "weight": "Weight",
+    "kg": "kg",
+    "goal": "Goal",
+    "workout_history": "Workout History",
+    "create_exercise": "Create new Exercise",
+    "edit_profile": "Edit Profile",
+    "start_workout": "Start New workout",
+    "goals": {
+      "lose": "Lose weight",
+      "maintain": "Maintain weight",
+      "gain": "Gain weight"
+    }
+  },
+  "login": {
+    "title": "GymBro",
+    "subtitle": "Elevate your training today",
+    "or": "or",
+    "signup": "Sign Up",
+    "terms": "By continuing, you agree to our Terms of Service."
+  },
+  "exercise_creator": {
+    "title": "New Exercise",
+    "success": "Exercise {{name}} was created successfully!",
+    "name_label": "Exercise Name",
+    "name_placeholder": "Bench press",
+    "muscle_group": "Muscle Group",
+    "bodyweight": "Bodyweight exercise",
+    "submit": "Add Exercise"
+  },
+  "history": {
+    "title": "Workout History",
+    "no_workouts": "No workouts found",
+    "hit_gym": "Time to hit the gym!",
+    "start_first": "Start First Workout",
+    "sets_count_one": "1 Set",
+    "sets_count_other": "{{count}} Sets",
+    "empty_workout": "Empty workout",
+    "more_exercises": "and {{count}} more...",
+    "view_review": "View Detailed Review",
+    "duration": "Duration",
+    "started_at": "Started at",
+    "exercise_num": "Exercise# {{index}}"
+  },
+  "workout_history": {
+    "title": "Workout History",
+    "back_to_account": "Back",
+    "empty_title": "No workouts found",
+    "empty_message": "Time to hit the gym!",
+    "start_first_workout": "Start First Workout",
+    "set_number": "Exercise# {{number}}",
+    "empty": "Empty workout",
+    "more": "and {{count}} more...",
+    "view_detailed": "View Detailed Review",
+    "total_volume": "Total Volume",
+    "exercises_summary": "Exercises Summary",
+    "sets": "Sets",
+    "set": "SET",
+    "weight": "WEIGHT",
+    "reps": "REPS",
+    "kg": "kg",
+    "bodyweight": "Bodyweight",
+    "completed": "Completed",
+    "back_to_history": "Back to History",
+    "duration": "Duration",
+    "exercises": "Exercises"
+  },
+  "workout_details": {
+    "back_to_history": "Back to History",
+    "default_name": "Workout Session",
+    "status_completed": "Completed",
+    "duration": "Duration",
+    "exercises_count": "Exercises",
+    "total_volume": "Total Volume",
+    "summary_title": "Exercises Summary",
+    "sets_label_one": "1 set",
+    "sets_label_other": "{{count}} sets",
+    "table": {
+      "set": "SET",
+      "weight": "WEIGHT",
+      "reps": "REPS",
+      "bodyweight": "Bodyweight",
+      "kg": "kg",
+      "reps_unit": "reps"
+    }
+  }
+}

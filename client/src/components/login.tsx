@@ -1,7 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { useTranslation } from "react-i18next";
 
 const LoginMenu = () => {
   const { loginWithRedirect } = useAuth0();
+  const { t, i18n } = useTranslation();
   const handleLogin = () => {
     sessionStorage.setItem('isLoggingIn', 'true');
     loginWithRedirect({
@@ -21,7 +23,7 @@ const LoginMenu = () => {
             onClick={() => handleLogin()}
             className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 shadow-md"
           >
-            Log In
+            {t('nav.login')}
           </button>
 
           <div className="my-6 flex items-center">
@@ -34,11 +36,11 @@ const LoginMenu = () => {
             onClick={() => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } })}
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
           >
-            Sign Up
+            {t('login.signup')}
           </button>
 
           <p className="mt-8 text-xs text-gray-400">
-            By continuing, you agree to our Terms of Service.
+            {t('login.terms')}
           </p>
         </div>
       </div>
