@@ -5,10 +5,17 @@ import { PrismaClient } from '../generated/prisma';
 export class PrismaService extends PrismaClient implements OnModuleInit {
     constructor() {
     super({
-      log: ['query', 'info', 'warn', 'error'], 
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
     });
   }
   async onModuleInit() {
     await this.$connect();
+  }
+  async onModuleDestroy() {
+    await this.$disconnect();
   }
 }

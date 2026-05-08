@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -69,6 +68,8 @@ model Exercise {
   exerciseGroupId Int           @map("exercise_group_id")
   name            String
   video           String
+  factor          Float         @default(0.0) 
+  benchmark       Float?
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   isBodyweight    Boolean       @default(false) @map("is_bodyweight")
