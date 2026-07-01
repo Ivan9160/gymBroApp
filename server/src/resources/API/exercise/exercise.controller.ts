@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntP
 import { ExerciseService } from './exercise.service';
 import { CreateExerciseDto,UpdateExerciseDto } from './dto/exercise.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Role } from 'generated/prisma';
+import { Role } from '@prisma/client';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 

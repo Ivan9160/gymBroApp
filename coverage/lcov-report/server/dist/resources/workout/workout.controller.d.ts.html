@@ -169,7 +169,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CreateWorkoutDto, UpdateWorkoutDto } from './dto/workout.dto';
 import { WorkoutService } from './workout.service';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 export declare class WorkoutController {
     private readonly workoutService;
     constructor(workoutService: WorkoutService);

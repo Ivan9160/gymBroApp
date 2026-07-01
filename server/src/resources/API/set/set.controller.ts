@@ -3,7 +3,7 @@ import { SetService } from './set.service';
 import { CreateSetDto } from './dto/set.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'generated/prisma/wasm';
+import { User } from '@prisma/client';
 
 @Controller('sets')
 @UseGuards(AuthGuard('jwt'))

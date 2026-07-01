@@ -4,7 +4,7 @@ import { WorkoutService } from './workout.service';
 import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
-import { User} from 'generated/prisma';
+import { User} from '@prisma/client';
 
 @Controller('workouts')
 @UseGuards(AuthGuard('jwt'))

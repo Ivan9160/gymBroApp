@@ -141,7 +141,7 @@
 import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
 <span class="cstat-no" title="statement not covered" >import { AuthGuard } from '@nestjs/passport';</span>
 <span class="cstat-no" title="statement not covered" >import { CurrentUser } from 'src/auth/decorators/get-user.decorator';</span>
-import { User} from 'generated/prisma';
+import { User} from '@prisma/client';
 &nbsp;
 @Controller('workouts')
 @UseGuards(AuthGuard('jwt'))

@@ -4,7 +4,6 @@ import { WorkoutService } from 'src/resources/API/workout/workout.service';
 import { ExerciseGroupService } from 'src/resources/API/exercise-group/exerciseGroup.service';
 import { ProficiencyService } from '../proficiency/proficiency.service';
 import { SorenessConfig } from './soreness.config';
-import { ProficiencyConfig } from '../proficiency/proficiency.config';
 
 @Injectable()
 export class SorenessService {
@@ -31,7 +30,7 @@ export class SorenessService {
         });
 
         return allGroups.map(group => {
-            const groupProficiency = proficiencies.find(p => p.id === group.id)?.proficiency || 0;
+            const groupProficiency = proficiencies.find((p: any) => p.id === group.id)?.proficiency || 0;
             const groupSets = recentSets.filter(s => s.exercise.exerciseGroupId === group.id);
             const sorenessScore = this.calculateSorenessForMuscleGroup(groupSets, groupProficiency, userProfile);
 

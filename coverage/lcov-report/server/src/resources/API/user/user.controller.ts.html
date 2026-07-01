@@ -148,7 +148,7 @@ import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
 <span class="cstat-no" title="statement not covered" >import { Roles } from 'src/auth/decorators/roles.decorator';</span>
 <span class="cstat-no" title="statement not covered" >import { Role } from 'src/common/role.enum';</span>
 <span class="cstat-no" title="statement not covered" >import { CurrentUser } from 'src/auth/decorators/get-user.decorator';</span>
-import { User} from 'generated/prisma';
+import { User} from '@prisma/client';
 &nbsp;
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))

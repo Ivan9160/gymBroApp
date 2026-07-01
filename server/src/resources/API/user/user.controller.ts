@@ -7,7 +7,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/common/role.enum';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
-import { User} from 'generated/prisma';
+import { User} from '@prisma/client';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
