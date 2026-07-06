@@ -15,9 +15,13 @@ export class SorenessService {
         private readonly proficiencyService: ProficiencyService
     ) {}
     public async getSorenessForAllMuscleGroups(userId: number): Promise<ISoreness[]> {
-        const allGroups = await this.exerciseGroupService.findAll();
-        const workouts = await this.workoutService.findAllByUserId(userId);
-        const user = await this.userService.findById(userId);
+        const [allGroups, workouts, user] = await Promise.all([
+            this.exerciseGroupService.findAll(),
+            this.workoutService.findAllByUserId(userId),
+            this.userService.findById(userId)
+        ]);
+
+
 
         if (!user || !user.userProfile) {
             throw new NotFoundException(`User with ID ${userId} not found`);
@@ -25,17 +29,20 @@ export class SorenessService {
 
         const proficiencies = await this.proficiencyService.getProficiencyForAllMuscleGroups(userId);
 
-        const nowMs = Date.now();
-        const recoveryMs = SorenessConfig.RECOVERY_DAYS * 24 * 3600 * 1000;
-
-        const recentSets = workouts.flatMap(w => w.sets).filter(set => {
-            const timeDiff = nowMs - new Date(set.createdAt).getTime();
-            return timeDiff <= recoveryMs;
-        });
+        const recentSets = new Map<number, ISet[]>();
+        for (const workout of workouts) {
+            for (const set of workout.sets) {
+                const groupId = set.exercise.exerciseGroupId;
+                if (!recentSets.has(groupId)) {
+                    recentSets.set(groupId, []);
+                }
+                recentSets.get(groupId)?.push(set);
+            }
+        }
 
         return allGroups.map(group => {
             const groupProficiency = proficiencies.find((p: any) => p.id === group.id)?.proficiency || 0;
-            const groupSets = recentSets.filter(s => s.exercise.exerciseGroupId === group.id);
+            const groupSets = recentSets.get(group.id) || [];
             const sorenessScore = this.calculateSorenessForMuscleGroup(groupSets, groupProficiency, user.userProfile!);
 
             return { 
@@ -55,7 +62,9 @@ export class SorenessService {
                 totalStress += stress;
             }
         });
-        return totalStress / SorenessConfig.SORENESS_LIMIT * 100; 
+        const adaptiveLimit = SorenessConfig.SORENESS_LIMIT * proficiency;
+        if (adaptiveLimit === 0) return null;
+        return (totalStress / adaptiveLimit) * 100; 
     }
     private calculateStressForSet(set: ISet, proficiency: number, bodyweight: number, now: number): number | null {
         if (!set.exercise.benchmark) {
@@ -66,18 +75,22 @@ export class SorenessService {
 
         const estimated1RM = effectiveWeight * (1 + set.reps / 30);
         const safeEffectiveWeight = Math.min(effectiveWeight, estimated1RM * 0.99);
-        const userMaxCapacity = proficiency * divider;
+        const userMaxCapacityForExercise = proficiency * divider;
 
-        const relativeIntensity = (safeEffectiveWeight * set.exercise.factor) / estimated1RM;
+        let pureIntensity = safeEffectiveWeight / userMaxCapacityForExercise;
+        pureIntensity = Math.min(1.0, Math.max(0.1, pureIntensity));
 
-        if (relativeIntensity < 0.3) return 0;
-
-        const maxPossibleReps = 30 * (1 / relativeIntensity - 1);
+        const maxPossibleReps = 30 * (1 / pureIntensity - 1);
 
         const rir = Math.max(0, maxPossibleReps - set.reps);
 
+        const relativeIntensityForSet = pureIntensity * set.exercise.factor;
+        if (relativeIntensityForSet <0.3) {
+            return 0;
+        }
+
         const failureProximityFactor = Math.pow(2.718, -0.4 * rir);
-        const stress = set.reps * Math.pow(relativeIntensity, 3) * failureProximityFactor * 10;
+        const stress = set.reps * Math.pow(relativeIntensityForSet, 2) * failureProximityFactor * 10;
 
         const hoursPassed = (now - new Date(set.createdAt).getTime()) / (1000 * 3600);
         const timeFactor = Math.max(0, 1 - hoursPassed / (SorenessConfig.RECOVERY_DAYS * 24));

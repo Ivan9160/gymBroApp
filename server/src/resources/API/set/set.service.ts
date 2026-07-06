@@ -6,8 +6,8 @@ import { CreateSetDto } from './dto/set.dto';
 export class SetService {
     constructor(private readonly prisma: PrismaService) { }
     
-    create(dto: CreateSetDto, userId: number) {
-        const workout = this.prisma.workout.findFirst({
+    async create(dto: CreateSetDto, userId: number) {
+        const workout = await this.prisma.workout.findFirst({
             where: {
                 id: dto.workoutId,
                 user_id: userId
@@ -20,7 +20,7 @@ export class SetService {
             data: dto
         })
     }
-    delete(id: number, userId: number) {
+    async delete(id: number, userId: number) {
         console.log("Deleting set with id:", id);
         return this.prisma.set.deleteMany({
             where: {
