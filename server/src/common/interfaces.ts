@@ -37,3 +37,7 @@ export interface ISoreness {
   name: string;
   soreness: number;
 }
+
+export interface IWorkoutFilterOptions {
+    since?: Date;
+}

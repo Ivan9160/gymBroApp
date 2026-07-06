@@ -1,4 +1,4 @@
 export const SorenessConfig = {
-  SORENESS_LIMIT: 40.0,    
+  SORENESS_LIMIT: 200.0,    
   RECOVERY_DAYS: 7,        
 };

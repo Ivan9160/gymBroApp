@@ -1,7 +1,7 @@
 # Mathematical Specification of the Proficiency Service
 
 ## Overview
-This document outlines the mathematical formulas, decay models, and scaling factors used to calculate a user's muscle group proficiency score. The system evaluates historical training data, applies an exponential decay weight to older sets to protect current strength estimates, and normalizes the final metrics based on the user's body weight and gender.
+This document outlines the mathematical formulas, decay models, and scaling factors used to calculate a user's muscle group proficiency score. The system evaluates up to **90 days** of historical training data, applies an exponential decay weight to older sets to protect current strength estimates, and normalizes the final metrics based on the user's body weight and gender.
 
 The underlying business logic is implemented within `ProficiencyService` and draws global configuration variables from `ProficiencyConfig`.
 
@@ -11,10 +11,10 @@ The underlying business logic is implemented within `ProficiencyService` and dra
 
 The calculations rely on the following constants defined in the configuration layer:
 
-* **`STANDARD_BODYWEIGHT`** ($W_{\text{std}}$): `85.0` kg — Used as a median baseline to normalize relative strength values.
-* **`GRACE_PERIOD_DAYS`** ($T_{\text{grace}}$): `7` days — The time window following a workout during which a set retains full mathematical relevance (100% weight).
-* **`TAU`** ($\tau$): `30` days — The exponential decay time constant governing the rate at which historical data relevance degrades.
-* **`MIN_RESIDUAL_FACTOR`** ($K_{\text{min}}$): `0.05` — The absolute lower bound for a set's relevance coefficient, ensuring any recorded set retains at least 5% importance indefinitely.
+* **`STANDARD_BODYWEIGHT`** ($W_{\text{std}}$): **85.0** kg — Used as a median baseline to normalize relative strength values.
+* **`GRACE_PERIOD_DAYS`** ($T_{\text{grace}}$): **7** days — The time window following a workout during which a set retains full mathematical relevance (100% weight).
+* **`TAU`** ($\tau$): **30** days — The exponential decay time constant governing the rate at which historical data relevance degrades.
+* **`MIN_RESIDUAL_FACTOR`** ($K_{\text{min}}$): **0.05** — The absolute lower bound for a set's relevance coefficient, ensuring any recorded set retains at least 5% importance indefinitely.
 * **`GENDER_MODIFIERS`**: `male: 1.0`, `female: 1.6` — Biological scaling constants to balance proficiency ratios across genders.
 
 ---
@@ -60,7 +60,7 @@ $$F_{\text{raw}} = \frac{\text{1RM} \cdot K_{\text{exercise}}}{D}$$
 ### 2.2. Temporal Relevance Weighting
 **Invoked by function:** `calculateSetRelevanceByTime(date: Date)`
 
-This function implements an exponential decay model to evaluate data degradation over time, generating a relevance weight ($W_t$) bounded between `0.05` and `1.0`.
+This function implements an exponential decay model to evaluate data degradation over time, generating a relevance weight ($W_t$) bounded between **0.05** and **1.0**.
 
 #### Step A: Calculate Elapsed Age in Days ($t$)
 $$t = \frac{t_{\text{current}} - t_{\text{set}}}{1000 \cdot 3600 \cdot 24}$$
@@ -113,7 +113,7 @@ The operational pipeline executes the mathematics through the following programm
 ```text
 [Database Queries: Promise.all]
     ├── Fetch active muscle groups (allGroups)
-    ├── Fetch raw historical logs (workouts -> sets)
+    ├── Fetch raw historical logs strictly bounded by a 90-day lookup window
     └── Fetch biometric information (userProfile)
                      │
                      ▼

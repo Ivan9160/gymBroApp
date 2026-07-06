@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateWorkoutDto, UpdateWorkoutDto } from './dto/workout.dto';
 import { WorkoutStatus } from './dto/workoutStatus.enum';
+import { IWorkoutFilterOptions } from 'src/common/interfaces';
+import { Prisma } from '../../../../generated/prisma';
 
 @Injectable()
 export class WorkoutService {
@@ -27,10 +29,21 @@ export class WorkoutService {
             }
         })
     }
-    findAllByUserId(id: number) {
+    findAllByUserId(id: number, 
+        options?: IWorkoutFilterOptions
+    ) {
+        const whereClause: Prisma.WorkoutWhereInput = {
+            user_id: id,
+            status: WorkoutStatus.COMPLETED,
+        };
+        if (options?.since) {
+            whereClause.finishedAt = { 
+                gte: options.since 
+            };
+        }
+
         return this.prisma.workout.findMany({
-            where: { user_id: id, 
-                status: WorkoutStatus.COMPLETED },
+            where: whereClause,
             include: {
                 sets: {
                     include: {

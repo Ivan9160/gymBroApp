@@ -14,9 +14,11 @@ export class ProficiencyService {
   ) {}
 
    public async getProficiencyForAllMuscleGroups(userId: number): Promise<IProficiency[]>  {
+    const sinceDate = new Date();
+    sinceDate.setDate(sinceDate.getDate() - ProficiencyConfig.RELEVANT_DATA_DAYS);
     const [allGroups, workouts, user] = await Promise.all([
       this.exerciseGroupService.findAll(),
-      this.workoutService.findAllByUserId(userId),
+      this.workoutService.findAllByUserId(userId, { since: sinceDate }),
       this.userService.findById(userId)
     ]);
 
