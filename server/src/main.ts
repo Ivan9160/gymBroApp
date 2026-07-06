@@ -1,9 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as path from 'path';
-import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
-import * as dotenv from 'dotenv';
+import { NextFunction } from 'express';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -24,7 +22,7 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3000;
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
   logger.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });

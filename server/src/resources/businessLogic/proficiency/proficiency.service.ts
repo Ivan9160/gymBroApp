@@ -3,7 +3,7 @@ import { ProficiencyConfig } from './proficiency.config';
 import { WorkoutService } from 'src/resources/API/workout/workout.service';
 import { ExerciseGroupService } from 'src/resources/API/exercise-group/exerciseGroup.service';
 import { UserService } from 'src/resources/API/user/user.service';
-import { ISet, IUserProfile } from 'src/common/interfaces';
+import { IProficiency, ISet, IUserProfile } from 'src/common/interfaces';
 
 @Injectable()
 export class ProficiencyService {
@@ -13,7 +13,7 @@ export class ProficiencyService {
     private readonly userService: UserService
   ) {}
 
-   public async getProficiencyForAllMuscleGroups(userId: number): Promise<any>  {
+   public async getProficiencyForAllMuscleGroups(userId: number): Promise<IProficiency[]>  {
     const [allGroups, workouts, user] = await Promise.all([
       this.exerciseGroupService.findAll(),
       this.workoutService.findAllByUserId(userId),

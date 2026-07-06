@@ -25,3 +25,15 @@ export interface IExerciseGroup {
   id: number;
   name: string;
 }
+
+export interface IProficiency {
+  id: number;
+  name: string;
+  proficiency: number;
+}
+
+export interface ISoreness {
+  id: number;
+  name: string;
+  soreness: number;
+}
