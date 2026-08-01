@@ -4,10 +4,14 @@ import { CreateWorkoutDto, UpdateWorkoutDto } from './dto/workout.dto';
 import { WorkoutStatus } from './dto/workoutStatus.enum';
 import { IWorkoutFilterOptions } from 'src/common/interfaces';
 import { Prisma } from '../../../../generated/prisma';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class WorkoutService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly eventEmitter: EventEmitter2
+    ) { }
     create(dto: CreateWorkoutDto, userId: number) {
         return this.prisma.workout.create({
             data:{
@@ -17,8 +21,10 @@ export class WorkoutService {
             }
         })
     }
-    finishWorkout(id: number, userId: number, body: UpdateWorkoutDto) {
-        return this.prisma.workout.update({
+
+    async finishWorkout(id: number, userId: number, body: UpdateWorkoutDto) {
+        const workout = await this.prisma.workout.update({
+            
             where: { 
                 id,
                 user_id: userId
@@ -28,7 +34,17 @@ export class WorkoutService {
                 finishedAt: body.finishedAt
             }
         })
+
+        if (workout.status === WorkoutStatus.COMPLETED) {
+            this.eventEmitter.emit('workout.completed', { userId });
+        }
+        return workout;
     }
+
+    findAll() {
+        return this.prisma.workout.findMany();
+    }
+
     findAllByUserId(id: number, 
         options?: IWorkoutFilterOptions
     ) {

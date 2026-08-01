@@ -8,5 +8,6 @@ export const ProficiencyConfig = {
   TAU: 30, // Time constant for exponential set relevance decay in days`
   MIN_RESIDUAL_FACTOR: 0.05, // Minimum residual factor after decay, decay cannot reduce set relevance below 5% 
   RELEVANT_DATA_DAYS: 90, // Number of days to consider for proficiency calculations
+  TTL: 12,// Cache time-to-live in hours for proficiency calculations
 
 };

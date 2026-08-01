@@ -9,10 +9,39 @@ import { AuthModule } from './auth/auth.module';
 import { ExerciseModule } from './resources/API/exercise/exercise.module';
 import { ExerciseGroupModule } from './resources/API/exercise-group/exerciseGroup.module';
 import { SorenessModule } from './resources/businessLogic/soreness/soreness.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ProficiencyService } from './resources/businessLogic/proficiency/proficiency.service';
+import { ProficiencyListener } from './resources/businessLogic/proficiency/proficiency.listener';
+import { Keyv } from 'keyv';
+import KeyvRedis from '@keyv/redis';
 
 @Module({
-  imports: [UserModule, WorkoutModule, SetModule, AuthModule, ExerciseModule, ExerciseGroupModule, SorenessModule],
+  imports: [
+    EventEmitterModule.forRoot(),
+    CacheModule.registerAsync({
+    isGlobal: true,
+    useFactory: async () => {
+      return {
+        stores: [
+          new Keyv({
+            store: new KeyvRedis(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`),
+          }),
+        ]
+      }
+    },
+  }),
+    UserModule, WorkoutModule, SetModule, AuthModule, ExerciseModule, ExerciseGroupModule, SorenessModule],
   controllers: [AppController],
-  providers: [PrismaService, AppService, {provide: 'APP_GUARD', useClass: AuthModule}],
+  providers: [
+    ProficiencyService,
+    ProficiencyListener,
+    PrismaService, 
+    AppService, 
+    {provide: 'APP_GUARD', useClass: AuthModule}
+
+
+
+  ],
 })
 export class AppModule {}

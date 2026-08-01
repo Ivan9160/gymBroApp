@@ -32,6 +32,8 @@ export class ExerciseGroupService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} exercise group`;
+    return this.prisma.exerciseGroup.delete({
+      where: { id }
+    });
   }
 }

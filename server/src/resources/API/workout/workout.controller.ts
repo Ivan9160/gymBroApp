@@ -20,17 +20,18 @@ export class WorkoutController {
     }
 
     @Put(':id')
-    finishWorkout(
+    async finishWorkout(
         @Param('id', ParseIntPipe) id: number, 
         @Body() body: UpdateWorkoutDto,
         @CurrentUser() user: User
     ){
-        return this.workoutService.finishWorkout(id, user.id, body)
+        return await this.workoutService.finishWorkout(id, user.id, body)
     }
 
     @Get()
     findAllByUserId(@CurrentUser() user: User){
         return this.workoutService.findAllByUserId(user.id)
     }
+
 
 }

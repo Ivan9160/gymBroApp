@@ -1,19 +1,36 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { ProficiencyConfig } from './proficiency.config';
 import { WorkoutService } from 'src/resources/API/workout/workout.service';
 import { ExerciseGroupService } from 'src/resources/API/exercise-group/exerciseGroup.service';
 import { UserService } from 'src/resources/API/user/user.service';
 import { IProficiency, ISet, IUserProfile } from 'src/common/interfaces';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+
 
 @Injectable()
 export class ProficiencyService {
+  private readonly cacheTTL = ProficiencyConfig.TTL * 60 * 60 * 1000; // Convert hours to milliseconds for cache TTL
   constructor(
     private readonly workoutService: WorkoutService,
     private readonly exerciseGroupService: ExerciseGroupService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
    public async getProficiencyForAllMuscleGroups(userId: number): Promise<IProficiency[]>  {
+    const cacheKey = `user:${userId}:proficiency`;
+    const cachedProficiency = await this.cacheManager.get<IProficiency[]>(cacheKey);
+    if (cachedProficiency) {
+      return cachedProficiency;
+    }
+    return this.calculateAndSaveProficiency(userId);
+
+
+    
+  }
+  public async calculateAndSaveProficiency(userId: number): Promise<IProficiency[]> {
+    console.log('STEP 1: method called', userId);
     const sinceDate = new Date();
     sinceDate.setDate(sinceDate.getDate() - ProficiencyConfig.RELEVANT_DATA_DAYS);
     const [allGroups, workouts, user] = await Promise.all([
@@ -44,8 +61,7 @@ export class ProficiencyService {
     }
 
 
-    
-    return allGroups.map(group => {
+    const result: IProficiency[] =  allGroups.map(group => {
         const setsForGroup = setsByGroup.get(group.id) || [];
         const proficiency = this.calculateProficiencyForMuscleGroup(setsForGroup, userProfile);
         return {
@@ -55,9 +71,17 @@ export class ProficiencyService {
         }
 
       });
+    const cacheKey = `user:${userId}:proficiency`;
+    try {
+      await this.cacheManager.set(cacheKey, result, this.cacheTTL);
+    } catch (e) {
+      console.error('--- CACHE SET ERROR ---', e);
+    }
+    return result;
   }
 
-  public calculateProficiencyForMuscleGroup(sets: ISet[], profile: IUserProfile): number {
+
+  private calculateProficiencyForMuscleGroup(sets: ISet[], profile: IUserProfile): number {
     const averageDecayed1RM = this.calculateAverageDecayed1RMFactor(sets, profile.weight);
     const genderModifier = ProficiencyConfig.GENDER_MODIFIERS[profile.gender as keyof typeof ProficiencyConfig.GENDER_MODIFIERS] || 1.0;
     const standardBodyweightModifier = profile.weight / ProficiencyConfig.STANDARD_BODYWEIGHT;
@@ -66,7 +90,7 @@ export class ProficiencyService {
     return totalProficiency;
   }
 
-  public calculateAverageDecayed1RMFactor(sets: ISet[], bodyweight: number): number {
+  private calculateAverageDecayed1RMFactor(sets: ISet[], bodyweight: number): number {
     let totalDecayed1RMFactor = 0;
     let totalWeight = 0;
     const validSets = sets.filter(set => set.exercise.benchmark !== null && set.exercise.benchmark > 0);

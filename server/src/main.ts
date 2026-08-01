@@ -5,8 +5,8 @@ import { NextFunction } from 'express';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
+  console.log('REDIS_HOST:', process.env.REDIS_HOST, 'REDIS_PORT:', process.env.REDIS_PORT);
 
-  
 
   const app = await NestFactory.create(AppModule);
 

@@ -26,14 +26,23 @@ export class ExerciseService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} exercise`;
+    return this.prisma.exercise.findUnique({
+      where: { id },
+      include: { exerciseGroup: true }
+    });
   }
 
+  
   update(id: number, updateExerciseDto: UpdateExerciseDto) {
-    return `This action updates a #${id} exercise`;
+    return this.prisma.exercise.update({
+      where: { id },
+      data: updateExerciseDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} exercise`;
+    return this.prisma.exercise.delete({
+      where: { id }
+    });
   }
 }
