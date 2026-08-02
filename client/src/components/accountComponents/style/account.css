@@ -257,6 +257,12 @@
     color: var(--acct-text-secondary);
 }
 
+.acct-progress-top span.acct-progress-level {
+    color: var(--acct-accent);
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
 .acct-progress-track {
     height: 5px;
     background: rgba(255, 255, 255, 0.08);
@@ -268,6 +274,12 @@
     height: 100%;
     background: var(--acct-accent);
     border-radius: 3px;
+}
+
+.acct-progress-sub {
+    margin: 5px 0 0;
+    font-size: 11px;
+    color: var(--acct-text-muted);
 }
 
 .acct-history-row {

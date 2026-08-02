@@ -56,6 +56,7 @@
     "title_profile": "Профіль користувача",
     "title_create": "Створити профіль",
     "title_update": "Оновити профіль",
+    "hello": "Привіт",
     "name": "Ім'я",
     "age": "Вік",
     "years": "років",
@@ -68,6 +69,7 @@
     "kg": "кг",
     "goal": "Ціль",
     "workout_history": "Історія тренувань",
+    "view_all_workouts": "Переглянути всі тренування",
     "create_exercise": "Створити нову вправу",
     "edit_profile": "Редагувати профіль",
     "start_workout": "Почати тренування",
@@ -75,6 +77,33 @@
       "lose": "Схуднення",
       "maintain": "Підтримка ваги",
       "gain": "Набір маси"
+    },
+    "mock_data_note": "Демо-дані",
+    "soreness_title": "Втома по групах м'язів",
+    "view_front": "Спереду",
+    "view_back": "Ззаду",
+    "soreness_fresh": "Свіжі",
+    "soreness_moderate": "Помірна",
+    "soreness_high": "Сильна",
+    "muscle_groups": {
+      "chest": "Груди",
+      "back": "Спина",
+      "shoulders": "Плечі",
+      "biceps": "Біцепс",
+      "triceps": "Трицепс",
+      "core": "Прес",
+      "legs": "Ноги"
+    },
+    "proficiency_title": "Прогрес",
+    "proficiency_max_level": "Максимальний рівень",
+    "proficiency_next_level": "{{percent}}% до рівня «{{level}}»",
+    "proficiency_levels": {
+      "novice": "Новачок",
+      "beginner": "Початківець",
+      "intermediate": "Середній",
+      "advanced": "Просунутий",
+      "elite": "Елітний",
+      "legendary": "Легендарний"
     }
   },
   "login": {
@@ -197,6 +226,7 @@
       "Diamond Push-ups": "Алмазні віджимання",
       "Pull-ups": "Підтягування",
       "Dumbbell Bent Over Row": "Тяга гантелі в нахилі",
+      "Bent Over Row": "Тяга в нахилі",
       "Chin-ups": "Підтягування вузьким хватом",
       "Squats": "Присідання",
       "Hanging Leg Raises": "Підйом ніг у висі",

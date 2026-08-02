@@ -41,10 +41,10 @@ function App() {
               className="custom-dropdown"
             >
               <NavDropdown.Item onClick={() => changeLanguage('en')}>
-                🇺🇸 English
+                🇺🇸
               </NavDropdown.Item>
               <NavDropdown.Item onClick={() => changeLanguage('ua')}>
-                🇺🇦 Українська
+                🇺🇦 
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
@@ -55,9 +55,7 @@ function App() {
         <Outlet />
         
         {reduxUser.id != null ? (
-          <div className="text-center text-white mt-5 mb-4">
-            {t('app.authenticated_user', { name: reduxUser?.name })}
-          </div>
+          <div></div>
         ) : ( 
           isAuthenticated && !reduxUser.id ? (
             <UserDataForm status='existing' />

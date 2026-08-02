@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 export type MuscleGroupId =
     | "chest"
@@ -74,6 +75,7 @@ interface RegionProps {
 }
 
 function MuscleRegion({ id, soreness, getColor, selected, onSelect, children }: RegionProps) {
+    const { t } = useTranslation();
     const value = soreness[id] ?? 0;
     const isSelected = selected === id;
     const shapeProps: ShapeProps = {
@@ -81,9 +83,10 @@ function MuscleRegion({ id, soreness, getColor, selected, onSelect, children }: 
         stroke: isSelected ? "#ffffff" : "rgba(0,0,0,0.35)",
         strokeWidth: isSelected ? 2.5 : 1,
     };
+    const muscleName = t(`user_form.muscle_groups.${id}`, { defaultValue: id });
     return (
         <g className="acct-muscle-shape" onClick={() => onSelect(id)}>
-            <title>{`${id}: ${Math.round(value)}%`}</title>
+            <title>{`${muscleName}: ${Math.round(value)}%`}</title>
             {children(shapeProps)}
         </g>
     );
@@ -91,9 +94,9 @@ function MuscleRegion({ id, soreness, getColor, selected, onSelect, children }: 
 
 type FigureProps = Omit<RegionProps, "id" | "children">;
 
-function FrontFigure({ soreness, getColor, selected, onSelect }: FigureProps) {
+function FrontFigure({ soreness, getColor, selected, onSelect, ariaLabel }: FigureProps & { ariaLabel: string }) {
     return (
-        <svg viewBox="0 0 200 420" width="130" height="273" role="img" aria-label="Front view">
+        <svg viewBox="0 0 200 420" width="130" height="273" role="img" aria-label={ariaLabel}>
             <BodyBase />
             <MuscleRegion id="shoulders" soreness={soreness} getColor={getColor} selected={selected} onSelect={onSelect}>
                 {(p: ShapeProps) => (<><path d={LEFT_DELTOID} {...p} /><path d={RIGHT_DELTOID} {...p} /></>)}
@@ -114,9 +117,9 @@ function FrontFigure({ soreness, getColor, selected, onSelect }: FigureProps) {
     );
 }
 
-function BackFigure({ soreness, getColor, selected, onSelect }: FigureProps) {
+function BackFigure({ soreness, getColor, selected, onSelect, ariaLabel }: FigureProps & { ariaLabel: string }) {
     return (
-        <svg viewBox="0 0 200 420" width="130" height="273" role="img" aria-label="Back view">
+        <svg viewBox="0 0 200 420" width="130" height="273" role="img" aria-label={ariaLabel}>
             <BodyBase />
             <MuscleRegion id="shoulders" soreness={soreness} getColor={getColor} selected={selected} onSelect={onSelect}>
                 {(p: ShapeProps) => (<><path d={LEFT_DELTOID} {...p} /><path d={RIGHT_DELTOID} {...p} /></>)}
@@ -135,6 +138,7 @@ function BackFigure({ soreness, getColor, selected, onSelect }: FigureProps) {
 }
 
 function SorenessDiagram({ soreness, getColor, frontLabel = "Спереду", backLabel = "Ззаду" }: SorenessDiagramProps) {
+    const { t } = useTranslation();
     const [selected, setSelected] = useState<MuscleGroupId | null>(null);
     const toggle = (id: MuscleGroupId) => setSelected((cur) => (cur === id ? null : id));
 
@@ -143,7 +147,7 @@ function SorenessDiagram({ soreness, getColor, frontLabel = "Спереду", ba
             <p className="acct-bodymap-status">
                 {selected ? (
                     <>
-                        <strong>{selected}</strong> — {Math.round(soreness[selected] ?? 0)}%
+                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(soreness[selected] ?? 0)}%
                     </>
                 ) : (
                     "\u00A0"
@@ -151,11 +155,11 @@ function SorenessDiagram({ soreness, getColor, frontLabel = "Спереду", ba
             </p>
             <div className="acct-bodymap">
                 <div className="acct-bodymap-figure">
-                    <FrontFigure soreness={soreness} getColor={getColor} selected={selected} onSelect={toggle} />
+                    <FrontFigure soreness={soreness} getColor={getColor} selected={selected} onSelect={toggle} ariaLabel={frontLabel} />
                     <span className="acct-bodymap-caption">{frontLabel}</span>
                 </div>
                 <div className="acct-bodymap-figure">
-                    <BackFigure soreness={soreness} getColor={getColor} selected={selected} onSelect={toggle} />
+                    <BackFigure soreness={soreness} getColor={getColor} selected={selected} onSelect={toggle} ariaLabel={backLabel} />
                     <span className="acct-bodymap-caption">{backLabel}</span>
                 </div>
             </div>

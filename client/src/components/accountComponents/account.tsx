@@ -7,6 +7,7 @@ import { setWorkoutId, setWorkoutStartTime } from "../../store/slices/workoutSli
 import axios from "axios";
 import ActiveWorkout from "./activeWorkout";
 import MuscleBodyMap from "./sorenessDiagram";
+import ProficiencyLevelsList, { getMockProficiencyValue } from "./proficiencyLevels";
 import { useTranslation } from "react-i18next";
 import "./style/account.css";
 
@@ -26,10 +27,10 @@ function getSorenessColorVar(value: number): string {
     const clampedValue = Math.min(Math.max(value, 0), 100);
 
     if (clampedValue <= 50) {
-        const percentage = clampedValue * 2; // Переводимо 0..50 у 0..100%
+        const percentage = clampedValue * 2; 
         return `color-mix(in srgb, var(--acct-moderate) ${percentage}%, var(--acct-fresh))`;
     } else {
-        const percentage = (clampedValue - 50) * 2; // Переводимо 50..100 у 0..100%
+        const percentage = (clampedValue - 50) * 2; 
         return `color-mix(in srgb, var(--acct-sore) ${percentage}%, var(--acct-moderate))`;
     }
 }
@@ -65,12 +66,14 @@ function Account() {
     // TODO: replace with a real streak endpoint once available
     const mockStreak = 5;
 
-    // TODO: replace percentages with real data from GET /proficiency/:userId
-    // once a useGetProficiencyQuery hook exists in the frontend api slice.
+    // TODO: replace with real data from GET /proficiency/:userId once a
+    // useGetProficiencyQuery hook exists in the frontend api slice.
+    // Values sit on the same unitless scale ProficiencyService produces
+    // (~1.0 = at benchmark), not a raw percentage.
     const proficiencyGroups = (exerciseGroups || []).map((group: any) => ({
         id: group.id,
         name: group.name,
-        value: ((group.id * 37) % 60) + 30,
+        value: getMockProficiencyValue(group.id),
     }));
 
     return (
@@ -108,7 +111,7 @@ function Account() {
                                 onClick={() => startWorkout()}
                                 type="button"
                             >
-                                🚀 {t('user_form.start_workout')}
+                                {t('user_form.start_workout')}
                             </button>
                         ) : (
                             <div className="acct-active-workout-wrapper">
@@ -168,28 +171,14 @@ function Account() {
 
                         <p className="acct-section-label">{t('user_form.proficiency_title', { defaultValue: 'Прогрес' })}</p>
                         <div className="acct-card">
-                            {proficiencyGroups.length === 0 ? (
-                                <p className="acct-stat-label">{t('user_form.loading', { defaultValue: 'Завантаження...' })}</p>
-                            ) : (
-                                proficiencyGroups.map((group: any) => (
-                                    <div className="acct-progress-item" key={group.id}>
-                                        <div className="acct-progress-top">
-                                            <span>{group.name}</span>
-                                            <span>{group.value}%</span>
-                                        </div>
-                                        <div className="acct-progress-track">
-                                            <div className="acct-progress-fill" style={{ width: `${group.value}%` }} />
-                                        </div>
-                                    </div>
-                                ))
-                            )}
+                            <ProficiencyLevelsList groups={proficiencyGroups} />
                             <p className="acct-mock-note">{t('user_form.mock_data_note', { defaultValue: 'Демо-дані' })}</p>
                         </div>
 
                         <Link to="/history" className="acct-ghost-btn-link">
                             <div className="acct-card acct-history-row">
                                 <div>
-                                    <p className="acct-history-title">📊 {t('user_form.workout_history')}</p>
+                                    <p className="acct-history-title"> {t('user_form.workout_history')}</p>
                                     <p className="acct-history-subtitle">{t('user_form.view_all_workouts', { defaultValue: 'Переглянути всі тренування' })}</p>
                                 </div>
                                 <span className="acct-chevron">›</span>
