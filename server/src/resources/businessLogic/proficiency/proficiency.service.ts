@@ -1,9 +1,6 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { ProficiencyConfig } from './proficiency.config';
-import { WorkoutService } from 'src/resources/API/workout/workout.service';
-import { ExerciseGroupService } from 'src/resources/API/exercise-group/exerciseGroup.service';
-import { UserService } from 'src/resources/API/user/user.service';
-import { IProficiency, ISet, IUserProfile } from 'src/common/interfaces';
+import { IProficiency, ISet, IUserProfile, IWorkout, IExerciseGroup, IUser} from 'src/common/interfaces';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
@@ -12,41 +9,31 @@ import { Cache } from 'cache-manager';
 export class ProficiencyService {
   private readonly cacheTTL = ProficiencyConfig.TTL * 60 * 60 * 1000; // Convert hours to milliseconds for cache TTL
   constructor(
-    private readonly workoutService: WorkoutService,
-    private readonly exerciseGroupService: ExerciseGroupService,
-    private readonly userService: UserService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
-   public async getProficiencyForAllMuscleGroups(userId: number): Promise<IProficiency[]>  {
-    const cacheKey = `user:${userId}:proficiency`;
+   public async getProficiencyForAllMuscleGroups(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[]): Promise<IProficiency[]>  {
+    const cacheKey = `user:${user.id}:proficiency`;
     const cachedProficiency = await this.cacheManager.get<IProficiency[]>(cacheKey);
     if (cachedProficiency) {
       return cachedProficiency;
     }
-    return this.calculateAndSaveProficiency(userId);
-
-
-    
+    return this.calculateAndSaveProficiency(user, workouts, exerciseGroups);    
   }
-  public async calculateAndSaveProficiency(userId: number): Promise<IProficiency[]> {
-    console.log('STEP 1: method called', userId);
+  
+  public async calculateAndSaveProficiency(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[] ): Promise<IProficiency[]> {
+    console.log('STEP 1: method called', user.id);
     const sinceDate = new Date();
     sinceDate.setDate(sinceDate.getDate() - ProficiencyConfig.RELEVANT_DATA_DAYS);
-    const [allGroups, workouts, user] = await Promise.all([
-      this.exerciseGroupService.findAll(),
-      this.workoutService.findAllByUserId(userId, { since: sinceDate }),
-      this.userService.findById(userId)
-    ]);
 
     const userProfile = user?.userProfile;
 
     if (!userProfile) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user.id} not found`);
     }
 
     if(!userProfile.weight || userProfile.weight <= 0) {
-      throw new NotFoundException(`User with ID ${userId} has an invalid weight for proficiency calculations`);
+      throw new NotFoundException(`User with ID ${user.id} has an invalid weight for proficiency calculations`);
     }
 
     const setsByGroup = new Map<number, ISet[]>();
@@ -61,7 +48,7 @@ export class ProficiencyService {
     }
 
 
-    const result: IProficiency[] =  allGroups.map(group => {
+    const result: IProficiency[] =  exerciseGroups.map(group => {
         const setsForGroup = setsByGroup.get(group.id) || [];
         const proficiency = this.calculateProficiencyForMuscleGroup(setsForGroup, userProfile);
         return {
@@ -71,7 +58,7 @@ export class ProficiencyService {
         }
 
       });
-    const cacheKey = `user:${userId}:proficiency`;
+    const cacheKey = `user:${user.id}:proficiency`;
     try {
       await this.cacheManager.set(cacheKey, result, this.cacheTTL);
     } catch (e) {

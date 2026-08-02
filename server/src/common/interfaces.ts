@@ -1,3 +1,5 @@
+import { Role } from '@prisma/client';
+
 export interface IExercise {
   exerciseGroupId: number;
   isBodyweight: boolean;
@@ -17,8 +19,26 @@ export interface IWorkout {
 }
 
 export interface IUserProfile {
-  weight: number;
+  id: number;
+  userId: number;
+  age: number;
   gender: string;
+  height: number;
+  weight: number;
+  goal: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IUser {
+  id: number;
+  name: string;
+  auth0Id: string;
+  role: Role; 
+  createdAt: Date;
+  updatedAt: Date;
+  userProfile: IUserProfile | null; 
+  workouts?: IWorkout[]; 
 }
 
 export interface IExerciseGroup {
@@ -40,4 +60,10 @@ export interface ISoreness {
 
 export interface IWorkoutFilterOptions {
     since?: Date;
+}
+
+export interface IUserAccountSummary {
+  user: IUser;
+  proficiency: IProficiency[];
+  soreness: ISoreness[];
 }

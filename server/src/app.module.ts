@@ -12,7 +12,7 @@ import { SorenessModule } from './resources/businessLogic/soreness/soreness.modu
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ProficiencyService } from './resources/businessLogic/proficiency/proficiency.service';
-import { ProficiencyListener } from './resources/businessLogic/proficiency/proficiency.listener';
+import { ProficiencyListener } from './resources/API/user-summary/proficiency.listener';
 import { Keyv } from 'keyv';
 import KeyvRedis from '@keyv/redis';
 

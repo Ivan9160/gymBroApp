@@ -3,7 +3,7 @@ import { ExerciseGroupService } from './exerciseGroup.service';
 import { CreateExerciseGroupDto,UpdateExerciseGroupDto } from './exerciseGroup.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Role } from 'src/common/role.enum';
+import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
 

@@ -1,35 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserService } from 'src/resources/API/user/user.service';
-import { WorkoutService } from 'src/resources/API/workout/workout.service';
-import { ExerciseGroupService } from 'src/resources/API/exercise-group/exerciseGroup.service';
-import { ProficiencyService } from '../proficiency/proficiency.service';
 import { SorenessConfig } from './soreness.config';
-import { ISet, ISoreness, IUserProfile } from 'src/common/interfaces';
+import { ISet, ISoreness, IUser, IUserProfile, IWorkout, IExerciseGroup, IProficiency } from 'src/common/interfaces';
 
 @Injectable()
 export class SorenessService {
     constructor(
-        private readonly workoutService: WorkoutService,
-        private readonly exerciseGroupService: ExerciseGroupService,
-        private readonly userService: UserService,
-        private readonly proficiencyService: ProficiencyService
     ) {}
-    public async getSorenessForAllMuscleGroups(userId: number): Promise<ISoreness[]> {
+    public async getSorenessForAllMuscleGroups(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[], proficiencies: IProficiency[]): Promise<ISoreness[]> {
         const sinceDate = new Date();
         sinceDate.setDate(sinceDate.getDate() - SorenessConfig.RECOVERY_DAYS);
-        const [allGroups, workouts, user] = await Promise.all([
-            this.exerciseGroupService.findAll(),
-            this.workoutService.findAllByUserId(userId, { since: sinceDate }),
-            this.userService.findById(userId)
-        ]);
-
-
 
         if (!user || !user.userProfile) {
-            throw new NotFoundException(`User with ID ${userId} not found`);
+            throw new NotFoundException(`User with ID ${user.id} not found`);
         }
 
-        const proficiencies = await this.proficiencyService.getProficiencyForAllMuscleGroups(userId);
 
         const recentSets = new Map<number, ISet[]>();
         for (const workout of workouts) {
@@ -42,7 +26,7 @@ export class SorenessService {
             }
         }
 
-        return allGroups.map(group => {
+        return exerciseGroups.map(group => {
             const groupProficiency = proficiencies.find((p: any) => p.id === group.id)?.proficiency || 0;
             const groupSets = recentSets.get(group.id) || [];
             const sorenessScore = this.calculateSorenessForMuscleGroup(groupSets, groupProficiency, user.userProfile!);
