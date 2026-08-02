@@ -1,23 +1,50 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Container, Card, Row, Col, ListGroup, Button} from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import LogoutButton from "../logout";
-import {useGetExercisesQuery, useGetExerciseGroupsQuery} from "../../api/exerciseApi"
-import { setWorkoutId, setWorkoutStartTime} from "../../store/slices/workoutSlice";
+import { useGetExercisesQuery, useGetExerciseGroupsQuery } from "../../api/exerciseApi";
+import { setWorkoutId, setWorkoutStartTime } from "../../store/slices/workoutSlice";
 import axios from "axios";
 import ActiveWorkout from "./activeWorkout";
+import MuscleBodyMap from "./sorenessDiagram";
 import { useTranslation } from "react-i18next";
+import "./style/account.css";
+
+// TODO: replace with real data from a soreness endpoint/hook once it exists
+// (e.g. useGetSorenessQuery(user.id)). Values are 0-100, higher = more sore.
+const MOCK_SORENESS: Record<string, number> = {
+    chest: 82,
+    shoulders: 20,
+    biceps: 25,
+    core: 55,
+    legs: 78,
+    back: 60,
+    triceps: 15,
+};
+
+function getSorenessColorVar(value: number): string {
+    const clampedValue = Math.min(Math.max(value, 0), 100);
+
+    if (clampedValue <= 50) {
+        const percentage = clampedValue * 2; // Переводимо 0..50 у 0..100%
+        return `color-mix(in srgb, var(--acct-moderate) ${percentage}%, var(--acct-fresh))`;
+    } else {
+        const percentage = (clampedValue - 50) * 2; // Переводимо 50..100 у 0..100%
+        return `color-mix(in srgb, var(--acct-sore) ${percentage}%, var(--acct-moderate))`;
+    }
+}
 
 function Account() {
     const user = useSelector((state: any) => state.user);
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
-    const { t} = useTranslation(); 
+    const { t } = useTranslation();
 
     useGetExercisesQuery();
-    useGetExerciseGroupsQuery();
+    const { data: exerciseGroups } = useGetExerciseGroupsQuery();
+
     const startWorkout = () => {
-        axios.post(import.meta.env.VITE_API_URL+"/workouts", {
+        axios.post(import.meta.env.VITE_API_URL + "/workouts", {
             date: new Date().toISOString(),
         }, {
             headers: {
@@ -33,91 +60,157 @@ function Account() {
         });
     }
 
+    const initials = user?.name ? user.name.charAt(0).toUpperCase() : "?";
+
+    // TODO: replace with a real streak endpoint once available
+    const mockStreak = 5;
+
+    // TODO: replace percentages with real data from GET /proficiency/:userId
+    // once a useGetProficiencyQuery hook exists in the frontend api slice.
+    const proficiencyGroups = (exerciseGroups || []).map((group: any) => ({
+        id: group.id,
+        name: group.name,
+        value: ((group.id * 37) % 60) + 30,
+    }));
+
     return (
-        <Container className="py-5 ">
-            <Row className="justify-content-center">
-                <Col md={8} lg={6}>
-                    <Card className="shadow-lg border-0 rounded-4 overflow-hidden mb-4">
-                        <Card.Header className="bg-primary text-white text-center py-4">
-                            <h2 className="mb-0">{t('user_form.title_profile')}</h2>
-                        </Card.Header>
-                        
-                        <Card.Body className="p-4">
-                            <div className="text-center mb-4">
-                                <h3 className="fw-bold">{user.name}</h3>
-                                <p className="text-muted">{user.email}</p>
+        <div className="account-page">
+            <Container className="py-4">
+                <Row className="justify-content-center">
+                    <Col md={8} lg={6}>
+
+                        <Link to="/editProfile" className="acct-profile-row-link">
+                            <div className="acct-profile-row">
+                                <div className="acct-avatar">{initials}</div>
+                                <div className="acct-profile-text">
+                                    <p className="acct-greeting">{t('user_form.hello', { defaultValue: 'Привіт' })}, {user.name}</p>
+                                    <p className="acct-subtitle">{t('user_form.title_profile')}</p>
+                                </div>
+                                <div className="acct-streak-badge">
+                                    🔥 {mockStreak}
+                                </div>
+                                <span className="acct-chevron">›</span>
                             </div>
+                        </Link>
 
-                            <ListGroup variant="flush" className="mb-4">
-                                <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">{t('user_form.age')}:</span>
-                                    <span className="fw-bold">{user.age || '—'} {t('user_form.years')}</span>
-                                </ListGroup.Item>
-                                <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">{t('user_form.gender')}:</span>
-                                    <span className="fw-bold ">{t(`database.genders.${user.gender}`) || '—'}</span>
-                                </ListGroup.Item>
-                                <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">{t('user_form.height')}:</span>
-                                    <span className="fw-bold">{user.height || '—'} {t('user_form.cm')}</span>
-                                </ListGroup.Item>
-                                <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">{t('user_form.weight')}:</span>
-                                    <span className="fw-bold">{user.weight || '—'} {t('user_form.kg')}</span>
-                                </ListGroup.Item>
-                                <ListGroup.Item className="d-flex justify-content-between">
-                                    <span className="text-secondary">{t('user_form.goal')}:</span>
-                                    <span className="fw-bold text-success ">{t(`database.goals.${user.goal}`) || '—'}</span>
-                                </ListGroup.Item>
-                            </ListGroup>
+                        {user.role === "ADMIN" && (
+                            <Link to="/exercise-creator" className="acct-admin-btn-link">
+                                <button className="acct-admin-btn" type="button">
+                                    + {t('user_form.create_exercise')}
+                                    <span className="acct-admin-tag">Admin</span>
+                                </button>
+                            </Link>
+                        )}
 
-                            <div className="d-grid gap-2">
-                                <Link to="/history" className="text-decoration-none d-grid">
-                                    <Button variant="primary" className="rounded-pill shadow-sm">
-                                        📊 {t('user_form.workout_history')}
-                                    </Button>
-                                </Link>
-
-                                {user.role === "ADMIN" && (
-                                    <Link to="/exercise-creator" className="text-decoration-none d-grid mt-1">
-                                        <Button variant="outline-primary" className="rounded-pill">
-                                            + {t('user_form.create_exercise')}
-                                        </Button>
-                                    </Link>
-                                )}
-
-                                <Link to="/editProfile" className="text-decoration-none d-grid mt-1">
-                                    <Button variant="outline-primary" className="rounded-pill">
-                                        {t('user_form.edit_profile')}
-                                    </Button>
-                                </Link>
-                                
-                                <hr />
-                                <LogoutButton />
+                        {!workout.id ? (
+                            <button
+                                className="acct-primary-cta"
+                                onClick={() => startWorkout()}
+                                type="button"
+                            >
+                                🚀 {t('user_form.start_workout')}
+                            </button>
+                        ) : (
+                            <div className="acct-active-workout-wrapper">
+                                <ActiveWorkout />
                             </div>
+                        )}
 
+                        <p className="acct-section-label">{t('user_form.title_profile')}</p>
+                        <div className="acct-card">
+                            <div className="acct-stat-row">
+                                <span className="acct-stat-label">{t('user_form.age')}</span>
+                                <span className="acct-stat-value">{user.age || '—'} {t('user_form.years')}</span>
+                            </div>
+                            <div className="acct-stat-row">
+                                <span className="acct-stat-label">{t('user_form.gender')}</span>
+                                <span className="acct-stat-value">{t(`database.genders.${user.gender}`) || '—'}</span>
+                            </div>
+                            <div className="acct-stat-row">
+                                <span className="acct-stat-label">{t('user_form.height')}</span>
+                                <span className="acct-stat-value">{user.height || '—'} {t('user_form.cm')}</span>
+                            </div>
+                            <div className="acct-stat-row">
+                                <span className="acct-stat-label">{t('user_form.weight')}</span>
+                                <span className="acct-stat-value">{user.weight || '—'} {t('user_form.kg')}</span>
+                            </div>
+                            <div className="acct-stat-row">
+                                <span className="acct-stat-label">{t('user_form.goal')}</span>
+                                <span className="acct-stat-value acct-goal-value">{t(`database.goals.${user.goal}`) || '—'}</span>
+                            </div>
+                        </div>
 
-                        </Card.Body>
-                    </Card>
+                        <p className="acct-section-label">{t('user_form.soreness_title', { defaultValue: 'Втома по групах м\'язів' })}</p>
+                        <div className="acct-card">
+                            <MuscleBodyMap
+                                soreness={MOCK_SORENESS}
+                                getColor={getSorenessColorVar}
+                                frontLabel={t('user_form.view_front', { defaultValue: 'Спереду' })}
+                                backLabel={t('user_form.view_back', { defaultValue: 'Ззаду' })}
+                            />
 
-                    {!workout.id ? (
-                        <Button 
-                            variant="success" 
-                            size="lg" 
-                            className="w-100 rounded-4 py-3 shadow" 
-                            onClick={() => startWorkout()}
-                            type="button"
-                        >
-                            🚀 {t('user_form.start_workout')}
-                        </Button>
-                    ) : (
-                        <ActiveWorkout />
-                    )}
-                </Col>
-            </Row>
-        </Container>
+                            <div className="acct-heatmap-legend">
+                                <span className="acct-legend-item">
+                                    <span className="acct-legend-dot" style={{ background: "var(--acct-fresh)" }} />
+                                    {t('user_form.soreness_fresh', { defaultValue: 'Свіжі' })}
+                                </span>
+                                <span className="acct-legend-item">
+                                    <span className="acct-legend-dot" style={{ background: "var(--acct-moderate)" }} />
+                                    {t('user_form.soreness_moderate', { defaultValue: 'Помірна' })}
+                                </span>
+                                <span className="acct-legend-item">
+                                    <span className="acct-legend-dot" style={{ background: "var(--acct-sore)" }} />
+                                    {t('user_form.soreness_high', { defaultValue: 'Сильна' })}
+                                </span>
+                            </div>
+                            <p className="acct-mock-note">{t('user_form.mock_data_note', { defaultValue: 'Демо-дані' })}</p>
+                        </div>
+
+                        <p className="acct-section-label">{t('user_form.proficiency_title', { defaultValue: 'Прогрес' })}</p>
+                        <div className="acct-card">
+                            {proficiencyGroups.length === 0 ? (
+                                <p className="acct-stat-label">{t('user_form.loading', { defaultValue: 'Завантаження...' })}</p>
+                            ) : (
+                                proficiencyGroups.map((group: any) => (
+                                    <div className="acct-progress-item" key={group.id}>
+                                        <div className="acct-progress-top">
+                                            <span>{group.name}</span>
+                                            <span>{group.value}%</span>
+                                        </div>
+                                        <div className="acct-progress-track">
+                                            <div className="acct-progress-fill" style={{ width: `${group.value}%` }} />
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                            <p className="acct-mock-note">{t('user_form.mock_data_note', { defaultValue: 'Демо-дані' })}</p>
+                        </div>
+
+                        <Link to="/history" className="acct-ghost-btn-link">
+                            <div className="acct-card acct-history-row">
+                                <div>
+                                    <p className="acct-history-title">📊 {t('user_form.workout_history')}</p>
+                                    <p className="acct-history-subtitle">{t('user_form.view_all_workouts', { defaultValue: 'Переглянути всі тренування' })}</p>
+                                </div>
+                                <span className="acct-chevron">›</span>
+                            </div>
+                        </Link>
+
+                        <Link to="/editProfile" className="acct-ghost-btn-link">
+                            <button className="acct-ghost-btn" type="button">
+                                {t('user_form.edit_profile')}
+                            </button>
+                        </Link>
+
+                        <div className="acct-logout-wrapper">
+                            <LogoutButton />
+                        </div>
+
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     );
 }
-
 
 export default Account;
