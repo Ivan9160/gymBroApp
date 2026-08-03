@@ -22,7 +22,6 @@ export class ProficiencyService {
   }
   
   public async calculateAndSaveProficiency(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[] ): Promise<IProficiency[]> {
-    console.log('STEP 1: method called', user.id);
     const sinceDate = new Date();
     sinceDate.setDate(sinceDate.getDate() - ProficiencyConfig.RELEVANT_DATA_DAYS);
 

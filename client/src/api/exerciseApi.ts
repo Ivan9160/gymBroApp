@@ -1,5 +1,5 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { type ExerciseGroup, type Exercise } from '../types'
+import { type IExerciseGroup, type IExercise } from '../types'
 
 const baseUrl = import.meta.env.VITE_API_URL
 export const exerciseApi = createApi({
@@ -16,11 +16,11 @@ export const exerciseApi = createApi({
     }),
     tagTypes: ['Exercises', 'ExerciseGroups'],
     endpoints: (builder) => ({
-        getExercises: builder.query<Exercise[], void>({
+        getExercises: builder.query<IExercise[], void>({
             query: () => '/exercises',
             providesTags: ['Exercises']
         }),
-        getExerciseGroups: builder.query<ExerciseGroup[], void>({
+        getExerciseGroups: builder.query<IExerciseGroup[], void>({
             query: () => '/exercise-groups',
             providesTags: ['ExerciseGroups']
         }),

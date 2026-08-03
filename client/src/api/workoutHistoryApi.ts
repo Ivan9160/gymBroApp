@@ -1,5 +1,5 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import {type Workout } from '../types'
+import type { IWorkout } from '../types'
 
 const baseUrl = import.meta.env.VITE_API_URL
 export const workoutHistoryApi = createApi({
@@ -16,11 +16,11 @@ export const workoutHistoryApi = createApi({
     }),
     tagTypes: ['WorkoutHistory'],
     endpoints: (builder) => ({
-        getWorkouts: builder.query<Workout[], void>({
+        getWorkouts: builder.query<IWorkout[], void>({
             query: () => '/workouts',
             providesTags: ['WorkoutHistory']
         }),
-        setWorkouts: builder.mutation<void, Workout[]>({
+        setWorkouts: builder.mutation<void, IWorkout[]>({
             query: (workouts) => ({
                 url: '/workouts',
                 method: 'POST',

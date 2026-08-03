@@ -1,17 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-/**
- * Proficiency values consumed by this component live on the same unitless
- * scale produced by the backend (ProficiencyService.calculateAndSaveProficiency):
- *
- *   totalProficiency = averageDecayed1RM * genderModifier / standardBodyweightModifier
- *
- * ~1.0 roughly means "at benchmark 1RM" for the user's bodyweight/gender.
- * Weaker/newer lifters land below 1.0, stronger/more experienced ones above it,
- * and the gender/bodyweight modifiers can push values past ~2 for outliers.
- * These thresholds are a first pass and can be tuned once real distribution
- * data from GET /proficiency/:userId is available.
- */
+
 export interface ProficiencyLevelDefinition {
     key: string;
     threshold: number; // minimum raw proficiency value required to reach this level
@@ -66,15 +55,10 @@ export function resolveProficiencyLevel(value: number): ProficiencyLevelInfo {
     return { currentLevel, nextLevel, progressPercent, isMaxLevel };
 }
 
-export function getMockProficiencyValue(groupId: number): number {
-    const pseudoRandom = Math.abs(Math.sin(groupId * 12.9898) * 43758.5453) % 1;
-    return 0.15 + pseudoRandom * 2.15;
-}
-
 export interface ProficiencyGroupDatum {
     id: number;
     name: string;
-    value: number;
+    proficiency: number;
 }
 
 interface ProficiencyLevelBarProps {
@@ -120,13 +104,13 @@ function ProficiencyLevelsList({ groups }: ProficiencyLevelsListProps) {
     const { t } = useTranslation();
 
     if (groups.length === 0) {
-        return <p className="acct-stat-label">{t('user_form.loading', { defaultValue: 'Завантаження...' })}</p>;
+        return <p className="acct-stat-label">{t('user_form.loading', { defaultValue: 'Loading...' })}</p>;
     }
 
     return (
         <>
             {groups.map(group => (
-                <ProficiencyLevelBar key={group.id} name={group.name} value={group.value} />
+                <ProficiencyLevelBar key={group.id} name={group.name} value={group.proficiency} />
             ))}
         </>
     );

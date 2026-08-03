@@ -2,29 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import LogoutButton from "../logout";
-import { useGetExercisesQuery, useGetExerciseGroupsQuery } from "../../api/exerciseApi";
+import { useGetExercisesQuery } from "../../api/exerciseApi";
 import { setWorkoutId, setWorkoutStartTime } from "../../store/slices/workoutSlice";
 import axios from "axios";
 import ActiveWorkout from "./activeWorkout";
 import MuscleBodyMap from "./sorenessDiagram";
-import ProficiencyLevelsList, { getMockProficiencyValue } from "./proficiencyLevels";
+import ProficiencyLevelsList from "./proficiencyLevels";
 import { useTranslation } from "react-i18next";
 import "./style/account.css";
 
-// TODO: replace with real data from a soreness endpoint/hook once it exists
-// (e.g. useGetSorenessQuery(user.id)). Values are 0-100, higher = more sore.
-const MOCK_SORENESS: Record<string, number> = {
-    chest: 82,
-    shoulders: 20,
-    biceps: 25,
-    core: 55,
-    legs: 78,
-    back: 60,
-    triceps: 15,
-};
 
 function getSorenessColorVar(value: number): string {
-    const clampedValue = Math.min(Math.max(value, 0), 100);
+    const clampedValue = Math.min(Math.max(value*100, 0), 100);
 
     if (clampedValue <= 50) {
         const percentage = clampedValue * 2; 
@@ -37,13 +26,12 @@ function getSorenessColorVar(value: number): string {
 
 function Account() {
     const user = useSelector((state: any) => state.user);
+
     const workout = useSelector((state: any) => state.workout);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
     useGetExercisesQuery();
-    const { data: exerciseGroups } = useGetExerciseGroupsQuery();
-
     const startWorkout = () => {
         axios.post(import.meta.env.VITE_API_URL + "/workouts", {
             date: new Date().toISOString(),
@@ -62,19 +50,11 @@ function Account() {
     }
 
     const initials = user?.name ? user.name.charAt(0).toUpperCase() : "?";
+    
+    const proficiencyGroups = user.proficiency;
+    const sorenessData = user.soreness;
 
-    // TODO: replace with a real streak endpoint once available
-    const mockStreak = 5;
 
-    // TODO: replace with real data from GET /proficiency/:userId once a
-    // useGetProficiencyQuery hook exists in the frontend api slice.
-    // Values sit on the same unitless scale ProficiencyService produces
-    // (~1.0 = at benchmark), not a raw percentage.
-    const proficiencyGroups = (exerciseGroups || []).map((group: any) => ({
-        id: group.id,
-        name: group.name,
-        value: getMockProficiencyValue(group.id),
-    }));
 
     return (
         <div className="account-page">
@@ -90,7 +70,7 @@ function Account() {
                                     <p className="acct-subtitle">{t('user_form.title_profile')}</p>
                                 </div>
                                 <div className="acct-streak-badge">
-                                    🔥 {mockStreak}
+                                    🔥 
                                 </div>
                                 <span className="acct-chevron">›</span>
                             </div>
@@ -146,7 +126,7 @@ function Account() {
                         <p className="acct-section-label">{t('user_form.soreness_title', { defaultValue: 'Втома по групах м\'язів' })}</p>
                         <div className="acct-card">
                             <MuscleBodyMap
-                                soreness={MOCK_SORENESS}
+                                soreness={sorenessData}
                                 getColor={getSorenessColorVar}
                                 frontLabel={t('user_form.view_front', { defaultValue: 'Спереду' })}
                                 backLabel={t('user_form.view_back', { defaultValue: 'Ззаду' })}
@@ -170,10 +150,14 @@ function Account() {
                         </div>
 
                         <p className="acct-section-label">{t('user_form.proficiency_title', { defaultValue: 'Прогрес' })}</p>
+
+
                         <div className="acct-card">
                             <ProficiencyLevelsList groups={proficiencyGroups} />
                             <p className="acct-mock-note">{t('user_form.mock_data_note', { defaultValue: 'Демо-дані' })}</p>
                         </div>
+
+
 
                         <Link to="/history" className="acct-ghost-btn-link">
                             <div className="acct-card acct-history-row">

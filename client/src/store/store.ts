@@ -5,6 +5,7 @@ import workoutReducer from "./slices/workoutSlice";
 import setReducer from "./slices/setSlice";
 import { exerciseApi } from "../api/exerciseApi";
 import { workoutHistoryApi } from "../api/workoutHistoryApi";
+import { userApi } from "../api/userApi";
 
 
 
@@ -28,6 +29,7 @@ const localStorageMiddleware = (store:any) => (next:any) => (action:any) => {
     const stateToSave = {
         workout: state.workout,
         set: state.set,
+       
     }
     localStorage.setItem('state', JSON.stringify(stateToSave));
     return result;
@@ -37,8 +39,10 @@ const rootReducer = combineReducers({
     user: userReducer,
     workout: workoutReducer,
     set: setReducer,
+    [userApi.reducerPath]: userApi.reducer,
     [exerciseApi.reducerPath]: exerciseApi.reducer,
     [workoutHistoryApi.reducerPath]: workoutHistoryApi.reducer,
+    
 });
 
 export const store = configureStore({
@@ -46,7 +50,13 @@ export const store = configureStore({
     preloadedState: loadFromLocalStorage(),
 
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(exerciseApi.middleware, workoutHistoryApi.middleware, localStorageMiddleware),
+        getDefaultMiddleware().concat(
+            exerciseApi.middleware, 
+            workoutHistoryApi.middleware, 
+            localStorageMiddleware,
+            userApi.middleware
+        
+        ),
 }); 
 
 

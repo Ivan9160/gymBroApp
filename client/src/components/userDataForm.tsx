@@ -3,18 +3,15 @@ import { useEffect, useState } from 'react';
 import { Form, FloatingLabel, Stack, Button, Row, Col, ButtonGroup } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import {
-    setUserId,
-    setUserRole,
     setUserName,
-    setUserAuth0Id,
     setUserAge,
     setUserGender,
     setUserHeight,
     setUserWeight,
     setUserGoal
 } from '../store/slices/userSlice';
+import { useGetUserSummaryQuery, useCreateUserMutation, useUpdateUserMutation } from '../api/userApi';
 import { useTranslation } from 'react-i18next';
 
 
@@ -22,12 +19,41 @@ export function UserDataForm({}: { status: string }) {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { t} = useTranslation(); 
-    
-    
+    const { t } = useTranslation();
+    const location = useLocation();
+
     const reduxUser = useSelector((state: any) => state.user);
-    const [dbLoading, setdbLoading] = useState(true);
-    const API_URL = import.meta.env.VITE_API_URL;
+
+    const [tokenReady, setTokenReady] = useState(false);
+
+    useEffect(() => {
+        const prepareToken = async () => {
+            if (isAuthenticated) {
+                const token = await getAccessTokenSilently();
+                localStorage.setItem('token', token);
+                setTokenReady(true);
+            }
+        };
+        prepareToken();
+    }, [isAuthenticated, getAccessTokenSilently]);
+
+    const { isLoading: isSummaryLoading, isSuccess: isSummarySuccess } = useGetUserSummaryQuery(
+        undefined,
+        { skip: !isAuthenticated || !tokenReady }
+    );
+
+
+    const [createUser] = useCreateUserMutation();
+    const [updateUser] = useUpdateUserMutation();
+
+ 
+    useEffect(() => {
+        console.log(isSummarySuccess, location.pathname);
+        if (reduxUser.id != null && location.pathname === '/') {
+            
+            navigate('/account');
+        }
+    }, [reduxUser.id, location.pathname]);
 
     const handleNameChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserName(e.target.value));
     const handleAgeChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserAge(Number(e.target.value) || null));
@@ -36,88 +62,36 @@ export function UserDataForm({}: { status: string }) {
     const handleWeightChange = (e: React.FocusEvent<HTMLInputElement>) => dispatch(setUserWeight(Number(e.target.value) || null));
     const handleGoalChange = (val: 'lose' | 'maintain' | 'gain') => dispatch(setUserGoal(val as any));
 
-    const location = useLocation();
-        
-    useEffect(() => {
-        const fetchData = async () => {
-            
-        if (isAuthenticated && reduxUser.id == null) {
-            try {
-            const fullUrl = `${API_URL}/users/me`;
-            const token =  await getAccessTokenSilently();
-            localStorage.setItem("token", token);
-            setdbLoading(true);
-            const response = await axios.get(fullUrl, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-                if (response.data) {
-                    setdbLoading(false);
-                    const userData = response.data;
-                    dispatch(setUserId(userData.id));
-                    dispatch(setUserRole(userData.role));
-                    dispatch(setUserName(userData.name));
-                    dispatch(setUserAuth0Id(userData.auth0Id));
-                    dispatch(setUserAge(userData.userProfile.age));
-                    dispatch(setUserGender(userData.userProfile.gender));
-                    dispatch(setUserHeight(userData.userProfile.height));
-                    dispatch(setUserWeight(userData.userProfile.weight));
-                    dispatch(setUserGoal(userData.userProfile.goal));
-                    if( location.pathname === '/') {
-                        navigate('/account');
-                    }
-                }
-                else {
-                setdbLoading(false);
-                }
-                
-            
-
-            } catch (error) {
-            console.error("Request error:", error);
-            }
-        }
-        };
-
-    fetchData();
-  }, [isAuthenticated]);
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isLoading || !isAuthenticated || !user) return;
+        if (isLoading || !isAuthenticated || !user?.sub) return;
+
+        const requestData  = {
+            name: reduxUser.name,
+            age: reduxUser.age,
+            gender: reduxUser.gender,
+            height: reduxUser.height,
+            weight: reduxUser.weight,
+            goal: reduxUser.goal,
+            auth0Id: user.sub,
+        };
 
         try {
-            const API_URL = import.meta.env.VITE_API_URL;
-            
-            const method = reduxUser.id == null ? 'POST' : 'PUT';
-            const requestPath = reduxUser.id == null ? '/users' : `/users/me`;
-            const token =  await getAccessTokenSilently();
-            const requestData = { 
-                ...reduxUser, 
-                auth0Id: user.sub 
-            };
-            const response = await fetch(`${API_URL}${requestPath}`, {
-                method: method,
-                headers: { 
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(requestData),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                dispatch(setUserId(data.id));
-                navigate('/account');
+            if (reduxUser.id == null) {
+                await createUser(requestData).unwrap();
+            } else {
+                await updateUser(requestData).unwrap();
             }
+            navigate('/account');
         } catch (error) {
             console.error(error);
         }
     };
-    if (dbLoading&& !reduxUser.id) {
+
+    if (tokenReady && isSummaryLoading) {
         return <div className="bg-dark vh-100 text-white d-flex justify-content-center align-items-center">{t('user_form.loading')}</div>;
     }
+
     return (
     <Form className="w-100 mx-auto min-h-screen" style={{ maxWidth: "500px" }} onSubmit={handleSubmit}>
         <div className="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4">

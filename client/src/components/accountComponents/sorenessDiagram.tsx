@@ -1,5 +1,6 @@
 import { useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
+import type { ISoreness } from "../../types";
 
 export type MuscleGroupId =
     | "chest"
@@ -11,7 +12,7 @@ export type MuscleGroupId =
     | "legs";
 
 interface SorenessDiagramProps {
-    soreness: Record<string, number>;
+    soreness: ISoreness;
     getColor: (value: number) => string;
     frontLabel?: string;
     backLabel?: string;
@@ -49,6 +50,21 @@ const ABS: AbsCell[] = [
     { x: 82, y: 178 }, { x: 103, y: 178 },
 ];
 
+    function getSorenessValue(soreness: ISoreness, id: MuscleGroupId): number {
+        if (!soreness) return 0;
+
+        if (Array.isArray(soreness)) {
+            const item = soreness.find(
+                (g) => g.name && g.name.toLowerCase() === id.toLowerCase()
+            );
+            return item ? item.soreness : 0;
+        }
+        
+        return 0;
+
+        
+    }
+
 function BodyBase() {
     return (
         <>
@@ -66,8 +82,8 @@ function BodyBase() {
 }
 
 interface RegionProps {
+    soreness: ISoreness;
     id: MuscleGroupId;
-    soreness: Record<string, number>;
     getColor: (value: number) => string;
     selected: MuscleGroupId | null;
     onSelect: (id: MuscleGroupId) => void;
@@ -76,7 +92,7 @@ interface RegionProps {
 
 function MuscleRegion({ id, soreness, getColor, selected, onSelect, children }: RegionProps) {
     const { t } = useTranslation();
-    const value = soreness[id] ?? 0;
+    const value = getSorenessValue(soreness, id);
     const isSelected = selected === id;
     const shapeProps: ShapeProps = {
         fill: getColor(value),
@@ -86,7 +102,7 @@ function MuscleRegion({ id, soreness, getColor, selected, onSelect, children }: 
     const muscleName = t(`user_form.muscle_groups.${id}`, { defaultValue: id });
     return (
         <g className="acct-muscle-shape" onClick={() => onSelect(id)}>
-            <title>{`${muscleName}: ${Math.round(value)}%`}</title>
+            <title>{`${muscleName}: ${Math.round(value*100)}%`}</title>
             {children(shapeProps)}
         </g>
     );
@@ -147,7 +163,7 @@ function SorenessDiagram({ soreness, getColor, frontLabel = "Спереду", ba
             <p className="acct-bodymap-status">
                 {selected ? (
                     <>
-                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(soreness[selected] ?? 0)}%
+                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(getSorenessValue(soreness, selected)*100)}% sore
                     </>
                 ) : (
                     "\u00A0"

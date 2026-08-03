@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Set } from "../../types";
+import type { ISet } from "../../types";
 
 const workoutSlice = createSlice({
   name: "workout",
@@ -7,7 +7,7 @@ const workoutSlice = createSlice({
         id: null as number | null,
         startTime: null as string | null,
 
-        sets: [] as Set[],
+        sets: [] as ISet[],
     },
     reducers: {
         setWorkoutId(state, action: PayloadAction<number | null>) {
@@ -17,7 +17,7 @@ const workoutSlice = createSlice({
             state.startTime = action.payload;
         },
     
-        setWorkoutSets(state, action: PayloadAction<Set[]>) {
+        setWorkoutSets(state, action: PayloadAction<ISet[]>) {
             state.sets = action.payload;
         }
     }

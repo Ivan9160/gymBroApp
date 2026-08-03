@@ -13,6 +13,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ProficiencyService } from './resources/businessLogic/proficiency/proficiency.service';
 import { ProficiencyListener } from './resources/API/user-summary/proficiency.listener';
+import { UserSummaryModule } from './resources/API/user-summary/userSummary.module';
 import { Keyv } from 'keyv';
 import KeyvRedis from '@keyv/redis';
 
@@ -31,7 +32,14 @@ import KeyvRedis from '@keyv/redis';
       }
     },
   }),
-    UserModule, WorkoutModule, SetModule, AuthModule, ExerciseModule, ExerciseGroupModule, SorenessModule],
+    UserModule, 
+    WorkoutModule, 
+    SetModule, 
+    AuthModule, 
+    ExerciseModule, 
+    ExerciseGroupModule, 
+    UserSummaryModule
+  ],
   controllers: [AppController],
   providers: [
     ProficiencyService,

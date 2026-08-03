@@ -18,10 +18,10 @@ export class UserSummaryService {
     private readonly exerciseGroupService: ExerciseGroupService,
   ) {}
  
-  async getAccountSummary(auth0Id: string): Promise<IUserAccountSummary> {
-    const user = await this.userService.findByAuth0Id(auth0Id);
+  async getAccountSummary(userId: number): Promise<IUserAccountSummary> {
+    const user = await this.userService.findById(userId);
     if (!user) {
-      throw new NotFoundException(`User with Auth0 ID "${auth0Id}" not found`);
+      throw new NotFoundException(`User with ID "${userId}" not found`);
     }
     const workouts = await this.workoutService.findAllByUserId(user.id);
     const exerciseGroups = await this.exerciseGroupService.findAll();

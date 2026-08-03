@@ -1,30 +1,53 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { IUser, IProficiency, ISoreness } from '../../types';
+import { userApi } from '../../api/userApi';
+
+interface UserState {
+    id: number | null;
+    name: string;
+    auth0Id: string;
+    role: string | null;
+    age: number | null;
+    gender: string | null;
+    height: number | null;
+    weight: number | null;
+    goal: string | null;
+    proficiency: IProficiency[];
+    soreness: ISoreness[];
+}
+
+const initialState: UserState = {
+    id: null,
+    name: '',
+    auth0Id: '',
+    role: null,
+    age: null,
+    gender: null,
+    height: null,
+    weight: null,
+    goal: null,
+    proficiency: [],
+    soreness: [],
+};
+
+function applyUser(state: UserState, user: IUser) {
+    state.id = user.id;
+    state.name = user.name;
+    state.auth0Id = user.auth0Id;
+    state.role = user.role;
+    state.age = user.userProfile?.age ?? null;
+    state.gender = user.userProfile?.gender ?? null;
+    state.height = user.userProfile?.height ?? null;
+    state.weight = user.userProfile?.weight ?? null;
+    state.goal = user.userProfile?.goal ?? null;
+}
 
 const userSlice = createSlice({
-  name: "user",
-  initialState: {
-        id: null as number | null,
-        name: '',
-        auth0Id: '',
-        age: null as number | null,
-        gender: null as string | null,
-        height: null as number | null,
-        weight: null as number | null,
-        goal: null as string | null,
-        role: null as string | null
-    },
+    name: 'user',
+    initialState,
     reducers: {
-        setUserId(state, action: PayloadAction<number | null>) {
-            state.id = action.payload;
-        },
-        setUserRole(state, action: PayloadAction<string>) {
-            state.role = action.payload;
-        },
         setUserName(state, action: PayloadAction<string>) {
             state.name = action.payload;
-        },
-        setUserAuth0Id(state, action: PayloadAction<string>) {
-            state.auth0Id = action.payload;
         },
         setUserAge(state, action: PayloadAction<number | null>) {
             state.age = action.payload;
@@ -40,10 +63,35 @@ const userSlice = createSlice({
         },
         setUserGoal(state, action: PayloadAction<string | null>) {
             state.goal = action.payload;
-        }
-    }
-   
-})
-export const { setUserId, setUserRole, setUserName, setUserAuth0Id, setUserAge, setUserGender, setUserHeight, setUserWeight, setUserGoal } = 
-    userSlice.actions;
+        },
+        resetUser() {
+            return initialState;
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addMatcher(userApi.endpoints.getUserSummary.matchFulfilled, (state, action) => {
+            applyUser(state, action.payload.user);
+            state.proficiency = action.payload.proficiency;
+            state.soreness = action.payload.soreness;
+        });
+        builder.addMatcher(userApi.endpoints.createUser.matchFulfilled, (state, action) => {
+            applyUser(state, action.payload);
+        });
+        builder.addMatcher(userApi.endpoints.updateUser.matchFulfilled, (state, action) => {
+            applyUser(state, action.payload);
+        });
+        
+    },
+});
+
+export const {
+    setUserName,
+    setUserAge,
+    setUserGender,
+    setUserHeight,
+    setUserWeight,
+    setUserGoal,
+    resetUser,
+} = userSlice.actions;
+
 export default userSlice.reducer;
