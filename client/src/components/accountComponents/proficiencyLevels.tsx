@@ -73,9 +73,9 @@ function ProficiencyLevelBar({ name, value }: ProficiencyLevelBarProps) {
     return (
         <div className="acct-progress-item">
             <div className="acct-progress-top">
-                <span>{name}</span>
+                <span>{t(`user_form.muscle_groups.${name.toLowerCase()}`)}</span>
                 <span className="acct-progress-level">
-                    {t(`user_form.proficiency_levels.${currentLevel.key}`, { defaultValue: currentLevel.key })}
+                    {t(`user_form.proficiency_levels.${currentLevel.key.toLocaleLowerCase()}`, { defaultValue: currentLevel.key })}
                 </span>
             </div>
             <div className="acct-progress-track">

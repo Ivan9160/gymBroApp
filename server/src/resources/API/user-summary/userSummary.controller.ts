@@ -4,7 +4,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from '../../../../generated/prisma';
+import { User } from '@prisma/client';
 
 
 @Controller('user-summary')

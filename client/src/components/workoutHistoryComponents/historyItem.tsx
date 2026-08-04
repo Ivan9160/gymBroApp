@@ -11,8 +11,8 @@ export const WorkoutHistoryItem = ({
     const { t, i18n } = useTranslation();
 
     const locale = i18n.language?.toLowerCase().startsWith("uk")
-        ? "uk-UA"
-        : "en-US";
+        ? "uk"
+        : "en";
 
     const formatDuration = (
         startDateFromServer: string,

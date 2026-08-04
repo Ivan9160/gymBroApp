@@ -1,10 +1,7 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { ProficiencyService } from '../../businessLogic/proficiency/proficiency.service';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { IExerciseGroup, IUser, IWorkout } from 'src/common/interfaces';
 import { ExerciseGroupService } from '../exercise-group/exerciseGroup.service';
 import { WorkoutService } from '../workout/workout.service';
 import { UserService } from '../user/user.service';
