@@ -8,7 +8,6 @@ import { SetModule } from './resources/API/set/set.module';
 import { AuthModule } from './auth/auth.module';
 import { ExerciseModule } from './resources/API/exercise/exercise.module';
 import { ExerciseGroupModule } from './resources/API/exercise-group/exerciseGroup.module';
-import { SorenessModule } from './resources/businessLogic/soreness/soreness.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ProficiencyService } from './resources/businessLogic/proficiency/proficiency.service';

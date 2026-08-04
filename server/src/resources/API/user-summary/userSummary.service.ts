@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ProficiencyService } from 'src/resources/businessLogic/proficiency/proficiency.service';
 import { SorenessService } from 'src/resources/businessLogic/soreness/soreness.service';
 import { ISoreness, IUserAccountSummary, IProficiency } from 'src/common/interfaces';
-import { User } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { NotFoundException } from '@nestjs/common';
 import { WorkoutService } from '../workout/workout.service';

@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateWorkoutDto, UpdateWorkoutDto } from './dto/workout.dto';
 import { WorkoutStatus } from './dto/workoutStatus.enum';
 import { IWorkoutFilterOptions } from 'src/common/interfaces';
-import { Prisma } from '../../../../generated/prisma';
+import { Prisma } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
