@@ -2,49 +2,68 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useTranslation } from "react-i18next";
 
 const LoginMenu = () => {
-  const { loginWithRedirect } = useAuth0();
-  const { t } = useTranslation();
-  const handleLogin = () => {
-    sessionStorage.setItem('isLoggingIn', 'true');
-    loginWithRedirect({
-      authorizationParams: {
-        connection: 'google-oauth2',
-      },
-    });
-  }
+    const { loginWithRedirect } = useAuth0();
+    const { t } = useTranslation();
 
-  return (
-    <div className="App flex min-h-screen rounded-xl items-center justify-center bg-gray-100 p-4">
-      <div className="mx-auto w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl text-center">
-        <h2 className="text-3xl font-extrabold !text-gray-900 mb-2">GymBro</h2> 
-        <p className="text-gray-600 text-sm mb-8 font-medium">Elevate your training today</p>
+    const handleLogin = () => {
+        sessionStorage.setItem("isLoggingIn", "true");
 
-          <button 
-            onClick={() => handleLogin()}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 shadow-md"
-          >
-            {t('nav.login')}
-          </button>
+        loginWithRedirect({
+            authorizationParams: {
+                connection: "google-oauth2",
+            },
+        });
+    };
 
-          <div className="my-6 flex items-center">
-            <div className="h-px flex-1 bg-gray-200"></div>
-            <span className="px-3 text-xs font-medium uppercase text-gray-400">or</span>
-            <div className="h-px flex-1 bg-gray-200"></div>
-          </div>
+    const handleSignup = () => {
+        loginWithRedirect({
+            authorizationParams: {
+                screen_hint: "signup",
+            },
+        });
+    };
 
-          <button 
-            onClick={() => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } })}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
-          >
-            {t('login.signup')}
-          </button>
+    return (
+        <div className="guest-auth-card">
+            <div className="guest-auth-copy">
+                <h2>
+                    {t("home.auth_title", {
+                        defaultValue: "Готовий почати?",
+                    })}
+                </h2>
+                <p>
+                    {t("home.auth_subtitle", {
+                        defaultValue:
+                            "Увійди, щоб зберігати тренування, бачити свій прогрес і користуватися особистим профілем.",
+                    })}
+                </p>
+            </div>
 
-          <p className="mt-8 text-xs text-gray-400">
-            {t('login.terms')}
-          </p>
+            <div className="guest-auth-actions">
+                <button
+                    type="button"
+                    onClick={handleLogin}
+                    className="acct-primary-cta guest-auth-primary"
+                >
+                    {t("nav.login", { defaultValue: "Увійти" })}
+                </button>
+
+                <button
+                    type="button"
+                    onClick={handleSignup}
+                    className="acct-ghost-btn guest-auth-secondary"
+                >
+                    {t("login.signup", { defaultValue: "Створити акаунт" })}
+                </button>
+            </div>
+
+            <p className="guest-auth-note">
+                {t("login.terms", {
+                    defaultValue: "Продовжуючи, ти погоджуєшся з умовами використання.",
+                })}
+            </p>
         </div>
-      </div>
-  );
+    );
 };
 
 export default LoginMenu;

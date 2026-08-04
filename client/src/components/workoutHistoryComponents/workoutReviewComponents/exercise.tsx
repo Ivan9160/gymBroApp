@@ -1,45 +1,78 @@
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+
 interface ExerciseProps {
     exerciseIndex: number;
-    exerciseName: string;
+    exerciseName?: string;
     currentExerciseSets: any[];
 }
 
-export function Exercise({exerciseIndex, exerciseName, currentExerciseSets}: ExerciseProps) {
-    const {t} = useTranslation();
+export function Exercise({
+    exerciseIndex,
+    exerciseName,
+    currentExerciseSets,
+}: ExerciseProps) {
+    const { t } = useTranslation();
+
     return (
-        <div key={exerciseIndex} className="mt-3">
-            <h6 className="fw-bold text-dark mb-2">{t(`database.exercises.${exerciseName}`) || exerciseName}</h6>
-            <Table hover borderless responsive className="mb-0 align-middle">
-                        <thead className="text-muted small">
-                            <tr>
-                                <th style={{ width: '20%' }}>{t('workout_history.set')}</th>
-                                <th>{t('workout_history.weight')}</th>
-                                <th>{t('workout_history.reps')}</th>
+        <div className="acct-workout-exercise">
+            <div className="acct-workout-exercise-title-row">
+                <span>{exerciseIndex + 1}</span>
+
+                <h3>
+                    {t(`database.exercises.${exerciseName}`, {
+                        defaultValue:
+                            exerciseName ||
+                            t("workout_details.unknown_exercise"),
+                    })}
+                </h3>
+            </div>
+
+            <Table
+                responsive
+                borderless
+                className="acct-workout-table mb-0"
+            >
+                <thead>
+                    <tr>
+                        <th>{t("workout_details.table.set")}</th>
+                        <th>{t("workout_details.table.weight")}</th>
+                        <th>{t("workout_details.table.reps")}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {currentExerciseSets.map(
+                        (set: any, setIndex: number) => (
+                            <tr key={set.id || setIndex}>
+                                <td>{setIndex + 1}</td>
+
+                                <td>
+                                    {set.weight ? (
+                                        <>
+                                            {set.weight}{" "}
+                                            <span>
+                                                {t(
+                                                    "workout_details.table.kg"
+                                                )}
+                                            </span>
+                                        </>
+                                    ) : (
+                                        t("workout_details.table.bodyweight")
+                                    )}
+                                </td>
+
+                                <td>
+                                    {set.reps}{" "}
+                                    <span>
+                                        {t(
+                                            "workout_details.table.reps_unit"
+                                        )}
+                                    </span>
+                                </td>
                             </tr>
-                        </thead>
-                    <tbody>
-                    {currentExerciseSets.map((set: any, setIndex: number) => (
-                        
-                        <tr key={set.id || setIndex} className="border-top">
-                            <td className="fw-bold text-secondary">{setIndex + 1}</td>
-                            <td>
-                                {set.weight ? (
-                                    <div>
-                                        {set.weight}
-                                        <span className="text-muted small"> {t('workout_history.kg')}</span>
-                                    </div>
-                                ) : (
-                                    <span>{t('workout_history.bodyweight')}</span>
-                                )}
-                            </td>
-                            <td>
-                                {set.reps} <span className="text-muted small"> {t('workout_history.reps')}</span>
-                            </td>
-                        </tr>
-                        
-                    ))}
+                        )
+                    )}
                 </tbody>
             </Table>
         </div>

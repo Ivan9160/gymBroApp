@@ -1,107 +1,209 @@
 import { Link, useLocation } from "react-router-dom";
-import { Container, Card, Row, Col, Badge } from "react-bootstrap";
-import { ArrowLeft, Calendar, Clock, Activity } from "react-bootstrap-icons"; 
-import type { ExerciseGroup, Set } from "../../../types";
-import { useGetExerciseGroupsQuery, useGetExercisesQuery } from "../../../api/exerciseApi";
+import { Activity, Calendar, Clock } from "react-bootstrap-icons";
+import type { IExerciseGroup, ISet, IWorkout } from "../../../types";
+import {
+    useGetExerciseGroupsQuery,
+    useGetExercisesQuery,
+} from "../../../api/exerciseApi";
 import { Group } from "./group";
 import { useTranslation } from "react-i18next";
 
-
 function WorkoutDetails() {
     const location = useLocation();
-    const workout = location.state?.workout;
-    const {data: exercises} = useGetExercisesQuery() || [];
-    const {data: exerciseGroups} = useGetExerciseGroupsQuery() || [];
+    const workout = location.state?.workout as IWorkout | undefined;
 
-    const {t} = useTranslation();
-    const currentWorkoutGroups = exerciseGroups?.filter(
-        group => workout.sets.some(
-            (set: Set) => exercises?.find(
-                ex => ex.id === set.exerciseId)?.exerciseGroupId === group.id
+    const { data: exercises = [] } = useGetExercisesQuery();
+    const { data: exerciseGroups = [] } = useGetExerciseGroupsQuery();
+    const { t, i18n } = useTranslation();
+
+    const locale = i18n.language?.toLowerCase().startsWith("uk")
+        ? "uk-UA"
+        : "en-US";
+
+    if (!workout) {
+        return (
+            <div className="acct-content-page">
+                <div className="acct-content-container">
+                    <div className="acct-history-empty">
+                        <div className="acct-history-empty-icon">🗂️</div>
+
+                        <h2>{t("workout_details.not_found_title")}</h2>
+
+                        <p>{t("workout_details.not_found_message")}</p>
+
+                        <Link
+                            to="/history"
+                            className="acct-primary-cta acct-history-empty-btn"
+                        >
+                            {t("workout_details.back_to_history")}
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const currentWorkoutGroups = exerciseGroups.filter((group) =>
+        workout.sets.some(
+            (set: ISet) =>
+                exercises.find((ex) => ex.id === set.exerciseId)
+                    ?.exerciseGroupId === group.id
         )
     );
-    const currentWorkoutExercises = exercises?.filter(ex => workout.sets.some((set: Set) => set.exerciseId === ex.id)) || [];
+
+    const currentWorkoutExercises = exercises.filter((exercise) =>
+        workout.sets.some((set: ISet) => set.exerciseId === exercise.id)
+    );
+
+    const uniqueExerciseCount = new Set(
+        workout.sets.map((set: ISet) => set.exerciseId)
+    ).size;
+
     const formatTime = (startDate: Date, endDate: Date) => {
-        const totalSeconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
+        const totalSeconds = Math.max(
+            0,
+            Math.floor(
+                (endDate.getTime() - startDate.getTime()) / 1000
+            )
+        );
+
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    };
-    
-    
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('uk-UA', {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
+        return [hours, minutes, seconds]
+            .map((value) => value.toString().padStart(2, "0"))
+            .join(":");
     };
+
+    const formatDate = (dateString: string) =>
+        new Date(dateString).toLocaleDateString(locale, {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
 
     return (
-        <Container className="py-5">
-            <Row className="justify-content-center">
-                <Col md={10} lg={8}>
-                    <Link to="/history" className="text-decoration-none mb-3 d-inline-block text-primary fw-bold">
-                        <ArrowLeft className="me-2" /> {t('workout_history.back_to_history')}
-                    </Link>
+        <div className="acct-content-page">
+            <div className="acct-content-container">
+                <Link
+                    to="/history"
+                    className="acct-back-link"
+                >
+                    <span aria-hidden="true">‹</span>
+                    {t("workout_details.back_to_history")}
+                </Link>
 
-                    <Card className="shadow-lg border-0 rounded-4 overflow-hidden mb-4">
-                        <Card.Header className="bg-primary text-white p-4 border-0">
-                            <Row className="align-items-center">
-                                <Col>
-                                    <h2 className="mb-1 fw-bold">{t('workout_details.default_name')}</h2>
-                                    <div className="d-flex align-items-center opacity-75">
-                                        <Calendar className="me-2" />
-                                        <span>{formatDate(workout.createdAt)}</span>
-                                    </div>
-                                </Col>
-                                <Col xs="auto" className="text-end">
-                                    <Badge bg="light" text="dark" className="rounded-pill px-3 py-2">
-                                        {t('workout_history.completed')}
-                                    </Badge>
-                                </Col>
-                            </Row>
-                        </Card.Header>
+                <div className="acct-details-card">
+                    <div className="acct-details-hero">
+                        <div>
+                            <span className="acct-page-eyebrow">
+                                {t("workout_details.eyebrow")}
+                            </span>
 
-                        <Card.Body className="bg-light py-3 border-bottom">
-                            <Row className="text-center">
-                                <Col>
-                                    <div className="text-muted small uppercase fw-bold">{t('workout_history.duration')}</div>
-                                    <div className="fw-bold h5 mb-0"><Clock className="me-1 text-primary"/> {formatTime(new Date(workout.createdAt), new Date(workout.finishedAt))}</div>
-                                </Col>
-                                <Col className="border-start border-end">
-                                    <div className="text-muted small uppercase fw-bold">{t('workout_history.exercises')}</div>
-                                    <div className="fw-bold h5 mb-0"><Activity className="me-1 text-primary"/> {workout.sets.length}</div>
-                                </Col>
-                                <Col>
-                                    <div className="text-muted small uppercase fw-bold">{t('workout_history.total_volume')}</div>
-                                    <div className="fw-bold h5 mb-0 text-success">{workout.sets.length} {t('workout_history.sets')}</div>
-                                </Col>
-                            </Row>
-                        </Card.Body>
+                            <h1>
+                                {t("workout_details.default_name")}
+                            </h1>
 
-                        <Card.Body className="p-4">
-                            <h4 className="mb-4 fw-bold">{t('workout_history.exercises_summary')}</h4>
-                            
-                            {currentWorkoutGroups?.map((group: ExerciseGroup, groupIndex: number) => {
-                                const currentGroupExercises = currentWorkoutExercises?.filter(ex => ex.exerciseGroupId === group.id) || [];
-                                const groupSets = workout.sets.filter((set: Set) => currentGroupExercises.some(ex => ex.id === set.exerciseId));
-                                
-                                return (
-                                    <Group
-                                        key={group.id}
-                                        group={group}
-                                        groupIndex={groupIndex}
-                                        groupSets={groupSets}
-                                        currentGroupExercises={currentGroupExercises}
-                                    />
+                            <div className="acct-details-date">
+                                <Calendar aria-hidden="true" />
+
+                                <span>
+                                    {formatDate(
+                                        workout.createdAt.toString()
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="acct-details-status">
+                            {t("workout_details.status_completed")}
+                        </div>
+                    </div>
+
+                    {/* Duration + exercises are intentionally kept
+                        in one horizontal row */}
+                    <div className="acct-details-stats acct-details-stats--two">
+                        <div className="acct-details-stat">
+                            <span>
+                                <Clock aria-hidden="true" />
+                                {t("workout_details.duration")}
+                            </span>
+
+                            <strong>
+                                {formatTime(
+                                    new Date(workout.createdAt),
+                                    new Date(
+                                        workout.finishedAt ||
+                                            workout.createdAt
+                                    )
+                                )}
+                            </strong>
+                        </div>
+
+                        <div className="acct-details-stat">
+                            <span>
+                                <Activity aria-hidden="true" />
+                                {t("workout_details.exercises_count")}
+                            </span>
+
+                            <strong>{uniqueExerciseCount}</strong>
+                        </div>
+                    </div>
+
+                    <div className="acct-details-body">
+                        <div className="acct-details-section-heading">
+                            <p className="acct-section-label">
+                                {t("workout_details.summary_title")}
+                            </p>
+
+                            <span className="acct-details-section-count">
+                                {t("workout_details.sets_total", {
+                                    count: workout.sets.length,
+                                })}
+                            </span>
+                        </div>
+
+                        <div className="acct-details-groups">
+                            {currentWorkoutGroups.map(
+                                (
+                                    group: IExerciseGroup,
+                                    groupIndex: number
+                                ) => {
+                                    const currentGroupExercises =
+                                        currentWorkoutExercises.filter(
+                                            (exercise) =>
+                                                exercise.exerciseGroupId ===
+                                                group.id
+                                        );
+
+                                    const groupSets = workout.sets.filter(
+                                        (set: ISet) =>
+                                            currentGroupExercises.some(
+                                                (exercise) =>
+                                                    exercise.id ===
+                                                    set.exerciseId
+                                            )
                                     );
-                            })}
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
+
+                                    return (
+                                        <Group
+                                            key={group.id}
+                                            group={group}
+                                            groupIndex={groupIndex}
+                                            groupSets={groupSets}
+                                            currentGroupExercises={
+                                                currentGroupExercises
+                                            }
+                                        />
+                                    );
+                                }
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 

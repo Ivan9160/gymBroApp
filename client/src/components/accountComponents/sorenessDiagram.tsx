@@ -153,7 +153,7 @@ function BackFigure({ soreness, getColor, selected, onSelect, ariaLabel }: Figur
     );
 }
 
-function SorenessDiagram({ soreness, getColor, frontLabel = "Спереду", backLabel = "Ззаду" }: SorenessDiagramProps) {
+function SorenessDiagram({ soreness, getColor, frontLabel = "Front", backLabel = "Back" }: SorenessDiagramProps) {
     const { t } = useTranslation();
     const [selected, setSelected] = useState<MuscleGroupId | null>(null);
     const toggle = (id: MuscleGroupId) => setSelected((cur) => (cur === id ? null : id));
@@ -163,7 +163,7 @@ function SorenessDiagram({ soreness, getColor, frontLabel = "Спереду", ba
             <p className="acct-bodymap-status">
                 {selected ? (
                     <>
-                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(getSorenessValue(soreness, selected)*100)}% sore
+                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(Math.min(getSorenessValue(soreness, selected) * 100, 100))}% {t("account.sore_label")}
                     </>
                 ) : (
                     "\u00A0"

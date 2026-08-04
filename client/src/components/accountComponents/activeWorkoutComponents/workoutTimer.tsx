@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 export const WorkoutTimer = () => {
     const createdAt = useSelector((state: any) => state.workout.startTime);
     const [secondsElapsed, setSecondsElapsed] = useState(0);
+    
     useEffect(() => {
         if (!createdAt) return;
         const startTime = new Date(createdAt).getTime();
@@ -16,7 +17,9 @@ export const WorkoutTimer = () => {
         const interval = setInterval(updateTimer, 1000);
         return () => clearInterval(interval);
     }, [createdAt])
+    
     if (!createdAt) return null;
+    
     const formatTime = (totalSeconds: number) => {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -28,8 +31,8 @@ export const WorkoutTimer = () => {
         <div style={{ 
             fontFamily: 'monospace', 
             fontSize: '1.2rem', 
-            color: '#ff4757',
-            fontWeight: 'bold' 
+            color: 'var(--acct-accent)',
+            fontWeight: '600' 
         }}>
             {formatTime(secondsElapsed)}
         </div>

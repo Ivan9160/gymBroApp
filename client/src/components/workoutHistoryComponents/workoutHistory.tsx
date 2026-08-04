@@ -1,69 +1,77 @@
-import { Container, Card, Button, Spinner, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGetWorkoutsQuery} from "../../api/workoutHistoryApi";
-import type { Workout } from "../../types";
+import { useGetWorkoutsQuery } from "../../api/workoutHistoryApi";
+import type { IWorkout } from "../../types";
 import { WorkoutHistoryItem } from "./historyItem";
 import { useTranslation } from "react-i18next";
 
+const WorkoutHistory = () => {
+    const { data: workoutHistory = [], isLoading } = useGetWorkoutsQuery();
+    const { t } = useTranslation();
 
+    if (isLoading) {
+        return (
+            <div className="acct-loading-page">
+                <div className="acct-loading-card">
+                    <div className="acct-loading-spinner" />
+                    <p>{t("workout_history.loading")}</p>
+                </div>
+            </div>
+        );
+    }
 
-const WorkoutHistory =  () => {
-  const {data: workoutHistory = [], isLoading} = useGetWorkoutsQuery();
-  const {t} = useTranslation();
-  
-  if (isLoading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
-        <Spinner animation="border" variant="primary" />
-      </Container>
+        <div className="acct-content-page">
+            <Container className="acct-content-container">
+                <Link to="/account" className="acct-back-link">
+                    <span aria-hidden="true">‹</span>
+                    {t("workout_history.back_to_account")}
+                </Link>
+
+                <div className="acct-page-heading acct-history-heading">
+                    <span className="acct-page-eyebrow">
+                        {t("workout_history.eyebrow")}
+                    </span>
+                    <h1>{t("workout_history.title")}</h1>
+                    <p>{t("workout_history.description")}</p>
+                </div>
+
+                <AnimatePresence mode="popLayout">
+                    {workoutHistory.length === 0 ? (
+                        <motion.div
+                            className="acct-history-empty"
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                        >
+                            <div className="acct-history-empty-icon">📭</div>
+                            <h2>{t("workout_history.empty_title")}</h2>
+                            <p>{t("workout_history.empty_message")}</p>
+                            <Link
+                                to="/account"
+                                className="acct-primary-cta acct-history-empty-btn"
+                            >
+                                {t("workout_history.start_first_workout")}
+                            </Link>
+                        </motion.div>
+                    ) : (
+                        <div className="acct-history-list">
+                            {workoutHistory.map((workout: IWorkout, index: number) => (
+                                <motion.div
+                                    key={workout.id}
+                                    initial={{ opacity: 0, y: 18 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: Math.min(index * 0.06, 0.3) }}
+                                >
+                                    <WorkoutHistoryItem workout={workout} />
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
+                </AnimatePresence>
+            </Container>
+        </div>
     );
-  }
-
-  return (
-    <Container className="py-5">
-      <Row className="justify-content-center">
-        <Col md={10} lg={8}>
-          <div className="d-flex align-items-center mb-4">
-            <Link to="/account">
-              <Button variant="link" className="text-decoration-none p-0 me-3 text-primary">
-                &larr; {t('workout_history.back_to_account')}
-              </Button>
-            </Link>
-            <h2 className="fw-bold mb-0 text-white">{t('workout_history.title')}</h2>
-          </div>
-
-          <AnimatePresence>
-            {workoutHistory.length === 0 ? (
-              <Card className="text-center p-5 border-0 shadow-sm rounded-4">
-                <Card.Body>
-                  <h4 className="text-muted">{t('workout_history.empty_title')}</h4>
-                  <p>{t('workout_history.empty_message')}</p>
-                  <Link to="/account">
-                    <Button variant="success" className="rounded-pill px-4">
-                      {t('workout_history.start_first_workout')}
-                    </Button>
-                  </Link>
-                </Card.Body>
-              </Card>
-            ) : (
-              workoutHistory.map((workout: Workout, index : number) => (
-                <motion.div
-                  key={workout.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <WorkoutHistoryItem workout={workout} />
-                  
-                </motion.div>
-              ))
-            )}
-          </AnimatePresence>
-        </Col>
-      </Row>
-    </Container>
-  );
 };
 
 export default WorkoutHistory;

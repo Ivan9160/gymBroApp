@@ -83,10 +83,10 @@ function ProficiencyLevelBar({ name, value }: ProficiencyLevelBarProps) {
             </div>
             <p className="acct-progress-sub">
                 {isMaxLevel ? (
-                    t('user_form.proficiency_max_level', { defaultValue: 'Максимальний рівень' })
+                    t('user_form.proficiency_max_level', { defaultValue: 'Max Level' })
                 ) : (
                     t('user_form.proficiency_next_level', {
-                        defaultValue: '{{percent}}% до рівня «{{level}}»',
+                        defaultValue: '{{percent}}% to level «{{level}}»',
                         percent: Math.round(progressPercent),
                         level: t(`user_form.proficiency_levels.${nextLevel!.key}`, { defaultValue: nextLevel!.key }),
                     })

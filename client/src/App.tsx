@@ -1,73 +1,112 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';
-import { Container, Nav, NavDropdown } from 'react-bootstrap';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
+import "./components/style/account.css";
+import { Container, Nav } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginMenu from './components/login';
-import Logout from './components/logout';
-import { UserDataForm } from './components/userDataForm.tsx';
-import { useSelector } from 'react-redux';
-import { Link, Outlet } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; 
+import { useSelector } from "react-redux";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import HomePage from "./components/home";
+import { UserDataForm } from "./components/userDataForm";
 
 function App() {
-  const { isAuthenticated } = useAuth0();
-  const reduxUser = useSelector((state: any) => state.user);
-  const { t, i18n } = useTranslation(); 
+    const { isAuthenticated } = useAuth0();
+    const reduxUser = useSelector((state: any) => state.user);
+    const { t, i18n } = useTranslation();
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-  };
+    const hasProfile = Boolean(reduxUser.id);
+    const isGuestLanding = !isAuthenticated && pathname === "/";
 
-  return (
-    <div className="d-flex bg-dark flex-column justify-content-start h-[100vh] mt-0 mb-0 pb-0">
-      <header className="w-100 mt-0 p-0 border-bottom border-secondary">
-        <Container className="d-flex justify-content-between align-items-center py-2">
-          <Nav className="flex-grow-1">
-            {reduxUser.id ? (
-              <Nav.Link as={Link} to="/account" className="text-white text-xl">
-                {t('nav.account')}
-              </Nav.Link>
-            ) : (
-              isAuthenticated ? <Logout /> : <LoginMenu />
-            )}
-          </Nav>
+    useEffect(() => {
+        if (isAuthenticated && hasProfile && pathname === "/") {
+            navigate("/account", { replace: true });
+        }
+    }, [isAuthenticated, hasProfile, pathname, navigate]);
 
-          
-          <Nav>
-            <NavDropdown 
-              title={i18n.language.toUpperCase()} 
-              id="language-dropdown" 
-              align="end"
-              className="custom-dropdown"
-            >
-              <NavDropdown.Item onClick={() => changeLanguage('en')}>
-                🇺🇸
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => changeLanguage('ua')}>
-                🇺🇦 
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Container>
-      </header>
+    const activeLanguage = i18n.language?.toLowerCase().startsWith("uk")
+        ? "uk"
+        : "en";
 
-      <main className='bg-dark'>
-        <Outlet />
-        
-        {reduxUser.id != null ? (
-          <div></div>
-        ) : ( 
-          isAuthenticated && !reduxUser.id ? (
-            <UserDataForm status='existing' />
-          ) : (
-            <div className="text-center text-white mt-2 mb-4">
-              {t('app.login_prompt')}
-            </div>
-          )
-        )}
-      </main>
-    </div>
-  );
+    const changeLanguage = (language: "en" | "uk") => {
+        i18n.changeLanguage(language);
+    };
+
+    return (
+        <div className="app-shell">
+            <header className="app-header">
+                <Container className="app-header-inner">
+                    <Link
+                        to={hasProfile ? "/account" : "/"}
+                        className="app-brand"
+                        aria-label={t("nav.brand_aria")}
+                    >
+                        <span className="app-brand-mark">G</span>
+                        <span>GymBro</span>
+                    </Link>
+
+                    <Nav className="app-header-nav">
+                        {hasProfile && (
+                            <>
+                                <Nav.Link
+                                    as={Link}
+                                    to="/account"
+                                    className="app-header-link"
+                                >
+                                    {t("nav.my_profile")}
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={Link}
+                                    to="/history"
+                                    className="app-header-link app-header-link-secondary"
+                                >
+                                    {t("nav.history")}
+                                </Nav.Link>
+                            </>
+                        )}
+
+                        {!isAuthenticated && (
+                            <div
+                                className="app-language-switcher"
+                                aria-label={t("nav.language")}
+                            >
+                                <button
+                                    type="button"
+                                    className={`app-language-btn ${
+                                        activeLanguage === "en" ? "is-active" : ""
+                                    }`}
+                                    onClick={() => changeLanguage("en")}
+                                >
+                                    EN
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`app-language-btn ${
+                                        activeLanguage === "uk" ? "is-active" : ""
+                                    }`}
+                                    onClick={() => changeLanguage("uk")}
+                                >
+                                    UK
+                                </button>
+                            </div>
+                        )}
+                    </Nav>
+                </Container>
+            </header>
+
+            <main className="app-main">
+                {isGuestLanding ? (
+                    <HomePage />
+                ) : isAuthenticated && !hasProfile ? (
+                    <UserDataForm status="new" />
+                ) : (
+                    <Outlet />
+                )}
+            </main>
+        </div>
+    );
 }
 
 export default App;

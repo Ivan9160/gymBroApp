@@ -1,4 +1,7 @@
 export interface IExercise {
+  id: number;
+  name: string;
+  description: string;
   exerciseGroupId: number;
   isBodyweight: boolean;
   benchmark: number | null;
@@ -6,6 +9,10 @@ export interface IExercise {
 }
 
 export interface ISet {
+  id: number;
+  workoutId: number;
+  exerciseId: number;
+  muscleGroup: string;
   weight: number;
   reps: number;
   createdAt: Date ;
@@ -13,6 +20,12 @@ export interface ISet {
 }
 
 export interface IWorkout {
+  id: number;
+  userId: number;
+  date: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  finishedAt: Date | null;
   sets: ISet[];
 }
 

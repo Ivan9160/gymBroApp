@@ -50,7 +50,7 @@ export class SorenessService {
         });
         const adaptiveLimit = SorenessConfig.SORENESS_LIMIT * proficiency;
         if (adaptiveLimit === 0) return null;
-        return (totalStress / adaptiveLimit) * 100; 
+        return Math.min(100, (totalStress / adaptiveLimit) * 100); 
     }
     private calculateStressForSet(set: ISet, proficiency: number, bodyweight: number, now: number): number | null {
         if (!set.exercise.benchmark) {
@@ -70,7 +70,7 @@ export class SorenessService {
 
         const rir = Math.max(0, maxPossibleReps - set.reps);
 
-        const relativeIntensityForSet = pureIntensity * set.exercise.factor;
+        const relativeIntensityForSet = Math.min(1.0, pureIntensity * set.exercise.factor);
         if (relativeIntensityForSet <0.3) {
             return 0;
         }
