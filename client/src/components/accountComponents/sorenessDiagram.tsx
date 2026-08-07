@@ -102,7 +102,7 @@ function MuscleRegion({ id, soreness, getColor, selected, onSelect, children }: 
     const muscleName = t(`user_form.muscle_groups.${id}`, { defaultValue: id });
     return (
         <g className="acct-muscle-shape" onClick={() => onSelect(id)}>
-            <title>{`${muscleName}: ${Math.round(value*100)}%`}</title>
+            <title>{`${muscleName}: ${Math.round(value)}%`}</title>
             {children(shapeProps)}
         </g>
     );
@@ -163,7 +163,7 @@ function SorenessDiagram({ soreness, getColor, frontLabel = "Front", backLabel =
             <p className="acct-bodymap-status">
                 {selected ? (
                     <>
-                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(Math.min(getSorenessValue(soreness, selected) * 100, 100))}% {t("account.sore_label")}
+                        <strong>{t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })}</strong> — {Math.round(getSorenessValue(soreness, selected) )}% {t("account.sore_label")}
                     </>
                 ) : (
                     "\u00A0"

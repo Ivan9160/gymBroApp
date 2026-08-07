@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import ".././style/account.css";
 
 function getSorenessColorVar(value: number): string {
-    const clampedValue = Math.min(Math.max(value * 100, 0), 100);
+    const clampedValue = Math.min(Math.max(value, 0), 100);
 
     if (clampedValue <= 50) {
         const percentage = clampedValue * 2;

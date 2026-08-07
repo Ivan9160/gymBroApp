@@ -48,39 +48,57 @@ export class SorenessService {
                 totalStress += stress;
             }
         });
-        const adaptiveLimit = SorenessConfig.SORENESS_LIMIT * proficiency;
+        const adaptiveLimit = SorenessConfig.SORENESS_LIMIT //* proficiency;
         if (adaptiveLimit === 0) return null;
         return Math.min(100, (totalStress / adaptiveLimit) * 100); 
     }
+
     private calculateStressForSet(set: ISet, proficiency: number, bodyweight: number, now: number): number | null {
-        if (!set.exercise.benchmark) {
-            return null; 
-        }
-        const divider = set.exercise.benchmark! + (set.exercise.isBodyweight ? bodyweight : 0);
-        const effectiveWeight = set.exercise.isBodyweight ? (bodyweight + set.weight) : set.weight;
-
-        const estimated1RM = effectiveWeight * (1 + set.reps / 30);
-        const safeEffectiveWeight = Math.min(effectiveWeight, estimated1RM * 0.99);
-        const userMaxCapacityForExercise = proficiency * divider;
-
-        let pureIntensity = safeEffectiveWeight / userMaxCapacityForExercise;
-        pureIntensity = Math.min(1.0, Math.max(0.1, pureIntensity));
-
-        const maxPossibleReps = 30 * (1 / pureIntensity - 1);
-
-        const rir = Math.max(0, maxPossibleReps - set.reps);
-
-        const relativeIntensityForSet = Math.min(1.0, pureIntensity * set.exercise.factor);
-        if (relativeIntensityForSet <0.3) {
-            return 0;
-        }
-
-        const failureProximityFactor = Math.pow(2.718, -0.4 * rir);
-        const stress = set.reps * Math.pow(relativeIntensityForSet, 2) * failureProximityFactor * 10;
-
-        const hoursPassed = (now - new Date(set.createdAt).getTime()) / (1000 * 3600);
-        const timeFactor = Math.max(0, 1 - hoursPassed / (SorenessConfig.RECOVERY_DAYS * 24));
-
-        return stress*timeFactor;
+    if (!set.exercise.benchmark) {
+        return null;
     }
+
+    const divider = set.exercise.benchmark + (set.exercise.isBodyweight ? bodyweight : 0);
+
+    const effectiveWeight = set.exercise.isBodyweight
+        ? (bodyweight + set.weight)
+        : set.weight;
+
+
+    const estimated1RM = effectiveWeight * (1 + set.reps / 30);
+
+    const userMaxCapacityForExercise = proficiency * divider;
+
+
+    let relativeIntensity =
+        estimated1RM / userMaxCapacityForExercise;
+
+
+    relativeIntensity = Math.min(1.2, Math.max(0.1, relativeIntensity));
+
+
+    if (relativeIntensity < 0.2) {
+        return 0;
+    }
+
+
+    const stress =
+        Math.pow(set.reps, 0.7) *
+        Math.pow(relativeIntensity, 2.5) *
+        5
+        * set.exercise.factor
+
+
+    const hoursPassed =
+        (now - new Date(set.createdAt).getTime()) / (1000 * 3600);
+
+
+    const timeFactor = Math.max(
+        0,
+        1 - hoursPassed / (SorenessConfig.RECOVERY_DAYS * 24)
+    );
+
+
+    return stress * timeFactor;
+}
 }

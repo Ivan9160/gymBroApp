@@ -95,6 +95,7 @@ function ActiveWorkout() {
             dispatch(setWorkoutStartTime(null));
             dispatch(setWorkoutSets([]));
             setShowConfirmFinishWorkout(false);
+            window.location.reload();
         }).catch(error => {
             console.error("Error finishing workout:", error);
         });
