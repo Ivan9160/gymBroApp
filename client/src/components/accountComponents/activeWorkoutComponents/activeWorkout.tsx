@@ -52,8 +52,6 @@ function ActiveWorkout() {
                 const createdSet: ISet = response.data;
                 const newSets = [...workout.sets, createdSet];
                 dispatch(setWorkoutSets(newSets));
-                dispatch(setSetExerciseId(1));
-                dispatch(setSetMuscleGroup(1));
                 dispatch(setSetWeight(0));
                 dispatch(setSetReps(null));
             }).catch(error => {               

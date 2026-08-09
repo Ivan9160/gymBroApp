@@ -63,29 +63,48 @@ model Set {
 }
 
 model Exercise {
-  id              Int           @id @default(autoincrement())
-  exerciseGroupId Int           @map("exercise_group_id")
-  name            String
-  video           String
-  factor          Float         @default(0.0) 
-  benchmark       Float?
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-  isBodyweight    Boolean       @default(false) @map("is_bodyweight")
-  exerciseGroup   ExerciseGroup @relation(fields: [exerciseGroupId], references: [id])
-  set             Set[]
+  id                   Int       @id @default(autoincrement())
+  exerciseGroupId      Int       @map("exercise_group_id")
+  name                 String
+  video                String
+  benchmark            Float?
+  bodyweightLoadFactor Float     @default(0.0) @map("bodyweight_load_factor")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  isBodyweight         Boolean   @default(false) @map("is_bodyweight")
+
+  exerciseGroup ExerciseGroup @relation(fields: [exerciseGroupId], references: [id])
+  muscleFactors ExerciseMuscleFactor[]
+  set           Set[]
 
   @@map("exercises")
 }
 
+
 model ExerciseGroup {
-  id        Int        @id @default(autoincrement())
-  name      String
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  exercises Exercise[]
+  id            Int       @id @default(autoincrement())
+  name          String
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  exercises     Exercise[]
+  muscleFactors ExerciseMuscleFactor[]
 
   @@map("exercise_groups")
+}
+
+
+model ExerciseMuscleFactor {
+  exerciseId      Int   @map("exercise_id")
+  exerciseGroupId Int   @map("exercise_group_id")
+  factor          Float @default(0.0)
+
+  exercise      Exercise      @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseGroup ExerciseGroup @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
+
+  @@id([exerciseId, exerciseGroupId])
+  @@index([exerciseGroupId])
+  @@map("exercise_muscle_factors")
 }
 
 enum Role {

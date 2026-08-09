@@ -1,62 +1,55 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { ProficiencyConfig } from './proficiency.config';
-import { IProficiency, ISet, IUserProfile, IWorkout, IExerciseGroup, IUser} from 'src/common/interfaces';
+import { IProficiency, ISet, IUserProfile, IWorkout, IExerciseGroup, IUser } from 'src/common/interfaces';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
+// Сет, прив'язаний до конкретної групи м'язів з відповідним коефіцієнтом впливу
+interface IWeightedSet {
+  set: ISet;
+  factor: number; // factor саме для цієї групи м'язів (з ExerciseMuscleFactor)
+}
 
 @Injectable()
 export class ProficiencyService {
-  private readonly cacheTTL = ProficiencyConfig.TTL * 60 * 60 * 1000; // Convert hours to milliseconds for cache TTL
+  private readonly cacheTTL = ProficiencyConfig.TTL * 60 * 60 * 1000;
+
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
-   public async getProficiencyForAllMuscleGroups(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[]): Promise<IProficiency[]>  {
+  public async getProficiencyForAllMuscleGroups(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[]): Promise<IProficiency[]> {
     const cacheKey = `user:${user.id}:proficiency`;
     const cachedProficiency = await this.cacheManager.get<IProficiency[]>(cacheKey);
     if (cachedProficiency) {
       return cachedProficiency;
     }
-    return this.calculateAndSaveProficiency(user, workouts, exerciseGroups);    
+    return this.calculateAndSaveProficiency(user, workouts, exerciseGroups);
   }
-  
-  public async calculateAndSaveProficiency(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[] ): Promise<IProficiency[]> {
-    const sinceDate = new Date();
-    sinceDate.setDate(sinceDate.getDate() - ProficiencyConfig.RELEVANT_DATA_DAYS);
 
+  public async calculateAndSaveProficiency(user: IUser, workouts: IWorkout[], exerciseGroups: IExerciseGroup[]): Promise<IProficiency[]> {
     const userProfile = user?.userProfile;
 
     if (!userProfile) {
       throw new NotFoundException(`User with ID ${user.id} not found`);
     }
 
-    if(!userProfile.weight || userProfile.weight <= 0) {
+    if (!userProfile.weight || userProfile.weight <= 0) {
       throw new NotFoundException(`User with ID ${user.id} has an invalid weight for proficiency calculations`);
     }
 
-    const setsByGroup = new Map<number, ISet[]>();
-    for (const workout of workouts){
-      for (const set of workout.sets) {
-        const groupId = set.exercise.exerciseGroupId;
-        if (!setsByGroup.has(groupId)) {
-          setsByGroup.set(groupId, []);
-        }
-        setsByGroup.get(groupId)!.push(set);
-      }
-    }
+    const setsByGroup = this.buildSetsByGroup(workouts);
 
+    const result: IProficiency[] = exerciseGroups.map(group => {
+      const weightedSetsForGroup = setsByGroup.get(group.id) || [];
+      const proficiency = this.calculateProficiencyForMuscleGroup(weightedSetsForGroup, userProfile);
+      return {
+        id: group.id,
+        name: group.name,
+        proficiency: parseFloat(proficiency.toFixed(2)),
+      };
+    });
 
-    const result: IProficiency[] =  exerciseGroups.map(group => {
-        const setsForGroup = setsByGroup.get(group.id) || [];
-        const proficiency = this.calculateProficiencyForMuscleGroup(setsForGroup, userProfile);
-        return {
-          id: group.id,
-          name: group.name,
-          proficiency: parseFloat(proficiency.toFixed(2))
-        }
-
-      });
     const cacheKey = `user:${user.id}:proficiency`;
     try {
       await this.cacheManager.set(cacheKey, result, this.cacheTTL);
@@ -66,9 +59,26 @@ export class ProficiencyService {
     return result;
   }
 
+  private buildSetsByGroup(workouts: IWorkout[]): Map<number, IWeightedSet[]> {
+    const setsByGroup = new Map<number, IWeightedSet[]>();
 
-  private calculateProficiencyForMuscleGroup(sets: ISet[], profile: IUserProfile): number {
-    const averageDecayed1RM = this.calculateAverageDecayed1RMFactor(sets, profile.weight);
+    for (const workout of workouts) {
+      for (const set of workout.sets) {
+        for (const muscleFactor of set.exercise.muscleFactors) {
+          const groupId = muscleFactor.exerciseGroupId;
+          if (!setsByGroup.has(groupId)) {
+            setsByGroup.set(groupId, []);
+          }
+          setsByGroup.get(groupId)!.push({ set, factor: muscleFactor.factor });
+        }
+      }
+    }
+
+    return setsByGroup;
+  }
+
+  private calculateProficiencyForMuscleGroup(weightedSets: IWeightedSet[], profile: IUserProfile): number {
+    const averageDecayed1RM = this.calculateAverageDecayed1RMFactor(weightedSets, profile.weight);
     const genderModifier = ProficiencyConfig.GENDER_MODIFIERS[profile.gender as keyof typeof ProficiencyConfig.GENDER_MODIFIERS] || 1.0;
     const standardBodyweightModifier = profile.weight / ProficiencyConfig.STANDARD_BODYWEIGHT;
 
@@ -76,49 +86,49 @@ export class ProficiencyService {
     return totalProficiency;
   }
 
-  private calculateAverageDecayed1RMFactor(sets: ISet[], bodyweight: number): number {
+  private calculateAverageDecayed1RMFactor(weightedSets: IWeightedSet[], bodyweight: number): number {
     let totalDecayed1RMFactor = 0;
     let totalWeight = 0;
-    const validSets = sets.filter(set => set.exercise.benchmark !== null && set.exercise.benchmark > 0);
 
-    validSets.forEach(set => {
+    const validEntries = weightedSets.filter(
+      ({ set }) => set.exercise.benchmark !== null && set.exercise.benchmark > 0
+    );
+
+    validEntries.forEach(({ set, factor }) => {
       const setWeight = this.calculateSetRelevanceByTime(set.createdAt);
-      const raw1RMFactor = this.calculateRaw1RMFactor(set, bodyweight);
+      const raw1RMFactor = this.calculateRaw1RMFactor(set, bodyweight, factor);
       if (raw1RMFactor !== null) {
-        totalDecayed1RMFactor += (raw1RMFactor * setWeight);
+        totalDecayed1RMFactor += raw1RMFactor * setWeight;
         totalWeight += setWeight;
       }
     });
 
-    return validSets.length > 0 ? totalDecayed1RMFactor / totalWeight : 0;
+    return validEntries.length > 0 && totalWeight > 0 ? totalDecayed1RMFactor / totalWeight : 0;
   }
 
-
-  private calculateSetRelevanceByTime(date: Date): number {  // Calculate the relevance of a set based on its age, using an exponential decay model
+  private calculateSetRelevanceByTime(date: Date): number {
     const days = (Date.now() - date.getTime()) / (1000 * 3600 * 24);
 
     if (days <= ProficiencyConfig.GRACE_PERIOD_DAYS) {
-      return 1.0; 
+      return 1.0;
     }
 
     const effectiveDays = days - ProficiencyConfig.GRACE_PERIOD_DAYS;
     return ProficiencyConfig.MIN_RESIDUAL_FACTOR + (1 - ProficiencyConfig.MIN_RESIDUAL_FACTOR) * Math.exp(-effectiveDays / ProficiencyConfig.TAU);
   }
 
-  private calculateRaw1RMFactor(set: ISet, bodyweight: number): number | null {  // Calculate the one-rep max factor for a set, considering bodyweight and exercise benchmark
+  private calculateRaw1RMFactor(set: ISet, bodyweight: number, factor: number): number | null {
     if (set.exercise.benchmark === null || set.exercise.benchmark <= 0) {
-        return null; 
-      }
+      return null;
+    }
 
-    const effectiveWeight = set.exercise.isBodyweight 
-      ? (bodyweight + set.weight) 
+    const effectiveWeight = set.exercise.isBodyweight
+      ? (bodyweight + set.weight)
       : set.weight;
 
     const oneRM = effectiveWeight * (1 + set.reps / 30);
     const divider = set.exercise.benchmark + (set.exercise.isBodyweight ? bodyweight : 0);
-    
-    return (oneRM*set.exercise.factor) / divider;
 
+    return (oneRM * factor) / divider;
   }
-  
 }

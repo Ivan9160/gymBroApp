@@ -1,12 +1,5 @@
 import { Role } from '@prisma/client';
 
-export interface IExercise {
-  exerciseGroupId: number;
-  isBodyweight: boolean;
-  benchmark: number | null;
-  factor: number;
-}
-
 export interface ISet {
   weight: number;
   reps: number;
@@ -41,9 +34,22 @@ export interface IUser {
   workouts?: IWorkout[]; 
 }
 
+export interface IExercise {
+  exerciseGroupId: number;
+  isBodyweight: boolean;
+  benchmark: number | null;
+  muscleFactors: IExerciseMuscleFactor[];
+}
+
 export interface IExerciseGroup {
   id: number;
   name: string;
+}
+
+export interface IExerciseMuscleFactor {
+  exerciseId: number;
+  exerciseGroupId: number;
+  factor: number;
 }
 
 export interface IProficiency {

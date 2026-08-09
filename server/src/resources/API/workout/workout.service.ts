@@ -65,7 +65,8 @@ export class WorkoutService {
                     include: {
                         exercise: {
                             include: {
-                                exerciseGroup: true
+                                exerciseGroup: true,
+                                muscleFactors: true
                             }
                         }
                     }
