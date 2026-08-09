@@ -4,10 +4,9 @@ import { IProficiency, ISet, IUserProfile, IWorkout, IExerciseGroup, IUser } fro
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
-// Сет, прив'язаний до конкретної групи м'язів з відповідним коефіцієнтом впливу
 interface IWeightedSet {
   set: ISet;
-  factor: number; // factor саме для цієї групи м'язів (з ExerciseMuscleFactor)
+  factor: number; 
 }
 
 @Injectable()
@@ -87,23 +86,27 @@ export class ProficiencyService {
   }
 
   private calculateAverageDecayed1RMFactor(weightedSets: IWeightedSet[], bodyweight: number): number {
+    const p = ProficiencyConfig.INTENSITY_POWER; // Exponent for intensity weighting
+    const muscleFactorSoftness = ProficiencyConfig.MUSCLE_FACTOR_SOFTNESS; // Softness factor for muscle factor influence
     let totalDecayed1RMFactor = 0;
-    let totalWeight = 0;
+    let totalWeight = 0;  // Total weight for normalization, not to be confused with the weight of the set
+
 
     const validEntries = weightedSets.filter(
       ({ set }) => set.exercise.benchmark !== null && set.exercise.benchmark > 0
     );
 
     validEntries.forEach(({ set, factor }) => {
-      const setWeight = this.calculateSetRelevanceByTime(set.createdAt);
-      const raw1RMFactor = this.calculateRaw1RMFactor(set, bodyweight, factor);
-      if (raw1RMFactor !== null) {
-        totalDecayed1RMFactor += raw1RMFactor * setWeight;
-        totalWeight += setWeight;
+      const setRelevance = this.calculateSetRelevanceByTime(set.createdAt);
+      const rawIntensity = this.calculateRawIntensity(set, bodyweight);
+      if (rawIntensity !== null && rawIntensity > 0 && factor > 0) {
+        const groupedIntensity = Math.pow(factor, 1/muscleFactorSoftness) * rawIntensity; // Adjust intensity by factor for this muscle group
+        totalDecayed1RMFactor += Math.pow(groupedIntensity, p) * setRelevance;
+        totalWeight += setRelevance;
       }
     });
 
-    return validEntries.length > 0 && totalWeight > 0 ? totalDecayed1RMFactor / totalWeight : 0;
+    return validEntries.length > 0 && totalWeight > 0 ? Math.pow(totalDecayed1RMFactor / totalWeight, 1 / p) : 0;
   }
 
   private calculateSetRelevanceByTime(date: Date): number {
@@ -117,7 +120,7 @@ export class ProficiencyService {
     return ProficiencyConfig.MIN_RESIDUAL_FACTOR + (1 - ProficiencyConfig.MIN_RESIDUAL_FACTOR) * Math.exp(-effectiveDays / ProficiencyConfig.TAU);
   }
 
-  private calculateRaw1RMFactor(set: ISet, bodyweight: number, factor: number): number | null {
+  private calculateRawIntensity(set: ISet, bodyweight: number): number | null {
     if (set.exercise.benchmark === null || set.exercise.benchmark <= 0) {
       return null;
     }
@@ -129,6 +132,6 @@ export class ProficiencyService {
     const oneRM = effectiveWeight * (1 + set.reps / 30);
     const divider = set.exercise.benchmark + (set.exercise.isBodyweight ? bodyweight : 0);
 
-    return (oneRM * factor) / divider;
+    return (oneRM ) / divider;
   }
 }

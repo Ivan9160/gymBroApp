@@ -91,6 +91,8 @@ function ActiveWorkout() {
         }).then(() => {
             dispatch(setWorkoutId(null));
             dispatch(setWorkoutStartTime(null));
+            dispatch(setSetExerciseId(1));
+            dispatch(setSetMuscleGroup(1));
             dispatch(setWorkoutSets([]));
             setShowConfirmFinishWorkout(false);
             window.location.reload();

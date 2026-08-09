@@ -2,10 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { SorenessConfig } from './soreness.config';
 import { ISet, ISoreness, IUser, IUserProfile, IWorkout, IExerciseGroup, IProficiency } from 'src/common/interfaces';
 
-// Сет, прив'язаний до конкретної групи м'язів з відповідним коефіцієнтом впливу
 interface IWeightedSet {
   set: ISet;
-  factor: number; // factor саме для цієї групи м'язів (з ExerciseMuscleFactor)
+  factor: number; 
 }
 
 @Injectable()
@@ -36,8 +35,6 @@ export class SorenessService {
         });
     }
 
-    // Один сет тепер може потрапити у кілька груп м'язів одночасно —
-    // по одній "копії" сету на кожен запис у muscleFactors, зі своїм factor.
     private buildSetsByGroup(workouts: IWorkout[]): Map<number, IWeightedSet[]> {
         const setsByGroup = new Map<number, IWeightedSet[]>();
 
