@@ -5,6 +5,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { ExerciseGroupService } from '../exercise-group/exerciseGroup.service';
 import { WorkoutService } from '../workout/workout.service';
 import { UserService } from '../user/user.service';
+import { UserSummaryConfig } from './user-summary.config';
 
 
 
@@ -28,7 +29,12 @@ export class ProficiencyListener {
                 this.logger.error(`[User not found]: for userId: ${payload.userId}`);
                 return;
             }
-            const workouts = await this.workoutService.findAllByUserId(payload.userId);
+            const proficiencySince = new Date();
+                proficiencySince.setDate(
+                    proficiencySince.getDate() -
+                        UserSummaryConfig.PROFICIENCY_DATA_DAYS,
+                );
+            const workouts = await this.workoutService.findAllByUserId(payload.userId, { since: proficiencySince });
             const exerciseGroups = await this.exerciseGroupService.findAll();
             await this.proficiencyService.calculateAndSaveProficiency(user, workouts, exerciseGroups);
             this.logger.log(`[Proficiency recalculated]: for userId: ${payload.userId}`);

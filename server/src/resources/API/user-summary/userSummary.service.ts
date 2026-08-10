@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { NotFoundException } from '@nestjs/common';
 import { WorkoutService } from '../workout/workout.service';
 import { ExerciseGroupService } from '../exercise-group/exerciseGroup.service';
+import { UserSummaryConfig } from './user-summary.config';
  
 @Injectable()
 export class UserSummaryService {
@@ -22,10 +23,32 @@ export class UserSummaryService {
     if (!user) {
       throw new NotFoundException(`User with ID "${userId}" not found`);
     }
-    const workouts = await this.workoutService.findAllByUserId(user.id);
+    
     const exerciseGroups = await this.exerciseGroupService.findAll();
-    const proficiency: IProficiency[] = await this.proficiencyService.getProficiencyForAllMuscleGroups(user, workouts, exerciseGroups);
-    const soreness: ISoreness[] = await this.sorenessService.getSorenessForAllMuscleGroups(user, workouts, exerciseGroups, proficiency);
+    const proficiencySince = new Date();
+    proficiencySince.setDate(
+        proficiencySince.getDate() -
+            UserSummaryConfig.PROFICIENCY_DATA_DAYS,
+    );
+
+    const sorenessSince = new Date();
+    sorenessSince.setDate(
+        sorenessSince.getDate() -
+            UserSummaryConfig.SORENESS_DATA_DAYS,
+    );
+
+    const [proficiencyWorkouts, sorenessWorkouts] =
+        await Promise.all([
+            this.workoutService.findAllByUserId(user.id, {
+                since: proficiencySince,
+            }),
+
+            this.workoutService.findAllByUserId(user.id, {
+                since: sorenessSince,
+            }),
+        ]);
+    const proficiency: IProficiency[] = await this.proficiencyService.getProficiencyForAllMuscleGroups(user, proficiencyWorkouts, exerciseGroups);
+    const soreness: ISoreness[] = await this.sorenessService.getSorenessForAllMuscleGroups(user, sorenessWorkouts, exerciseGroups, proficiency);
 
     return {
       user,

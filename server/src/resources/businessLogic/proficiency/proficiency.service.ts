@@ -3,6 +3,7 @@ import { ProficiencyConfig } from './proficiency.config';
 import { IProficiency, ISet, IUserProfile, IWorkout, IExerciseGroup, IUser } from 'src/common/interfaces';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { CoreMathConfig } from '../coreMath.config';
 
 interface IWeightedSet {
   set: ISet;
@@ -86,8 +87,8 @@ export class ProficiencyService {
   }
 
   private calculateAverageDecayed1RMFactor(weightedSets: IWeightedSet[], bodyweight: number): number {
-    const p = ProficiencyConfig.INTENSITY_POWER; // Exponent for intensity weighting
-    const muscleFactorSoftness = ProficiencyConfig.MUSCLE_FACTOR_SOFTNESS; // Softness factor for muscle factor influence
+    const p = CoreMathConfig.INTENSITY_POWER; // Exponent for intensity weighting
+    const muscleFactorSoftness = CoreMathConfig.MUSCLE_FACTOR_SOFTNESS; // Softness factor for muscle factor influence
     let totalDecayed1RMFactor = 0;
     let totalWeight = 0;  // Total weight for normalization, not to be confused with the weight of the set
 
