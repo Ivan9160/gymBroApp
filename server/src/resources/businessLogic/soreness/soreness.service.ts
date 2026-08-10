@@ -79,6 +79,7 @@ export class SorenessService {
         }
 
         const divider = set.exercise.benchmark + (set.exercise.isBodyweight ? bodyweight : 0);
+        const softFactor = Math.pow(factor, 1 / CoreMathConfig.MUSCLE_FACTOR_SOFTNESS);
 
         const effectiveWeight = set.exercise.isBodyweight
             ? (bodyweight + set.weight)
@@ -87,9 +88,9 @@ export class SorenessService {
         const estimated1RM = effectiveWeight * (1 + set.reps / 30);
 
         const userMaxCapacityForExercise = Math.max(proficiency, 0.2) * divider;
-
+        const groupAdjustedLoad = estimated1RM * softFactor;
         let relativeIntensity =
-            estimated1RM / userMaxCapacityForExercise;
+            groupAdjustedLoad / userMaxCapacityForExercise;
 
         relativeIntensity = Math.min(1.2, Math.max(0.1, relativeIntensity));
 
@@ -97,7 +98,6 @@ export class SorenessService {
             return 0;
         }
 
-        const softFactor = Math.pow(factor, 1 / CoreMathConfig.MUSCLE_FACTOR_SOFTNESS); 
 
         const rawDamage =
             Math.pow(set.reps, 0.7) *
