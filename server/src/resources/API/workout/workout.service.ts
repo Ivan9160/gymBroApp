@@ -5,6 +5,7 @@ import { WorkoutStatus } from './dto/workoutStatus.enum';
 import { IWorkoutFilterOptions } from 'src/common/interfaces';
 import { Prisma } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class WorkoutService {
@@ -22,23 +23,65 @@ export class WorkoutService {
         })
     }
 
-    async finishWorkout(id: number, userId: number, body: UpdateWorkoutDto) {
-        const workout = await this.prisma.workout.update({
-            
-            where: { 
-                id,
-                user_id: userId
-             },
-            data: {
-                status: body.status,
-                finishedAt: body.finishedAt
-            }
-        })
+    async finishWorkout(
+        id: number,
+        userId: number,
+        body: UpdateWorkoutDto
+    ) {
+        const workout =
+            await this.prisma.workout.findFirst({
+                where: {
+                    id,
+                    user_id: userId,
+                },
+                include: {
+                    sets: true,
+                },
+            });
 
-        if (workout.status === WorkoutStatus.COMPLETED) {
-            this.eventEmitter.emit('workout.completed', { userId });
+        if (!workout) {
+            throw new NotFoundException(
+                `Workout with id "${id}" not found`
+            );
         }
-        return workout;
+
+        if (workout.sets.length === 0) {
+            await this.prisma.workout.delete({
+                where: {
+                    id: workout.id,
+                },
+            });
+
+            return {
+                deleted: true,
+                workout: null,
+            };
+        }
+
+        const updatedWorkout =
+            await this.prisma.workout.update({
+                where: {
+                    id: workout.id,
+                },
+                data: {
+                    status: body.status,
+                    finishedAt: body.finishedAt,
+                },
+            });
+
+        if (
+            updatedWorkout.status ===
+            WorkoutStatus.COMPLETED
+        ) {
+            this.eventEmitter.emit(
+                "workout.completed",
+                {
+                    userId,
+                }
+            );
+        }
+
+        return updatedWorkout;
     }
 
     findAll() {

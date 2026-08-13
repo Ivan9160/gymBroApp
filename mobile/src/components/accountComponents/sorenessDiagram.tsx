@@ -1,0 +1,547 @@
+import { useState, type ReactElement } from "react";
+import { useTranslation } from "react-i18next";
+import {
+    Circle,
+    Ellipse,
+    G,
+    Path,
+    Rect,
+    Svg,
+} from "react-native-svg";
+import type { LayoutChangeEvent } from "react-native";
+import { Text, View } from "react-native";
+
+import type { ISoreness } from "../../types";
+import { colors, styles } from "../style/accountStyles";
+
+export type MuscleGroupId =
+    | "chest"
+    | "back"
+    | "shoulders"
+    | "biceps"
+    | "triceps"
+    | "core"
+    | "legs";
+
+interface SorenessDiagramProps {
+    soreness: ISoreness;
+    getColor: (value: number) => string;
+    frontLabel?: string;
+    backLabel?: string;
+}
+
+interface ShapeProps {
+    fill: string;
+    stroke: string;
+    strokeWidth: number;
+}
+
+interface AbsCell {
+    x: number;
+    y: number;
+}
+
+const LEFT_DELTOID =
+    "M62,72 C46,72 34,84 32,100 C30,114 40,122 54,120 C64,118 68,104 66,88 C65,80 64,75 62,72 Z";
+
+const RIGHT_DELTOID =
+    "M138,72 C154,72 166,84 168,100 C170,114 160,122 146,120 C136,118 132,104 134,88 C135,80 136,75 138,72 Z";
+
+const LEFT_UPPER_ARM =
+    "M50,92 C34,98 22,118 22,145 C22,163 30,175 42,172 C52,169 56,150 54,125 C53,112 52,100 50,92 Z";
+
+const RIGHT_UPPER_ARM =
+    "M150,92 C166,98 178,118 178,145 C178,163 170,175 158,172 C148,169 144,150 146,125 C147,112 148,100 150,92 Z";
+
+const LEFT_FOREARM =
+    "M24,172 C18,190 16,215 18,240 C19,252 30,254 34,244 C38,220 38,195 36,172 Z";
+
+const RIGHT_FOREARM =
+    "M176,172 C182,190 184,215 182,240 C181,252 170,254 166,244 C162,220 162,195 164,172 Z";
+
+const LEFT_THIGH =
+    "M66,218 C60,238 58,262 62,296 L94,296 C98,262 96,238 92,218 C84,214 74,214 66,218 Z";
+
+const RIGHT_THIGH =
+    "M134,218 C140,238 142,262 138,296 L106,296 C102,262 104,238 108,218 C116,214 126,214 134,218 Z";
+
+const LEFT_CALF =
+    "M64,304 C60,328 60,356 66,384 C68,394 82,395 84,386 C88,358 88,330 84,304 Z";
+
+const RIGHT_CALF =
+    "M136,304 C140,328 140,356 134,384 C132,394 118,395 116,386 C112,358 112,330 116,304 Z";
+
+const TORSO_BASE =
+    "M70,74 C58,78 52,96 54,118 L58,175 C58,196 64,212 76,218 L124,218 C136,212 142,196 142,175 L146,118 C148,96 142,78 130,74 C118,68 108,66 100,66 C92,66 80,68 70,74 Z";
+
+const LEFT_PEC =
+    "M98,86 C82,82 66,88 62,104 C60,118 70,130 86,128 C96,126 100,114 99,100 C99,95 99,90 98,86 Z";
+
+const RIGHT_PEC =
+    "M102,86 C118,82 134,88 138,104 C140,118 130,130 114,128 C104,126 100,114 101,100 C101,95 101,90 102,86 Z";
+
+const BACK_SHAPE =
+    "M100,70 L136,96 C142,120 138,158 124,196 L100,206 L76,196 C62,158 58,120 64,96 Z";
+
+const ABS: AbsCell[] = [
+    { x: 82, y: 134 },
+    { x: 103, y: 134 },
+    { x: 82, y: 156 },
+    { x: 103, y: 156 },
+    { x: 82, y: 178 },
+    { x: 103, y: 178 },
+];
+
+// viewBox is 200 wide x 420 tall (head through feet) — used to
+// derive height from a measured width while keeping proportions.
+const VIEWBOX_WIDTH = 200;
+const VIEWBOX_HEIGHT = 420;
+const ASPECT_RATIO = VIEWBOX_HEIGHT / VIEWBOX_WIDTH;
+
+// Two figures sit side by side (see styles.bodymap "gap"), so each
+// one gets roughly half the available width, capped so it never
+// grows larger than it does on web.
+const FIGURE_GAP = 14;
+const MAX_FIGURE_WIDTH = 150;
+const DEFAULT_FIGURE_WIDTH = 130;
+
+function getSorenessValue(
+    soreness: ISoreness,
+    id: MuscleGroupId
+): number {
+    if (!soreness) {
+        return 0;
+    }
+
+    if (Array.isArray(soreness)) {
+        const item = soreness.find(
+            (group) =>
+                group.name &&
+                group.name.toLowerCase() === id.toLowerCase()
+        );
+
+        return item ? item.soreness : 0;
+    }
+
+    return 0;
+}
+
+/**
+ * Head, neck, forearms, hands and feet — the parts of the body
+ * that aren't a selectable muscle group. Mirrors the web version's
+ * BodyBase, which was missing here (that's why the head/hands/feet
+ * weren't rendering on mobile).
+ */
+function BodyBase() {
+    const baseProps = {
+        fill: colors.acctSkin,
+        stroke: colors.acctSkinStroke,
+        strokeWidth: 1,
+    };
+
+    return (
+        <G>
+            <Circle cx={100} cy={34} r={22} {...baseProps} />
+            <Rect x={90} y={54} width={20} height={18} rx={6} {...baseProps} />
+            <Path d={TORSO_BASE} {...baseProps} />
+            <Path d={LEFT_FOREARM} {...baseProps} />
+            <Path d={RIGHT_FOREARM} {...baseProps} />
+            <Ellipse cx={26} cy={262} rx={8} ry={11} {...baseProps} />
+            <Ellipse cx={174} cy={262} rx={8} ry={11} {...baseProps} />
+            <Rect x={58} y={394} width={36} height={16} rx={8} {...baseProps} />
+            <Rect x={106} y={394} width={36} height={16} rx={8} {...baseProps} />
+        </G>
+    );
+}
+
+interface RegionProps {
+    soreness: ISoreness;
+    id: MuscleGroupId;
+    getColor: (value: number) => string;
+    selected: MuscleGroupId | null;
+    onSelect: (id: MuscleGroupId) => void;
+    children: (shapeProps: ShapeProps) => ReactElement;
+}
+
+function MuscleRegion({
+    id,
+    soreness,
+    getColor,
+    selected,
+    onSelect,
+    children,
+}: RegionProps) {
+    const value = getSorenessValue(soreness, id);
+    const isSelected = selected === id;
+
+    const shapeProps: ShapeProps = {
+        fill: getColor(value),
+        stroke: isSelected
+            ? colors.white
+            : colors.acctSkinStroke,
+        strokeWidth: isSelected ? 2.5 : 1,
+    };
+
+    return (
+        <G onPress={() => onSelect(id)}>
+            {children(shapeProps)}
+        </G>
+    );
+}
+
+type FigureProps = Omit<
+    RegionProps,
+    "id" | "children"
+> & {
+    width: number;
+};
+
+function FrontFigure({
+    soreness,
+    getColor,
+    selected,
+    onSelect,
+    width,
+}: FigureProps) {
+    const height = width * ASPECT_RATIO;
+
+    return (
+        <Svg
+            width={width}
+            height={height}
+            viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+        >
+            <BodyBase />
+
+            <MuscleRegion
+                id="shoulders"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_DELTOID}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_DELTOID}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="chest"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_PEC}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_PEC}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="biceps"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_UPPER_ARM}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_UPPER_ARM}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="core"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        {ABS.map((cell, index) => (
+                            <Rect
+                                key={index}
+                                x={cell.x}
+                                y={cell.y}
+                                width={15}
+                                height={18}
+                                rx={4}
+                                {...p}
+                            />
+                        ))}
+                    </G>
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="legs"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_THIGH}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_THIGH}
+                            {...p}
+                        />
+                        <Path
+                            d={LEFT_CALF}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_CALF}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+        </Svg>
+    );
+}
+
+function BackFigure({
+    soreness,
+    getColor,
+    selected,
+    onSelect,
+    width,
+}: FigureProps) {
+    const height = width * ASPECT_RATIO;
+
+    return (
+        <Svg
+            width={width}
+            height={height}
+            viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+        >
+            <BodyBase />
+
+            <MuscleRegion
+                id="shoulders"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_DELTOID}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_DELTOID}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="back"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <Path
+                        d={BACK_SHAPE}
+                        {...p}
+                    />
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="triceps"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_UPPER_ARM}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_UPPER_ARM}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+
+            <MuscleRegion
+                id="legs"
+                soreness={soreness}
+                getColor={getColor}
+                selected={selected}
+                onSelect={onSelect}
+            >
+                {(p) => (
+                    <G>
+                        <Path
+                            d={LEFT_THIGH}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_THIGH}
+                            {...p}
+                        />
+                        <Path
+                            d={LEFT_CALF}
+                            {...p}
+                        />
+                        <Path
+                            d={RIGHT_CALF}
+                            {...p}
+                        />
+                    </G>
+                )}
+            </MuscleRegion>
+        </Svg>
+    );
+}
+
+function SorenessDiagram({
+    soreness,
+    getColor,
+    frontLabel = "Front",
+    backLabel = "Back",
+}: SorenessDiagramProps) {
+    const { t } = useTranslation();
+
+    const [selected, setSelected] =
+        useState<MuscleGroupId | null>(null);
+
+    // Measured from the row that holds both figures, so the
+    // diagram scales down on narrow screens instead of overflowing
+    // the card. Starts at the same size as web until measured.
+    const [figureWidth, setFigureWidth] = useState(
+        DEFAULT_FIGURE_WIDTH
+    );
+
+    const toggle = (id: MuscleGroupId) => {
+        setSelected((current) =>
+            current === id ? null : id
+        );
+    };
+
+    const handleBodymapLayout = (
+        event: LayoutChangeEvent
+    ) => {
+        const { width } = event.nativeEvent.layout;
+
+        const availablePerFigure =
+            (width - FIGURE_GAP) / 2;
+
+        setFigureWidth(
+            Math.min(
+                availablePerFigure,
+                MAX_FIGURE_WIDTH
+            )
+        );
+    };
+
+    return (
+        <View>
+            <Text style={styles.bodymapStatus}>
+                {selected ? (
+                    <>
+                        <Text
+                            style={styles.bodymapStatusStrong}
+                        >
+                            {t(
+                                `user_form.muscle_groups.${selected}`,
+                                {
+                                    defaultValue: selected,
+                                }
+                            )}
+                        </Text>
+
+                        {" — "}
+                        {Math.round(
+                            getSorenessValue(
+                                soreness,
+                                selected
+                            )
+                        )}
+                        % {t("account.sore_label")}
+                    </>
+                ) : (
+                    "\u00A0"
+                )}
+            </Text>
+
+            <View
+                style={styles.bodymap}
+                onLayout={handleBodymapLayout}
+            >
+                <View style={styles.bodymapFigure}>
+                    <FrontFigure
+                        soreness={soreness}
+                        getColor={getColor}
+                        selected={selected}
+                        onSelect={toggle}
+                        width={figureWidth}
+                    />
+
+                    <Text style={styles.bodymapCaption}>
+                        {frontLabel}
+                    </Text>
+                </View>
+
+                <View style={styles.bodymapFigure}>
+                    <BackFigure
+                        soreness={soreness}
+                        getColor={getColor}
+                        selected={selected}
+                        onSelect={toggle}
+                        width={figureWidth}
+                    />
+
+                    <Text style={styles.bodymapCaption}>
+                        {backLabel}
+                    </Text>
+                </View>
+            </View>
+        </View>
+    );
+}
+
+export default SorenessDiagram;

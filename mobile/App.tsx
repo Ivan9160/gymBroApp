@@ -1,20 +1,12 @@
-import React from "react";
 import { Provider } from "react-redux";
-import { NavigationContainer } from "@react-navigation/native";
-
-import { store } from "./src/store/store";
-import { AppNavigator } from "./src/navigation/AppNavigator";
-
-import "./src/localization/i18n";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./src/store/store";
 
 export default function App() {
-    return (
+  return (
         <Provider store={store}>
-            <NavigationContainer>
-                <AppNavigator />
-            </NavigationContainer>
+        <PersistGate loading={null} persistor={persistor}>
+        </PersistGate>
         </Provider>
-    );
+  );
 }
-
-

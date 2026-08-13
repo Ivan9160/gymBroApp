@@ -1,24 +1,106 @@
-import { Redirect } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+    ActivityIndicator,
+    View,
+} from "react-native";
+import { useAuth0 } from "react-native-auth0";
+import { router } from "expo-router";
 
-import HomeScreen from "../src/screens/HomeScreen";
-import UserDataScreen from "../src/screens/UserDataScreen";
+import HomePage from "../src/components/home";
+import { useProfileToken } from "../src/hooks/useProfileToken";
+import {
+    useGetUserSummaryQuery,
+} from "../src/api/userApi";
 
 export default function Index() {
-  const reduxUser = useSelector((state: any) => state.user);
+    const {
+        user: authUser,
+        isLoading: authLoading,
+    } = useAuth0();
 
-  const isAuthenticated = false;
+    const { tokenReady } = useProfileToken();
 
-  const hasProfile = Boolean(reduxUser?.id);
+    const {
+        data: userSummary,
+        isLoading: summaryLoading,
+        isFetching: summaryFetching,
+        isSuccess: summarySuccess,
+        isError: summaryIsError,
+        error: summaryError,
+    } = useGetUserSummaryQuery(undefined, {
+        skip:
+            !authUser ||
+            !tokenReady,
+    });
 
-  if (isAuthenticated && hasProfile) {
-    return <Redirect href="/account" />;
-  }
+    useEffect(() => {
+        if (authLoading) {
+            return;
+        }
 
-  if (isAuthenticated && !hasProfile) {
-    return <UserDataScreen status="new" />;
-  }
+        if (!authUser) {
+            return;
+        }
 
-  return <HomeScreen />;
+        if (!tokenReady) {
+            return;
+        }
+
+        if (
+            summaryLoading ||
+            summaryFetching
+        ) {
+            return;
+        }
+
+        if (
+            summarySuccess &&
+            userSummary
+        ) {
+            router.replace("/account");
+            return;
+        }
+
+        if (summaryIsError) {
+            router.replace("/createProfile");
+        }
+    }, [
+        authLoading,
+        authUser,
+        tokenReady,
+        summaryLoading,
+        summaryFetching,
+        summarySuccess,
+        summaryIsError,
+        userSummary,
+        summaryError,
+    ]);
+
+    if (
+        authLoading ||
+        (
+            authUser &&
+            (
+                !tokenReady ||
+                summaryLoading ||
+                summaryFetching
+            )
+        )
+    ) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent:
+                        "center",
+                    alignItems:
+                        "center",
+                }}
+            >
+                <ActivityIndicator />
+            </View>
+        );
+    }
+
+    return <HomePage />;
 }
