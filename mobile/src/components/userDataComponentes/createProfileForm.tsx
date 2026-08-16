@@ -13,7 +13,7 @@ import { router } from "expo-router";
 import { useCreateUserMutation } from "../../api/userApi";
 import { useProfileToken } from "../../hooks/useProfileToken";
 import { ProfileFormFields } from "./profileFormFields";
-import { styles } from "../style/accountStyles";
+import { styles } from "../../style";
 
 type Goal = "lose" | "maintain" | "gain";
 

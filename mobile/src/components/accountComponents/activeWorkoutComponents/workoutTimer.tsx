@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { useSelector } from "react-redux";
 
-import { styles } from "../../style/accountStyles";
+import { styles } from "../../../style";
 
 export const WorkoutTimer = () => {
     const createdAt = useSelector(

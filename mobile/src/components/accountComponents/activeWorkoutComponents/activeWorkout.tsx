@@ -38,7 +38,7 @@ import type {
     IWorkout,
 } from "../../../types";
 
-import { styles } from "../../style/accountStyles";
+import { styles } from "../../../style";
 import { WorkoutTimer } from "./workoutTimer";
 import { FinishWorkoutModal } from "./finishWorkoutModal";
 import { SwipeableSetItem } from "./swipeableSetItem";

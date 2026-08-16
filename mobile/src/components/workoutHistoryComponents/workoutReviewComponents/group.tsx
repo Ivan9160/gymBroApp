@@ -7,7 +7,7 @@ import { Exercise as RenderedExercise } from "./exercise";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
-import { styles } from "../../style/accountStyles";
+import { styles } from "../../../style";
 
 interface GroupProps {
     groupIndex: number;

@@ -28,7 +28,7 @@ import { Group } from "./group";
 import {
     styles,
     getGuestContainerStyle
-} from "../../style/accountStyles";
+} from "../../../style";
 
 type RootStackParamList = {
     Account: undefined;

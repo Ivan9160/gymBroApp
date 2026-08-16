@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
     Circle,
@@ -9,10 +9,13 @@ import {
     Svg,
 } from "react-native-svg";
 import type { LayoutChangeEvent } from "react-native";
-import { Text, View } from "react-native";
+import {
+    Text,
+    View,
+} from "react-native";
 
 import type { ISoreness } from "../../types";
-import { colors, styles } from "../style/accountStyles";
+import { colors, styles } from "../../style";
 
 export type MuscleGroupId =
     | "chest"
@@ -92,15 +95,11 @@ const ABS: AbsCell[] = [
     { x: 103, y: 178 },
 ];
 
-// viewBox is 200 wide x 420 tall (head through feet) — used to
-// derive height from a measured width while keeping proportions.
 const VIEWBOX_WIDTH = 200;
 const VIEWBOX_HEIGHT = 420;
-const ASPECT_RATIO = VIEWBOX_HEIGHT / VIEWBOX_WIDTH;
+const ASPECT_RATIO =
+    VIEWBOX_HEIGHT / VIEWBOX_WIDTH;
 
-// Two figures sit side by side (see styles.bodymap "gap"), so each
-// one gets roughly half the available width, capped so it never
-// grows larger than it does on web.
 const FIGURE_GAP = 14;
 const MAX_FIGURE_WIDTH = 150;
 const DEFAULT_FIGURE_WIDTH = 130;
@@ -117,21 +116,16 @@ function getSorenessValue(
         const item = soreness.find(
             (group) =>
                 group.name &&
-                group.name.toLowerCase() === id.toLowerCase()
+                group.name.toLowerCase() ===
+                    id.toLowerCase()
         );
 
-        return item ? item.soreness : 0;
+        return item?.soreness ?? 0;
     }
 
     return 0;
 }
 
-/**
- * Head, neck, forearms, hands and feet — the parts of the body
- * that aren't a selectable muscle group. Mirrors the web version's
- * BodyBase, which was missing here (that's why the head/hands/feet
- * weren't rendering on mobile).
- */
 function BodyBase() {
     const baseProps = {
         fill: colors.acctSkin,
@@ -140,27 +134,82 @@ function BodyBase() {
     };
 
     return (
-        <G>
-            <Circle cx={100} cy={34} r={22} {...baseProps} />
-            <Rect x={90} y={54} width={20} height={18} rx={6} {...baseProps} />
-            <Path d={TORSO_BASE} {...baseProps} />
-            <Path d={LEFT_FOREARM} {...baseProps} />
-            <Path d={RIGHT_FOREARM} {...baseProps} />
-            <Ellipse cx={26} cy={262} rx={8} ry={11} {...baseProps} />
-            <Ellipse cx={174} cy={262} rx={8} ry={11} {...baseProps} />
-            <Rect x={58} y={394} width={36} height={16} rx={8} {...baseProps} />
-            <Rect x={106} y={394} width={36} height={16} rx={8} {...baseProps} />
+        <G pointerEvents="none">
+            <Circle
+                cx={100}
+                cy={34}
+                r={22}
+                {...baseProps}
+            />
+
+            <Rect
+                x={90}
+                y={54}
+                width={20}
+                height={18}
+                rx={6}
+                {...baseProps}
+            />
+
+            <Path
+                d={TORSO_BASE}
+                {...baseProps}
+            />
+
+            <Path
+                d={LEFT_FOREARM}
+                {...baseProps}
+            />
+
+            <Path
+                d={RIGHT_FOREARM}
+                {...baseProps}
+            />
+
+            <Ellipse
+                cx={26}
+                cy={262}
+                rx={8}
+                ry={11}
+                {...baseProps}
+            />
+
+            <Ellipse
+                cx={174}
+                cy={262}
+                rx={8}
+                ry={11}
+                {...baseProps}
+            />
+
+            <Rect
+                x={58}
+                y={394}
+                width={36}
+                height={16}
+                rx={8}
+                {...baseProps}
+            />
+
+            <Rect
+                x={106}
+                y={394}
+                width={36}
+                height={16}
+                rx={8}
+                {...baseProps}
+            />
         </G>
     );
 }
 
-interface RegionProps {
-    soreness: ISoreness;
+interface MuscleRegionProps {
     id: MuscleGroupId;
+    soreness: ISoreness;
     getColor: (value: number) => string;
     selected: MuscleGroupId | null;
     onSelect: (id: MuscleGroupId) => void;
-    children: (shapeProps: ShapeProps) => ReactElement;
+    children: (props: ShapeProps) => React.ReactNode;
 }
 
 function MuscleRegion({
@@ -170,29 +219,39 @@ function MuscleRegion({
     selected,
     onSelect,
     children,
-}: RegionProps) {
-    const value = getSorenessValue(soreness, id);
-    const isSelected = selected === id;
+}: MuscleRegionProps) {
+    const value = getSorenessValue(
+        soreness,
+        id
+    );
+
+    const isSelected =
+        selected === id;
 
     const shapeProps: ShapeProps = {
         fill: getColor(value),
         stroke: isSelected
             ? colors.white
             : colors.acctSkinStroke,
-        strokeWidth: isSelected ? 2.5 : 1,
+        strokeWidth: isSelected
+            ? 2.5
+            : 1,
     };
 
     return (
-        <G onPress={() => onSelect(id)}>
+        <G>
             {children(shapeProps)}
         </G>
     );
 }
 
-type FigureProps = Omit<
-    RegionProps,
-    "id" | "children"
-> & {
+type FigureProps = {
+    soreness: ISoreness;
+    getColor: (value: number) => string;
+    selected: MuscleGroupId | null;
+    onSelect: (
+        id: MuscleGroupId
+    ) => void;
     width: number;
 };
 
@@ -203,7 +262,30 @@ function FrontFigure({
     onSelect,
     width,
 }: FigureProps) {
-    const height = width * ASPECT_RATIO;
+    const height =
+        width * ASPECT_RATIO;
+
+    const getProps = (
+        id: MuscleGroupId
+    ): ShapeProps => {
+        const value =
+            getSorenessValue(
+                soreness,
+                id
+            );
+
+        return {
+            fill: getColor(value),
+            stroke:
+                selected === id
+                    ? colors.white
+                    : colors.acctSkinStroke,
+            strokeWidth:
+                selected === id
+                    ? 2.5
+                    : 1,
+        };
+    };
 
     return (
         <Svg
@@ -223,12 +305,27 @@ function FrontFigure({
                 {(p) => (
                     <G>
                         <Path
-                            d={LEFT_DELTOID}
+                            d={
+                                LEFT_DELTOID
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "shoulders"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_DELTOID}
+                            d={
+                                RIGHT_DELTOID
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "shoulders"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -246,10 +343,23 @@ function FrontFigure({
                         <Path
                             d={LEFT_PEC}
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "chest"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_PEC}
+                            d={
+                                RIGHT_PEC
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "chest"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -265,12 +375,27 @@ function FrontFigure({
                 {(p) => (
                     <G>
                         <Path
-                            d={LEFT_UPPER_ARM}
+                            d={
+                                LEFT_UPPER_ARM
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "biceps"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_UPPER_ARM}
+                            d={
+                                RIGHT_UPPER_ARM
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "biceps"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -285,17 +410,37 @@ function FrontFigure({
             >
                 {(p) => (
                     <G>
-                        {ABS.map((cell, index) => (
-                            <Rect
-                                key={index}
-                                x={cell.x}
-                                y={cell.y}
-                                width={15}
-                                height={18}
-                                rx={4}
-                                {...p}
-                            />
-                        ))}
+                        {ABS.map(
+                            (
+                                cell,
+                                index
+                            ) => (
+                                <Rect
+                                    key={
+                                        index
+                                    }
+                                    x={
+                                        cell.x
+                                    }
+                                    y={
+                                        cell.y
+                                    }
+                                    width={
+                                        15
+                                    }
+                                    height={
+                                        18
+                                    }
+                                    rx={4}
+                                    {...p}
+                                    onPress={() =>
+                                        onSelect(
+                                            "core"
+                                        )
+                                    }
+                                />
+                            )
+                        )}
                     </G>
                 )}
             </MuscleRegion>
@@ -310,20 +455,51 @@ function FrontFigure({
                 {(p) => (
                     <G>
                         <Path
-                            d={LEFT_THIGH}
+                            d={
+                                LEFT_THIGH
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_THIGH}
+                            d={
+                                RIGHT_THIGH
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
+
                         <Path
-                            d={LEFT_CALF}
+                            d={
+                                LEFT_CALF
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_CALF}
+                            d={
+                                RIGHT_CALF
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -339,7 +515,30 @@ function BackFigure({
     onSelect,
     width,
 }: FigureProps) {
-    const height = width * ASPECT_RATIO;
+    const height =
+        width * ASPECT_RATIO;
+
+    const getProps = (
+        id: MuscleGroupId
+    ): ShapeProps => {
+        const value =
+            getSorenessValue(
+                soreness,
+                id
+            );
+
+        return {
+            fill: getColor(value),
+            stroke:
+                selected === id
+                    ? colors.white
+                    : colors.acctSkinStroke,
+            strokeWidth:
+                selected === id
+                    ? 2.5
+                    : 1,
+        };
+    };
 
     return (
         <Svg
@@ -359,12 +558,27 @@ function BackFigure({
                 {(p) => (
                     <G>
                         <Path
-                            d={LEFT_DELTOID}
+                            d={
+                                LEFT_DELTOID
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "shoulders"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_DELTOID}
+                            d={
+                                RIGHT_DELTOID
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "shoulders"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -381,6 +595,9 @@ function BackFigure({
                     <Path
                         d={BACK_SHAPE}
                         {...p}
+                        onPress={() =>
+                            onSelect("back")
+                        }
                     />
                 )}
             </MuscleRegion>
@@ -395,12 +612,27 @@ function BackFigure({
                 {(p) => (
                     <G>
                         <Path
-                            d={LEFT_UPPER_ARM}
+                            d={
+                                LEFT_UPPER_ARM
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "triceps"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_UPPER_ARM}
+                            d={
+                                RIGHT_UPPER_ARM
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "triceps"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -416,20 +648,51 @@ function BackFigure({
                 {(p) => (
                     <G>
                         <Path
-                            d={LEFT_THIGH}
+                            d={
+                                LEFT_THIGH
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_THIGH}
+                            d={
+                                RIGHT_THIGH
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
+
                         <Path
-                            d={LEFT_CALF}
+                            d={
+                                LEFT_CALF
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
+
                         <Path
-                            d={RIGHT_CALF}
+                            d={
+                                RIGHT_CALF
+                            }
                             {...p}
+                            onPress={() =>
+                                onSelect(
+                                    "legs"
+                                )
+                            }
                         />
                     </G>
                 )}
@@ -446,29 +709,42 @@ function SorenessDiagram({
 }: SorenessDiagramProps) {
     const { t } = useTranslation();
 
-    const [selected, setSelected] =
-        useState<MuscleGroupId | null>(null);
+    const [
+        selected,
+        setSelected,
+    ] =
+        useState<MuscleGroupId | null>(
+            null
+        );
 
-    // Measured from the row that holds both figures, so the
-    // diagram scales down on narrow screens instead of overflowing
-    // the card. Starts at the same size as web until measured.
-    const [figureWidth, setFigureWidth] = useState(
+    const [
+        figureWidth,
+        setFigureWidth,
+    ] = useState(
         DEFAULT_FIGURE_WIDTH
     );
 
-    const toggle = (id: MuscleGroupId) => {
-        setSelected((current) =>
-            current === id ? null : id
+    const toggle = (
+        id: MuscleGroupId
+    ) => {
+        setSelected(
+            (current) =>
+                current === id
+                    ? null
+                    : id
         );
     };
 
     const handleBodymapLayout = (
         event: LayoutChangeEvent
     ) => {
-        const { width } = event.nativeEvent.layout;
+        const { width } =
+            event.nativeEvent.layout;
 
         const availablePerFigure =
-            (width - FIGURE_GAP) / 2;
+            (width -
+                FIGURE_GAP) /
+            2;
 
         setFigureWidth(
             Math.min(
@@ -478,65 +754,127 @@ function SorenessDiagram({
         );
     };
 
+    const selectedValue =
+        selected
+            ? Math.round(
+                  getSorenessValue(
+                      soreness,
+                      selected
+                  )
+              )
+            : 0;
+
+    const selectedName =
+        selected
+            ? t(
+                  `user_form.muscle_groups.${selected}`,
+                  {
+                      defaultValue:
+                          selected,
+                  }
+              )
+            : "";
+
     return (
         <View>
-            <Text style={styles.bodymapStatus}>
+            <Text
+                style={
+                    styles.bodymapStatus
+                }
+            >
                 {selected ? (
                     <>
                         <Text
-                            style={styles.bodymapStatusStrong}
+                            style={
+                                styles.bodymapStatusStrong
+                            }
                         >
-                            {t(
-                                `user_form.muscle_groups.${selected}`,
-                                {
-                                    defaultValue: selected,
-                                }
-                            )}
+                            {selectedName}
                         </Text>
 
                         {" — "}
-                        {Math.round(
-                            getSorenessValue(
-                                soreness,
-                                selected
-                            )
+
+                        {selectedValue}%{" "}
+                        {t(
+                            "account.sore_label"
                         )}
-                        % {t("account.sore_label")}
                     </>
-                ) : (
-                    "\u00A0"
-                )}
+                ) : null}
             </Text>
 
             <View
-                style={styles.bodymap}
-                onLayout={handleBodymapLayout}
+                style={
+                    styles.bodymap
+                }
+                onLayout={
+                    handleBodymapLayout
+                }
             >
-                <View style={styles.bodymapFigure}>
+                <View
+                    style={
+                        styles.bodymapFigure
+                    }
+                >
                     <FrontFigure
-                        soreness={soreness}
-                        getColor={getColor}
-                        selected={selected}
-                        onSelect={toggle}
-                        width={figureWidth}
+                        soreness={
+                            soreness
+                        }
+                        getColor={
+                            getColor
+                        }
+                        selected={
+                            selected
+                        }
+                        onSelect={
+                            toggle
+                        }
+                        width={
+                            figureWidth
+                        }
                     />
 
-                    <Text style={styles.bodymapCaption}>
-                        {frontLabel}
+                    <Text
+                        style={
+                            styles.bodymapCaption
+                        }
+                    >
+                        {
+                            frontLabel
+                        }
                     </Text>
                 </View>
 
-                <View style={styles.bodymapFigure}>
+                <View
+                    style={
+                        styles.bodymapFigure
+                    }
+                >
                     <BackFigure
-                        soreness={soreness}
-                        getColor={getColor}
-                        selected={selected}
-                        onSelect={toggle}
-                        width={figureWidth}
+                        soreness={
+                            soreness
+                        }
+                        getColor={
+                            getColor
+                        }
+                        selected={
+                            selected
+                        }
+                        onSelect={
+                            toggle
+                        }
+                        width={
+                            figureWidth
+                        }
                     />
 
-                    <Text style={styles.bodymapCaption}>
-                        {backLabel}
+                    <Text
+                        style={
+                            styles.bodymapCaption
+                        }
+                    >
+                        {
+                            backLabel
+                        }
                     </Text>
                 </View>
             </View>

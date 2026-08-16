@@ -8,7 +8,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import type { IWorkout } from "../../types";
-import { styles } from "../style/accountStyles";
+import { styles } from "../../style";
 import { router } from "expo-router";
 
 type RootStackParamList = {

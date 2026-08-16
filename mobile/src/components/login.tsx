@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 
 import { userApi } from "../api/userApi";
 
-import { styles } from "./style/accountStyles";
+import { styles } from "../style";
 
 const AUTH0_CUSTOM_SCHEME = "gymbro";
 

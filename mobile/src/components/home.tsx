@@ -8,7 +8,7 @@ styles,
 getGuestContainerStyle,
 getGuestHeroTitleStyle,
 getResponsiveStyles,
-} from "./style/accountStyles";
+} from "../style";
 
 const HomePage = () => {
     const { t } = useTranslation();

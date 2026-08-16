@@ -9,7 +9,9 @@
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.19.0",
     "expo": "~54.0.36",
+    "expo-blur": "~15.0.8",
     "expo-constants": "~18.0.13",
+    "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.12",
     "expo-localization": "~17.0.9",
     "expo-router": "~6.0.24",
@@ -39,7 +41,6 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "android:clear": "expo start --clear --dev-client & expo run:android"
-    
   },
   "private": true
 }

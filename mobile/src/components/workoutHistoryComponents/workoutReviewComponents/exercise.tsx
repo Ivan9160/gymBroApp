@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { styles } from "../../style/accountStyles";
+import { styles } from "../../../style";
 
 interface ExerciseProps {
     exerciseIndex: number;

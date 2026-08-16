@@ -14,7 +14,7 @@ import type { IWorkout } from "../../types";
 import { WorkoutHistoryItem } from "./historyItem";
 import { router } from "expo-router";
 
-import { styles } from "../style/accountStyles";
+import { styles } from "../../style";
 
 type RootStackParamList = {
     Account: undefined;

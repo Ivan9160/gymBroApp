@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../store/slices/userSlice";
 
-import { styles } from "./style/accountStyles";
+import { styles } from "../style";
 import { router } from "expo-router";
 const AUTH0_CUSTOM_SCHEME = "gymbro";
 

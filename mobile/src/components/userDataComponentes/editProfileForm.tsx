@@ -1,20 +1,24 @@
 import {
     ActivityIndicator,
+    ImageBackground,
     Pressable,
     ScrollView,
     Text,
     View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useAuth0 } from "react-native-auth0";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
+import { BlurView } from "expo-blur";
 
 import { useGetUserSummaryQuery, useUpdateUserMutation } from "../../api/userApi";
 import { useProfileToken } from "../../hooks/useProfileToken";
 import { ProfileFormFields } from "./profileFormFields";
 import LogoutButton from "../logout";
-import { styles } from "../style/accountStyles";
+import { styles } from "../../style";
+import { colors } from "../../style/theme";
 
 type Goal = "lose" | "maintain" | "gain";
 
@@ -30,6 +34,23 @@ interface ReduxUser {
 
 interface RootState {
     user: ReduxUser;
+}
+
+/**
+ * Derives up to 2 initials from a display name for the avatar placeholder.
+ * Swap this out once real profile photos / uploaded assets are supported.
+ */
+function getInitials(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+
+    if (parts.length === 0) {
+        return "?";
+    }
+
+    return parts
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join("");
 }
 
 /**
@@ -94,16 +115,25 @@ export function EditProfileForm() {
     }
 
     return (
-        <ScrollView
+        <ImageBackground
+            source={require("./style/gym_background.jpg")}
             style={styles.formPage}
-            contentContainerStyle={{
-                paddingVertical: 16,
-                paddingHorizontal: 16,
-            }}
-            showsVerticalScrollIndicator={false}
+            resizeMode="cover"
         >
-            <View>
-                <View style={styles.formContainer}>
+            
+            <View style={styles.pageBaseOverlay} pointerEvents="none" />
+
+            <LinearGradient
+                colors={["rgba(6,7,10,0.95)", "rgba(6,7,10,0.55)", "rgba(6,7,10,0)"]}
+                locations={[0, 0.55, 1]}
+                style={styles.topOverlay}
+                pointerEvents="none"
+            />
+
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
                     <View style={styles.formColumn}>
                         <Pressable
                             style={styles.backLink}
@@ -117,40 +147,34 @@ export function EditProfileForm() {
                         </Pressable>
 
                         <View style={styles.pageHeading}>
-                            <Text style={styles.pageEyebrow}>
-                                {t("user_form.account_settings_label")}
-                            </Text>
+                            <View style={styles.pageHeadingText}>
+                                <Text style={styles.pageEyebrow}>
+                                    {t("user_form.account_settings_label")}
+                                </Text>
 
-                            <Text style={styles.pageTitle}>{t("nav.my_profile")}</Text>
+                                <Text style={styles.pageTitle}>{t("nav.my_profile")}</Text>
 
-                            <Text style={styles.pageDescription}>
-                                {t("user_form.account_settings_description")}
-                            </Text>
+                                <Text style={styles.pageDescription}>
+                                    {t("user_form.account_settings_description")}
+                                </Text>
+                            </View>
+
+                            {/*
+                                Placeholder initials avatar — swap for the real profile
+                                photo / uploaded image once that's supported.
+                            */}
+                            <View style={styles.avatarCircle}>
+                                <Text style={styles.avatarText}>
+                                    {getInitials(reduxUser.name || "?")}
+                                </Text>
+                            </View>
                         </View>
 
                         <View style={styles.form}>
                             <ProfileFormFields />
-
-                            <Pressable
-                                style={[
-                                    styles.primaryCta,
-                                    styles.formSubmit,
-                                    isSaving && styles.primaryCtaDisabled,
-                                ]}
-                                disabled={isSaving}
-                                onPress={handleSubmit}
-                            >
-                                {isSaving ? (
-                                    <ActivityIndicator size="small" color="#ffffff" />
-                                ) : (
-                                    <Text style={styles.primaryCtaText}>
-                                        {t("user_form.title_update")}
-                                    </Text>
-                                )}
-                            </Pressable>
                         </View>
 
-                        <View style={styles.settingsCard}>
+                        <BlurView intensity={50} tint="dark" style={styles.settingsCard} experimentalBlurMethod="dimezisBlurView">
                             <View style={styles.settingsHeader}>
                                 <Text style={styles.sectionLabel}>
                                     {t("user_form.settings_title")}
@@ -229,11 +253,37 @@ export function EditProfileForm() {
 
                                 <LogoutButton />
                             </View>
-                        </View>
+                        </BlurView>
                     </View>
-                </View>
+            </ScrollView>
+
+            {/* Docked CTA, pinned above the scroll content instead of living inside it. */}
+            <View style={styles.stickyFooter}>
+                <BlurView intensity={50} tint="dark" style={styles.settingsCard} experimentalBlurMethod="dimezisBlurView">
+                <Pressable
+                    style={[styles.formSubmit, isSaving && { opacity: 0.7 }]}
+                    disabled={isSaving}
+                    onPress={handleSubmit}
+                >
+                    
+                    <LinearGradient
+                        colors={[colors.acctAccent, "#1B3FA8"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.primaryCtaGradient}
+                    >
+                        {isSaving ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                        ) : (
+                            <Text style={styles.primaryCtaText}>
+                                {t("user_form.title_update")}
+                            </Text>
+                        )}
+                    </LinearGradient>
+                </Pressable>
+                </BlurView>
             </View>
-        </ScrollView>
+        </ImageBackground>
     );
 }
 

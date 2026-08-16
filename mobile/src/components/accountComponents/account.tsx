@@ -22,7 +22,7 @@ import ProficiencyLevelsList from "./proficiencyLevels";
 import {
     colors,
     styles,
-} from "../style/accountStyles";
+} from "../../style";
 import { useGetUserSummaryQuery } from "../../api/userApi";
 import {useEffect} from "react";
 

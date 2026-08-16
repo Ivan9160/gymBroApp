@@ -1,7 +1,7 @@
 import { Modal, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { modalStyles } from "../../style/accountStyles";
+import { styles } from "../../../style";
 
 interface Props {
 show: boolean;
@@ -32,9 +32,9 @@ return (
                 backgroundColor: "rgba(0, 0, 0, 0.65)",
             }}
         >
-            <View style={modalStyles.modalContent}>
-                <View style={modalStyles.modalHeader}>
-                    <Text style={modalStyles.modalTitle}>
+            <View style={styles.modalContent}>
+                <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>
                         {t("active_workout.finish_modal_title")}
                     </Text>
 
@@ -45,32 +45,32 @@ return (
                             "active_workout.cancel_btn"
                         )}
                         style={({ pressed }) => [
-                            modalStyles.modalClose,
-                            pressed && modalStyles.modalClosePressed,
+                            styles.modalClose,
+                            pressed && styles.modalClosePressed,
                         ]}
                     >
-                        <Text style={modalStyles.modalCloseText}>
+                        <Text style={styles.modalCloseText}>
                             ×
                         </Text>
                     </Pressable>
                 </View>
 
-                <View style={modalStyles.modalBody}>
-                    <Text style={modalStyles.modalText}>
+                <View style={styles.modalBody}>
+                    <Text style={styles.modalText}>
                         {t("active_workout.finish_modal_body")}
                     </Text>
                 </View>
 
-                <View style={modalStyles.modalFooter}>
+                <View style={styles.modalFooter}>
                     <Pressable
                         onPress={onHide}
                         style={({ pressed }) => [
-                            modalStyles.modalAction,
-                            modalStyles.modalCancel,
-                            pressed && modalStyles.modalCancelPressed,
+                            styles.modalAction,
+                            styles.modalCancel,
+                            pressed && styles.modalCancelPressed,
                         ]}
                     >
-                        <Text style={modalStyles.modalCancelText}>
+                        <Text style={styles.modalCancelText}>
                             {t("active_workout.cancel_btn")}
                         </Text>
                     </Pressable>
@@ -78,12 +78,12 @@ return (
                     <Pressable
                         onPress={onConfirm}
                         style={({ pressed }) => [
-                            modalStyles.modalAction,
-                            modalStyles.modalConfirm,
-                            pressed && modalStyles.modalConfirmPressed,
+                            styles.modalAction,
+                            styles.modalConfirm,
+                            pressed && styles.modalConfirmPressed,
                         ]}
                     >
-                        <Text style={modalStyles.modalConfirmText}>
+                        <Text style={styles.modalConfirmText}>
                             {t("active_workout.finish_btn")}
                         </Text>
                     </Pressable>

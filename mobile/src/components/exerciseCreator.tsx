@@ -13,7 +13,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useGetExerciseGroupsQuery } from "../api/exerciseApi";
 import { useTranslation } from "react-i18next";
-import { styles, getGuestContainerStyle } from "./style/accountStyles";
+import { styles, getGuestContainerStyle } from "../style";
 
 interface ExerciseData {
     name: string;

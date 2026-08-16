@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
-import { styles } from "../style/accountStyles";
+import { styles } from "../../style";
 
 export interface ProficiencyLevelDefinition {
     key: string;
