@@ -104,7 +104,10 @@
     "goals": {
       "lose": "Lose weight",
       "maintain": "Maintain weight",
-      "gain": "Gain muscle"
+      "gain": "Gain muscle",
+      "lose_description": "Reduce body fat percentage and overall weight.",
+      "maintain_description": "Preserve your current physical condition.",
+      "gain_description": "Increase strength and muscle mass."
     },
     "mock_data_note": "Demo data",
     "soreness_title": "Muscle soreness",

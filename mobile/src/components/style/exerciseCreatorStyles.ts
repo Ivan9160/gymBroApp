@@ -24,7 +24,7 @@ export const exerciseCreatorStyles = StyleSheet.create({
 
         gap: 5,
 
-        marginBottom: 18,
+        marginBottom: 10,
     },
 
     backLinkArrow: {
@@ -39,11 +39,11 @@ export const exerciseCreatorStyles = StyleSheet.create({
     },
 
     pageHeading: {
-        marginBottom: 22,
+        marginBottom: 12,
     },
 
     pageEyebrow: {
-        marginBottom: 7,
+        marginBottom: 0,
 
         color: colors.acctTextMuted,
         fontSize: 11,
@@ -55,7 +55,7 @@ export const exerciseCreatorStyles = StyleSheet.create({
 
     pageTitle: {
         color: colors.acctText,
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: "600",
 
         letterSpacing: -0.5,
@@ -64,7 +64,7 @@ export const exerciseCreatorStyles = StyleSheet.create({
     pageDescription: {
         maxWidth: 640,
 
-        marginTop: 8,
+        marginTop: 2,
 
         color: colors.acctTextSecondary,
         fontSize: 13,

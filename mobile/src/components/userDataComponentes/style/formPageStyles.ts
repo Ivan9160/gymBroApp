@@ -6,8 +6,6 @@ export const formPageStyles = StyleSheet.create({
         flex: 1,
     },
 
-    // Uniform dim across the whole background photo so cards stay readable
-    // everywhere, not just right under the header.
     pageBaseOverlay: {
         position: "absolute",
         top: 0,
@@ -18,9 +16,6 @@ export const formPageStyles = StyleSheet.create({
         backgroundColor: "rgba(6, 7, 10, 0.5)",
     },
 
-    // Stronger fade at the very top (behind status bar / header / avatar).
-    // Positions and sizes the LinearGradient layer — colors/locations are
-    // passed as props on the component, not here.
     topOverlay: {
         position: "absolute",
         top: 0,
@@ -36,8 +31,7 @@ export const formPageStyles = StyleSheet.create({
 
         alignSelf: "center",
 
-        paddingTop: 16,
-        paddingHorizontal: 16,
+        paddingHorizontal: 0,
         paddingBottom: 16,
     },
 
@@ -74,6 +68,7 @@ export const formPageStyles = StyleSheet.create({
 
         gap: 12,
 
+        marginTop: 16,
         marginBottom: 14,
     },
 
@@ -145,7 +140,7 @@ export const formPageStyles = StyleSheet.create({
         paddingTop: 0,
         marginBottom: -10,
 
-        backgroundColor: "rgba(73, 73, 73, 0.3)",
+        backgroundColor: "rgba(73, 73, 73, 0.1)",
 
         borderWidth: 1,
         borderColor: "rgba(255, 255, 255, 0.07)",
@@ -156,15 +151,20 @@ export const formPageStyles = StyleSheet.create({
         shadowOpacity: 0.28,
         shadowRadius: 10,
         elevation: 4,
+        marginRight: -6,
+        marginLeft: -6,
         overflow: "hidden",
     },
 
     settingsCard: {
-        marginTop: 25,
+        marginTop: 20,
+        marginRight: -6,
+        marginLeft: -6,
+        marginBottom: -10,
 
         padding: 14,
 
-        backgroundColor: "rgba(37, 37, 37, 0.8)",
+        backgroundColor: "rgba(37, 37, 37, 0.1)",
 
         borderWidth: 1,
         borderColor: "rgba(255, 255, 255, 0.07)",
@@ -223,13 +223,14 @@ export const formPageStyles = StyleSheet.create({
 
     
 
-    // Іконка + текст лейбла поля, в один рядок.
     fieldLabelRow: {
         flexDirection: "row",
         alignItems: "center",
         gap: 6,
 
-        marginBottom: 7,
+        marginBottom: 0,
+        marginTop: 5,
+        marginLeft: 5,
     },
 
 
@@ -263,6 +264,7 @@ export const formPageStyles = StyleSheet.create({
         flexDirection: "row",
 
         gap: 8,
+        marginBottom: 10,
     },
 
     choiceBtn: {
@@ -337,6 +339,7 @@ export const formPageStyles = StyleSheet.create({
 
     goalBtnPressed: {
         backgroundColor: colors.acctCard,
+        
     },
 
     // Whole-card highlight: subtle tinted fill + accent border + glow, matching the
@@ -347,11 +350,6 @@ export const formPageStyles = StyleSheet.create({
         borderColor: colors.acctAccent,
         borderWidth: 1.5,
 
-        shadowColor: colors.acctAccent,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.35,
-        shadowRadius: 10,
-        elevation: 3,
     },
 
     // Placeholder circle for the future goal icon asset (SVG/PNG will sit inside this).
@@ -408,13 +406,10 @@ export const formPageStyles = StyleSheet.create({
         bottom: 0,
 
         paddingHorizontal: 16,
-        paddingTop: 12,
-        paddingBottom: 24,
+        paddingTop: 0,
+        paddingBottom: 4,
 
-        backgroundColor: "rgba(10, 11, 15, 0.88)",
 
-        borderTopWidth: 1,
-        borderTopColor: "rgba(255, 255, 255, 0.06)",
     },
 
     // Outer wrapper for the CTA — keeps the glow shadow. The LinearGradient
@@ -423,10 +418,10 @@ export const formPageStyles = StyleSheet.create({
     // on shape without fighting over background color).
     formSubmit: {
         marginTop: 0,
-        marginBottom: 0,
+        marginBottom: 47,
 
         shadowColor: colors.acctAccent,
-        shadowOffset: { width: 0, height: 10 },
+        shadowOffset: { width: 10, height: 10 },
         shadowOpacity: 0.4,
         shadowRadius: 18,
         elevation: 5,
@@ -447,9 +442,10 @@ export const formPageStyles = StyleSheet.create({
         paddingHorizontal: 20,
 
         borderRadius: 16,
+        overflow: "hidden", // обов'язково — обрізає і blur, і градієнт під заокруглені кути
 
-        borderWidth: 1,
-        borderColor: "rgba(150, 190, 255, 0.35)",
+        borderWidth: 1.5,
+        borderColor: "#5b9dff15",
     },
 
     settingsHeader: {

@@ -5,13 +5,14 @@ import {
     ScrollView,
     Text,
     View,
+    StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { useAuth0 } from "react-native-auth0";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
-import { BlurView } from "expo-blur";
 
 import { useGetUserSummaryQuery, useUpdateUserMutation } from "../../api/userApi";
 import { useProfileToken } from "../../hooks/useProfileToken";
@@ -120,7 +121,6 @@ export function EditProfileForm() {
             style={styles.formPage}
             resizeMode="cover"
         >
-            
             <View style={styles.pageBaseOverlay} pointerEvents="none" />
 
             <LinearGradient
@@ -134,6 +134,7 @@ export function EditProfileForm() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
+                <View style={styles.formContainer}>
                     <View style={styles.formColumn}>
                         <Pressable
                             style={styles.backLink}
@@ -163,18 +164,23 @@ export function EditProfileForm() {
                                 Placeholder initials avatar — swap for the real profile
                                 photo / uploaded image once that's supported.
                             */}
-                            <View style={styles.avatarCircle}>
+                            {/* <View style={styles.avatarCircle}>
                                 <Text style={styles.avatarText}>
                                     {getInitials(reduxUser.name || "?")}
                                 </Text>
-                            </View>
+                            </View> */}
                         </View>
 
                         <View style={styles.form}>
                             <ProfileFormFields />
                         </View>
 
-                        <BlurView intensity={50} tint="dark" style={styles.settingsCard} experimentalBlurMethod="dimezisBlurView">
+                        <BlurView
+                            intensity={40}
+                            tint="dark"
+                            style={styles.settingsCard}
+                            experimentalBlurMethod="dimezisBlurView"
+                        >
                             <View style={styles.settingsHeader}>
                                 <Text style={styles.sectionLabel}>
                                     {t("user_form.settings_title")}
@@ -255,23 +261,36 @@ export function EditProfileForm() {
                             </View>
                         </BlurView>
                     </View>
+                </View>
             </ScrollView>
 
-            {/* Docked CTA, pinned above the scroll content instead of living inside it. */}
+            {/*
+                Docked CTA, pinned above the scroll content. RadialGlow sits behind
+                the Pressable as an absolutely-positioned background layer — it does
+                NOT wrap the button content (it can't render children). No BlurView
+                here: the gradient button is fully opaque, so there's nothing behind
+                it for a blur to reveal.
+            */}
             <View style={styles.stickyFooter}>
-                <BlurView intensity={50} tint="dark" style={styles.settingsCard} experimentalBlurMethod="dimezisBlurView">
                 <Pressable
                     style={[styles.formSubmit, isSaving && { opacity: 0.7 }]}
                     disabled={isSaving}
                     onPress={handleSubmit}
                 >
-                    
-                    <LinearGradient
-                        colors={[colors.acctAccent, "#1B3FA8"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
+                    <BlurView
+                        intensity={45}
+                        tint="dark"
                         style={styles.primaryCtaGradient}
+                        experimentalBlurMethod="dimezisBlurView"
                     >
+                        <LinearGradient
+                            colors={["#173a8c0a", "#5b9dff2d", "#173a8c0a"]}
+                            locations={[0, 0.5, 1]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={StyleSheet.absoluteFillObject}
+                        />
+
                         {isSaving ? (
                             <ActivityIndicator size="small" color="#ffffff" />
                         ) : (
@@ -279,9 +298,8 @@ export function EditProfileForm() {
                                 {t("user_form.title_update")}
                             </Text>
                         )}
-                    </LinearGradient>
+                    </BlurView>
                 </Pressable>
-                </BlurView>
             </View>
         </ImageBackground>
     );
