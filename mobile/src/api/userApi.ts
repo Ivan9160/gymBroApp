@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { IUser, IUserAccountSummary } from '../types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStoredAccessToken } from '../hooks/useAnonymousAuth';
 
 
 export interface IUserWriteRequest {
     name: string;
-    auth0Id: string;
     age: number | null;
     gender: string | null;
     height: number | null;
@@ -18,7 +17,7 @@ export const userApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: process.env.EXPO_PUBLIC_API_URL ,
         prepareHeaders: async (headers) => {
-            const token = await AsyncStorage.getItem('token');
+            const token = await getStoredAccessToken();
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`);
             }
@@ -32,20 +31,18 @@ export const userApi = createApi({
             serializeQueryArgs: () => 'getUserSummary',
             providesTags: ['UserSummary'],
         }),
-
         createUser: builder.mutation<IUser, IUserWriteRequest>({
             query: (userData) => ({
                 url: '/users',
                 method: 'POST',
                 body: userData,
             }),
-            invalidatesTags: ['UserSummary'],
         }),
 
         updateUser: builder.mutation<IUser, IUserWriteRequest>({
             query: (userData) => ({
                 url: '/users/me',
-                method: 'PUT',
+                method: 'PATCH',
                 body: userData,
             }),
             invalidatesTags: ['UserSummary'],

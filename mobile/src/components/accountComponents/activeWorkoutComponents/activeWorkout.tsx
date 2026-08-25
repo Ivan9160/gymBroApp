@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { workoutHistoryApi } from "../../../api/workoutHistoryApi";
+import { getStoredAccessToken } from "../../../hooks/useAnonymousAuth";
+import { userApi } from "../../../api/userApi";
 
 import {
     useGetExercisesQuery,
@@ -42,6 +45,7 @@ import { styles } from "../../../style";
 import { WorkoutTimer } from "./workoutTimer";
 import { FinishWorkoutModal } from "./finishWorkoutModal";
 import { SwipeableSetItem } from "./swipeableSetItem";
+import { router } from "expo-router/build/imperative-api";
 
 interface SetState {
     exerciseId: number | null;
@@ -362,17 +366,48 @@ function ActiveWorkout() {
         return;
     }
 
+    const token = await getStoredAccessToken();
+        if(!workout.id || !set.exerciseId || !set.muscleGroupId || !set.weight || !set.reps) {
+            return;
+        }
+        const exercise = exercises?.find(
+            (item: IExercise) => item.id === set.exerciseId
+        );
+
+        const muscleGroup = exerciseGroups?.find(
+            (group: IExerciseGroup) => group.id === set.muscleGroupId
+        );
+
+        if (!exercise || !muscleGroup) {
+            return;
+        }
+        const tempSet: ISet = {
+            id: -Date.now(),
+            workoutId: workout.id,
+            exerciseId: set.exerciseId,
+            muscleGroup: muscleGroup.name,
+            weight: set.weight,
+            reps: set.reps,
+            createdAt: new Date().toISOString(),
+            exercise,
+        };
+
+        dispatch(
+            setWorkoutSets([
+                ...workout.sets,
+                tempSet,
+            ])
+        );
     try {
-        const token =
-            await AsyncStorage.getItem("token");
+        
 
         const response = await axios.post(
             `${process.env.EXPO_PUBLIC_API_URL}/sets`,
             {
-                exerciseId: set.exerciseId,
-                weight: set.weight,
+                exerciseId: set.exerciseId ,
+                weight: set.weight ,
                 reps: set.reps,
-                workoutId: workout.id,
+                workoutId: workout.id ,
             },
             {
                 headers: {
@@ -416,7 +451,7 @@ function ActiveWorkout() {
             );
 
             const token =
-                await AsyncStorage.getItem("token");
+                await getStoredAccessToken();
 
             await axios.delete(
                 `${process.env.EXPO_PUBLIC_API_URL}/sets/${setId}`,
@@ -441,7 +476,7 @@ function ActiveWorkout() {
 
         try {
            const token =
-                await AsyncStorage.getItem("token");
+                await getStoredAccessToken();
 
             await axios.put(
                 `${process.env.EXPO_PUBLIC_API_URL}/workouts/${workout.id}`,
@@ -474,8 +509,14 @@ function ActiveWorkout() {
             dispatch(
                 setWorkoutSets([])
             );
+            dispatch(workoutHistoryApi.util.invalidateTags(["WorkoutHistory"]));
+            dispatch(
+                userApi.util.invalidateTags(["UserSummary"])
+            );
 
             setShowConfirmFinishWorkout(false);
+            router.replace("/account");
+
         } catch (error) {
             console.error(
                 "Error finishing workout:",

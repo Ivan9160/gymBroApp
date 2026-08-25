@@ -1,14 +1,16 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-const setSlice = createSlice({
-  name: "set",
-  initialState: {
+const initialState = {
         id: null as number | null,
         muscleGroupId: 1 as number | null,
         exerciseId: 1 as number | null,
         weight: 0 as number | null,
         reps: null as number | null,
-    },
+    };
+
+
+const setSlice = createSlice({
+  name: "set",
+  initialState, 
     reducers: {
         setSetId(state, action: PayloadAction<number | null>) {
             state.id = action.payload;
@@ -25,10 +27,13 @@ const setSlice = createSlice({
         },
         setSetReps(state, action: PayloadAction<number | null>) {
             state.reps = action.payload;
-        }
+        },
+        resetSet() {
+            return initialState;
+        },
     }
    
 })
-export const { setSetId, setSetMuscleGroup, setSetExerciseId, setSetWeight, setSetReps } = 
+export const { setSetId, setSetMuscleGroup, setSetExerciseId, setSetWeight, setSetReps, resetSet } = 
     setSlice.actions;
 export default setSlice.reducer;

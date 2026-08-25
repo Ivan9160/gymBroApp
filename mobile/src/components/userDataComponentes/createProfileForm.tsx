@@ -1,19 +1,24 @@
 import {
     ActivityIndicator,
+    BackHandler,
+    ImageBackground,
     Pressable,
     ScrollView,
     Text,
     View,
+    StyleSheet,
 } from "react-native";
-import { useAuth0 } from "react-native-auth0";
-import { useSelector } from "react-redux";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
+import { useEffect } from "react";
 
-import { useCreateUserMutation } from "../../api/userApi";
-import { useProfileToken } from "../../hooks/useProfileToken";
+import { useCreateUserMutation, userApi } from "../../api/userApi";
+import { storeAccessToken } from "../../hooks/useAnonymousAuth";
 import { ProfileFormFields } from "./profileFormFields";
 import { styles } from "../../style";
+import { store } from "../../store/store";
 
 type Goal = "lose" | "maintain" | "gain";
 
@@ -27,34 +32,31 @@ interface ReduxUser {
     goal: Goal | null;
 }
 
-interface RootState {
-    user: ReduxUser;
-}
-
-/**
- * Onboarding form for users who don't have a profile yet.
- * No back link, no account settings — those only make sense
- * once a profile exists (see EditProfileForm).
- */
 export function CreateProfileForm() {
-    const { user: authUser, isLoading } = useAuth0();
     const { t } = useTranslation();
-    const reduxUser = useSelector((state: RootState) => state.user);
 
-    // Token is still prepared here because createUser needs an
-    // Authorization header, even though we don't fetch a summary.
-    useProfileToken();
-
+    // No auth check here at all — there's no account yet to be
+    // authenticated as. This request IS what creates one.
     const [createUser, { isLoading: isSaving }] = useCreateUserMutation();
 
+    useEffect(() => {
+        const subscription = BackHandler.addEventListener(
+            "hardwareBackPress",
+            () => {
+                router.replace("/?fromCreateProfile=true");
+                return true;
+            }
+        );
+
+        return () => subscription.remove();
+    }, []);
+
     const handleSubmit = async () => {
-        if (
-            isLoading ||
-            isSaving ||
-            !authUser?.sub
-        ) {
+        if (isSaving) {
             return;
         }
+
+        const reduxUser = store.getState().user as ReduxUser;
 
         if (
             !reduxUser.name ||
@@ -74,71 +76,111 @@ export function CreateProfileForm() {
             height: reduxUser.height,
             weight: reduxUser.weight,
             goal: reduxUser.goal,
-            auth0Id: authUser.sub,
         };
 
         try {
-            await createUser(requestData).unwrap();
+            const result = await createUser(requestData).unwrap();
+            await storeAccessToken(result.accessToken);
+            store.dispatch(userApi.util.invalidateTags(['UserSummary']));
+
             router.replace("/account");
         } catch (error) {
-            console.error(
-                "Unable to create user profile:",
-                error
-            );
+            console.error("Unable to create user profile:", error);
         }
     };
 
     return (
-        <ScrollView
+        <ImageBackground
+            source={require("./style/gym_background.jpg")}
             style={styles.formPage}
-            contentContainerStyle={{
-                paddingVertical: 16,
-                paddingHorizontal: 16,
-            }}
-            showsVerticalScrollIndicator={false}
+            resizeMode="cover"
         >
-            <View>
+            <View
+                style={styles.pageBaseOverlay}
+                pointerEvents="none"
+            />
+
+            <LinearGradient
+                colors={[
+                    "rgba(6,7,10,0.95)",
+                    "rgba(6,7,10,0.55)",
+                    "rgba(6,7,10,0)",
+                ]}
+                locations={[0, 0.55, 1]}
+                style={styles.topOverlay}
+                pointerEvents="none"
+            />
+
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
                 <View style={styles.formContainer}>
                     <View style={styles.formColumn}>
                         <View style={styles.pageHeading}>
-                            <Text style={styles.pageEyebrow}>
-                                {t("user_form.profile_setup_label")}
-                            </Text>
+                            <View style={styles.pageHeadingText}>
+                                <Text style={styles.pageEyebrow}>
+                                    {t("user_form.profile_setup_label")}
+                                </Text>
 
-                            <Text style={styles.pageTitle}>
-                                {t("user_form.profile_setup_title")}
-                            </Text>
+                                <Text style={styles.pageTitle}>
+                                    {t("user_form.profile_setup_title")}
+                                </Text>
 
-                            <Text style={styles.pageDescription}>
-                                {t("user_form.profile_setup_description")}
-                            </Text>
+                                <Text style={styles.pageDescription}>
+                                    {t("user_form.profile_setup_description")}
+                                </Text>
+                            </View>
                         </View>
 
                         <View style={styles.form}>
                             <ProfileFormFields />
-
-                            <Pressable
-                                style={[
-                                    styles.primaryCta,
-                                    styles.formSubmit,
-                                    isSaving && styles.primaryCtaDisabled,
-                                ]}
-                                disabled={isSaving}
-                                onPress={handleSubmit}
-                            >
-                                {isSaving ? (
-                                    <ActivityIndicator size="small" color="#ffffff" />
-                                ) : (
-                                    <Text style={styles.primaryCtaText}>
-                                        {t("user_form.title_create")}
-                                    </Text>
-                                )}
-                            </Pressable>
                         </View>
                     </View>
                 </View>
+            </ScrollView>
+
+            <View style={styles.stickyFooter}>
+                <Pressable
+                    style={[
+                        styles.formSubmit,
+                        isSaving && { opacity: 0.7 },
+                    ]}
+                    disabled={isSaving}
+                    onPress={handleSubmit}
+                >
+                    <BlurView
+                        intensity={45}
+                        tint="dark"
+                        style={styles.primaryCtaGradient}
+                        experimentalBlurMethod="dimezisBlurView"
+                    >
+                        <LinearGradient
+                            colors={[
+                                "#173a8c0a",
+                                "#5b9dff2d",
+                                "#173a8c0a",
+                            ]}
+                            locations={[0, 0.5, 1]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={StyleSheet.absoluteFillObject}
+                        />
+
+                        {isSaving ? (
+                            <ActivityIndicator
+                                size="small"
+                                color="#ffffff"
+                            />
+                        ) : (
+                            <Text style={styles.primaryCtaText}>
+                                {t("user_form.title_create")}
+                            </Text>
+                        )}
+                    </BlurView>
+                </Pressable>
             </View>
-        </ScrollView>
+        </ImageBackground>
     );
 }
 

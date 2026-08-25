@@ -9,17 +9,15 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { useAuth0 } from "react-native-auth0";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
 import { useGetUserSummaryQuery, useUpdateUserMutation } from "../../api/userApi";
-import { useProfileToken } from "../../hooks/useProfileToken";
+import { useAnonymousAuth } from "../../hooks/useAnonymousAuth";
 import { ProfileFormFields } from "./profileFormFields";
-import LogoutButton from "../logout";
 import { styles } from "../../style";
-import { colors } from "../../style/theme";
+import  LogoutButton  from "../logout";
 
 type Goal = "lose" | "maintain" | "gain";
 
@@ -54,17 +52,14 @@ function getInitials(name: string): string {
         .join("");
 }
 
-/**
- * Editing form for users who already have a profile.
- * Includes the back link and the account settings card
- * (language switch, logout) that only make sense post-onboarding.
- */
 export function EditProfileForm() {
-    const { user: authUser, isLoading } = useAuth0();
     const { t, i18n } = useTranslation();
     const reduxUser = useSelector((state: RootState) => state.user);
 
-    const { tokenReady } = useProfileToken();
+    // Only readiness matters here — there's no separate "user"
+    // object anymore. Who the request is for is decided server-side
+    // from the token itself, never sent by the client.
+    const { tokenReady } = useAnonymousAuth();
 
     const { isLoading: isSummaryLoading } = useGetUserSummaryQuery(undefined, {
         skip: !tokenReady,
@@ -81,7 +76,7 @@ export function EditProfileForm() {
     };
 
     const handleSubmit = async () => {
-        if (isLoading || isSaving || !authUser?.sub) {
+        if (isSaving || !tokenReady) {
             return;
         }
 
@@ -92,7 +87,6 @@ export function EditProfileForm() {
             height: reduxUser.height,
             weight: reduxUser.weight,
             goal: reduxUser.goal,
-            auth0Id: authUser.sub,
         };
 
         try {
@@ -251,26 +245,22 @@ export function EditProfileForm() {
                                     <Text style={styles.settingsRowTitle}>
                                         {t("user_form.logout_title")}
                                     </Text>
-
+ 
                                     <Text style={styles.settingsRowDescription}>
                                         {t("user_form.logout_description")}
                                     </Text>
                                 </View>
-
+ 
                                 <LogoutButton />
                             </View>
+
+                            
                         </BlurView>
                     </View>
                 </View>
             </ScrollView>
 
-            {/*
-                Docked CTA, pinned above the scroll content. RadialGlow sits behind
-                the Pressable as an absolutely-positioned background layer — it does
-                NOT wrap the button content (it can't render children). No BlurView
-                here: the gradient button is fully opaque, so there's nothing behind
-                it for a blur to reveal.
-            */}
+
             <View style={styles.stickyFooter}>
                 <Pressable
                     style={[styles.formSubmit, isSaving && { opacity: 0.7 }]}

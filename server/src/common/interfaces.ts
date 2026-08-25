@@ -26,7 +26,6 @@ export interface IUserProfile {
 export interface IUser {
   id: number;
   name: string;
-  auth0Id: string;
   role: Role; 
   createdAt: Date;
   updatedAt: Date;

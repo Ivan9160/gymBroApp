@@ -5,17 +5,19 @@ import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 
 @Controller('user-summary')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class UserSummaryController {
  constructor(
     private userSummaryService: UserSummaryService,
   ) {}
 
   @Get('me')
-  async getUserByAuth0IdWithSummary(@CurrentUser() user: User) {
+  async getUserByIdWithSummary(@CurrentUser() user: User) {
+    console.log('UserSummaryController.getUserByIdWithSummary called with user:', user);
     return this.userSummaryService.getAccountSummary(user.id);
   }
 }

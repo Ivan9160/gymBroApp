@@ -175,9 +175,20 @@ export function ProfileFormFields() {
                             value={
                                 reduxUser.height != null ? String(reduxUser.height) : ""
                             }
-                            onChangeText={(value) =>
-                                dispatch(setUserHeight(value ? Number(value) : null))
+                            onChangeText={(value) => {
+                            if (value === "") {
+                            dispatch(setUserHeight(null));
+                            return;
                             }
+
+                            const number = Number(value);
+
+
+                            if (!Number.isNaN(number)) {
+                                dispatch(setUserHeight(number));
+                            }
+
+                            }}
                             onFocus={() => setFocusedField("height")}
                             onBlur={() => setFocusedField(null)}
                             keyboardType="numeric"

@@ -5,7 +5,6 @@ import { userApi } from '../../api/userApi';
 interface UserState {
     id: number | null;
     name: string;
-    auth0Id: string;
     role: string | null;
     age: number | null;
     gender: string | null;
@@ -19,7 +18,6 @@ interface UserState {
 const initialState: UserState = {
     id: null,
     name: '',
-    auth0Id: '',
     role: null,
     age: null,
     gender: null,
@@ -33,7 +31,6 @@ const initialState: UserState = {
 function applyUser(state: UserState, user: IUser) {
     state.id = user.id;
     state.name = user.name;
-    state.auth0Id = user.auth0Id;
     state.role = user.role;
     state.age = user.userProfile?.age ?? null;
     state.gender = user.userProfile?.gender ?? null;

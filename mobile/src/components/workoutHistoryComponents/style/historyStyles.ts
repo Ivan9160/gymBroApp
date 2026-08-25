@@ -8,6 +8,7 @@ export const historyStyles = StyleSheet.create({
 
     historyList: {
         gap: 12,
+        marginBottom: 24,
     },
 
     historyCard: {
@@ -61,7 +62,9 @@ export const historyStyles = StyleSheet.create({
         alignItems: "center",
 
         gap: 7,
+    },
 
+    historyCardDateText: {
         color: colors.acctTextSecondary,
         fontSize: 12,
     },
@@ -146,7 +149,7 @@ export const historyStyles = StyleSheet.create({
     historySetMainTitle: {
         color: colors.acctText,
         fontSize: 13,
-        fontWeight: "600",
+        fontWeight: "500",
     },
 
     historySetMainSubtitle: {
@@ -160,8 +163,8 @@ export const historyStyles = StyleSheet.create({
         flexShrink: 0,
 
         color: colors.acctText,
-        fontSize: 12,
-        fontWeight: "600",
+        fontSize: 13,
+        fontWeight: "700",
 
         textAlign: "right",
     },
@@ -227,7 +230,13 @@ export const historyStyles = StyleSheet.create({
         margin: 0,
 
         paddingVertical: 9,
-        paddingHorizontal: 12,
+        paddingHorizontal: 14,
+
+        backgroundColor: "rgba(47, 111, 214, 0.12)",
+
+        borderWidth: 1,
+        borderColor: "rgba(47, 111, 214, 0.24)",
+        borderRadius: 8,
     },
 
     historyEmpty: {

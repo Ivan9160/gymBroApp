@@ -9,6 +9,8 @@ export const detailsStyles = StyleSheet.create({
 
         borderWidth: 1,
         borderColor: colors.acctBorder,
+        marginLeft: -10,
+        marginRight: -10,
         borderRadius: 18,
     },
 
@@ -17,9 +19,9 @@ export const detailsStyles = StyleSheet.create({
         alignItems: "flex-start",
         justifyContent: "space-between",
 
-        gap: 18,
+        gap: 1,
 
-        padding: 22,
+        padding: 18,
 
         backgroundColor: colors.acctCard,
 
@@ -44,8 +46,10 @@ export const detailsStyles = StyleSheet.create({
 
         gap: 7,
 
-        marginTop: 9,
+        marginTop: 2,
+    },
 
+    detailsDateText: {
         color: colors.acctTextSecondary,
         fontSize: 12,
     },
@@ -53,6 +57,32 @@ export const detailsStyles = StyleSheet.create({
     detailsDateIcon: {
         color: colors.acctAccent,
     },
+
+
+        detailsStatLabel: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        
+
+        gap: 5,
+
+        textAlign: "center",
+    },
+
+    detailsStatLabelText: {
+        color: colors.acctText,
+        fontSize: 10,
+        fontWeight: "700",
+
+        letterSpacing: 0.4,
+        textTransform: "uppercase",
+    },
+
+    detailsStatIcon: {
+        color: colors.acctAccent,
+    },
+
 
     detailsStatus: {
         flexShrink: 0,
@@ -69,7 +99,7 @@ export const detailsStyles = StyleSheet.create({
 
     detailsStatusText: {
         color: colors.successText,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: "700",
     },
 
@@ -81,7 +111,7 @@ export const detailsStyles = StyleSheet.create({
     },
 
     detailsStatsTwo: {
-        // equivalent of .acct-details-stats--two
+        marginBottom: -18,
         flexDirection: "row",
     },
 
@@ -91,7 +121,7 @@ export const detailsStyles = StyleSheet.create({
 
         alignItems: "center",
 
-        padding: 16,
+        padding: 12,
 
         borderRightWidth: 1,
         borderRightColor: colors.acctBorder,
@@ -101,29 +131,9 @@ export const detailsStyles = StyleSheet.create({
         borderRightWidth: 0,
     },
 
-    detailsStatLabel: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-
-        gap: 5,
-
-        color: colors.acctTextMuted,
-        fontSize: 10,
-        fontWeight: "700",
-
-        letterSpacing: 0.4,
-        textTransform: "uppercase",
-
-        textAlign: "center",
-    },
-
-    detailsStatIcon: {
-        color: colors.acctAccent,
-    },
 
     detailsStatValue: {
-        marginTop: 5,
+        marginTop: 2,
 
         color: colors.acctText,
         fontSize: 16,
@@ -131,7 +141,7 @@ export const detailsStyles = StyleSheet.create({
     },
 
     detailsBody: {
-        padding: 18,
+        padding: 12,
     },
 
     detailsSectionHeading: {
@@ -145,16 +155,17 @@ export const detailsStyles = StyleSheet.create({
     },
 
     detailsSectionLabel: {
-        marginBottom: 0,
+        marginBottom: 2,
     },
 
     detailsSectionCount: {
         color: colors.acctTextMuted,
-        fontSize: 11,
+        marginTop: 12,
+        fontSize: 12,
     },
 
     detailsGroups: {
-        gap: 12,
+        gap: 8,
     },
 
     workoutGroup: {
@@ -180,6 +191,8 @@ export const detailsStyles = StyleSheet.create({
 
         paddingVertical: 13,
         paddingHorizontal: 14,
+
+        backgroundColor: "rgba(255, 255, 255, 0.02)",
 
         borderBottomWidth: 1,
         borderBottomColor: colors.acctBorder,
@@ -281,13 +294,15 @@ export const detailsStyles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
 
-        backgroundColor: "rgba(255, 255, 255, 0.05)",
+        backgroundColor: colors.acctCard,
 
+        borderWidth: 1,
+        borderColor: colors.acctBorder,
         borderRadius: 6,
     },
 
     workoutExerciseIndexText: {
-        color: colors.acctTextMuted,
+        color: colors.acctTextSecondary,
         fontSize: 10,
         fontWeight: "700",
     },

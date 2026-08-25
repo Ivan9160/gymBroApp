@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
 import { SetService } from './set.service';
 import { CreateSetDto } from './dto/set.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('sets')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class SetController {
     constructor(private readonly setService: SetService) { }
     

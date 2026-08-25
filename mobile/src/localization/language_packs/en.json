@@ -144,10 +144,18 @@
     "signup": "Create an account",
     "terms": "By continuing, you agree to the Terms of Service."
   },
+
+  "logout": {
+    "title": "Log out?",
+    "body": "Are you sure you want to log out? Your will not be able to access your account.",
+    "cancel": "Cancel",
+    "confirm": "Log out"
+  },
   "home": {
     "badge": "Your training space",
     "title": "Train smarter. Track your progress. Feel better.",
     "subtitle": "GymBro helps you organize workouts, understand recovery, and see your progress without unnecessary complexity.",
+    "cta_start": "Get started",
     "features_aria": "GymBro features",
     "feature_workouts_title": "Workouts in one place",
     "feature_workouts_text": "Start a session, add sets, and review your workout history with only a few taps.",

@@ -10,6 +10,7 @@ import {
 } from "react-native-svg";
 import type { LayoutChangeEvent } from "react-native";
 import {
+    Pressable,
     Text,
     View,
 } from "react-native";
@@ -42,6 +43,14 @@ interface ShapeProps {
 interface AbsCell {
     x: number;
     y: number;
+}
+
+interface HitZone {
+    id: MuscleGroupId;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 }
 
 const LEFT_DELTOID =
@@ -97,12 +106,42 @@ const ABS: AbsCell[] = [
 
 const VIEWBOX_WIDTH = 200;
 const VIEWBOX_HEIGHT = 420;
-const ASPECT_RATIO =
-    VIEWBOX_HEIGHT / VIEWBOX_WIDTH;
+const ASPECT_RATIO = VIEWBOX_HEIGHT / VIEWBOX_WIDTH;
 
 const FIGURE_GAP = 14;
 const MAX_FIGURE_WIDTH = 150;
 const DEFAULT_FIGURE_WIDTH = 130;
+
+/**
+ * Approximate bounding boxes (in the 200x420 viewBox coordinate space) for
+ * each tappable region. These back plain RN <Pressable> hit zones overlaid
+ * on top of the SVG — NOT react-native-svg's native onPress.
+ *
+ * Why: react-native-svg's touch handling has known reliability issues under
+ * the New Architecture (Fabric) on Android — onPress on shapes/groups can
+ * silently never fire, independent of how the SVG code itself is written.
+ * Plain Pressable is the same primitive already working everywhere else in
+ * this app (buttons, cards), so it sidesteps that bug entirely.
+ *
+ * These are hand-tuned approximations, not exact path bounds — good enough
+ * to tap reliably, but feel free to nudge the numbers if a zone feels off.
+ */
+const FRONT_ZONES: HitZone[] = [
+    { id: "shoulders", x: 26, y: 66, width: 148, height: 40 },
+    { id: "chest", x: 56, y: 82, width: 88, height: 50 },
+    { id: "biceps", x: 16, y: 88, width: 42, height: 92 },
+    { id: "biceps", x: 142, y: 88, width: 42, height: 92 },
+    { id: "core", x: 76, y: 128, width: 48, height: 56 },
+    { id: "legs", x: 54, y: 210, width: 92, height: 190 },
+];
+
+const BACK_ZONES: HitZone[] = [
+    { id: "shoulders", x: 26, y: 66, width: 148, height: 40 },
+    { id: "back", x: 56, y: 66, width: 88, height: 100 },
+    { id: "triceps", x: 16, y: 88, width: 42, height: 92 },
+    { id: "triceps", x: 142, y: 88, width: 42, height: 92 },
+    { id: "legs", x: 54, y: 210, width: 92, height: 190 },
+];
 
 function getSorenessValue(
     soreness: ISoreness,
@@ -116,8 +155,7 @@ function getSorenessValue(
         const item = soreness.find(
             (group) =>
                 group.name &&
-                group.name.toLowerCase() ===
-                    id.toLowerCase()
+                group.name.toLowerCase() === id.toLowerCase()
         );
 
         return item?.soreness ?? 0;
@@ -135,70 +173,15 @@ function BodyBase() {
 
     return (
         <G pointerEvents="none">
-            <Circle
-                cx={100}
-                cy={34}
-                r={22}
-                {...baseProps}
-            />
-
-            <Rect
-                x={90}
-                y={54}
-                width={20}
-                height={18}
-                rx={6}
-                {...baseProps}
-            />
-
-            <Path
-                d={TORSO_BASE}
-                {...baseProps}
-            />
-
-            <Path
-                d={LEFT_FOREARM}
-                {...baseProps}
-            />
-
-            <Path
-                d={RIGHT_FOREARM}
-                {...baseProps}
-            />
-
-            <Ellipse
-                cx={26}
-                cy={262}
-                rx={8}
-                ry={11}
-                {...baseProps}
-            />
-
-            <Ellipse
-                cx={174}
-                cy={262}
-                rx={8}
-                ry={11}
-                {...baseProps}
-            />
-
-            <Rect
-                x={58}
-                y={394}
-                width={36}
-                height={16}
-                rx={8}
-                {...baseProps}
-            />
-
-            <Rect
-                x={106}
-                y={394}
-                width={36}
-                height={16}
-                rx={8}
-                {...baseProps}
-            />
+            <Circle cx={100} cy={34} r={22} {...baseProps} />
+            <Rect x={90} y={54} width={20} height={18} rx={6} {...baseProps} />
+            <Path d={TORSO_BASE} {...baseProps} />
+            <Path d={LEFT_FOREARM} {...baseProps} />
+            <Path d={RIGHT_FOREARM} {...baseProps} />
+            <Ellipse cx={26} cy={262} rx={8} ry={11} {...baseProps} />
+            <Ellipse cx={174} cy={262} rx={8} ry={11} {...baseProps} />
+            <Rect x={58} y={394} width={36} height={16} rx={8} {...baseProps} />
+            <Rect x={106} y={394} width={36} height={16} rx={8} {...baseProps} />
         </G>
     );
 }
@@ -208,52 +191,76 @@ interface MuscleRegionProps {
     soreness: ISoreness;
     getColor: (value: number) => string;
     selected: MuscleGroupId | null;
-    onSelect: (id: MuscleGroupId) => void;
     children: (props: ShapeProps) => React.ReactNode;
 }
 
+/** Purely visual now — no onPress here, taps are handled by the Pressable overlay. */
 function MuscleRegion({
     id,
     soreness,
     getColor,
     selected,
-    onSelect,
     children,
 }: MuscleRegionProps) {
-    const value = getSorenessValue(
-        soreness,
-        id
-    );
-
-    const isSelected =
-        selected === id;
+    const value = getSorenessValue(soreness, id);
+    const isSelected = selected === id;
 
     const shapeProps: ShapeProps = {
         fill: getColor(value),
-        stroke: isSelected
-            ? colors.white
-            : colors.acctSkinStroke,
-        strokeWidth: isSelected
-            ? 2.5
-            : 1,
+        stroke: isSelected ? colors.white : colors.acctSkinStroke,
+        strokeWidth: isSelected ? 2.5 : 1,
     };
 
-    return (
-        <G>
-            {children(shapeProps)}
-        </G>
-    );
+    return <G>{children(shapeProps)}</G>;
 }
 
 type FigureProps = {
     soreness: ISoreness;
     getColor: (value: number) => string;
     selected: MuscleGroupId | null;
-    onSelect: (
-        id: MuscleGroupId
-    ) => void;
+    onSelect: (id: MuscleGroupId) => void;
     width: number;
 };
+
+/**
+ * Renders the SVG plus a plain-View overlay of Pressable hit zones on top,
+ * scaled from viewBox units to the figure's actual rendered pixel size.
+ */
+function HitZoneOverlay({
+    zones,
+    scale,
+    onSelect,
+}: {
+    zones: HitZone[];
+    scale: number;
+    onSelect: (id: MuscleGroupId) => void;
+}) {
+    return (
+        <View
+            style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+            }}
+        >
+            {zones.map((zone, index) => (
+                <Pressable
+                    key={`${zone.id}-${index}`}
+                    onPress={() => onSelect(zone.id)}
+                    style={{
+                        position: "absolute",
+                        left: zone.x * scale,
+                        top: zone.y * scale,
+                        width: zone.width * scale,
+                        height: zone.height * scale,
+                    }}
+                />
+            ))}
+        </View>
+    );
+}
 
 function FrontFigure({
     soreness,
@@ -262,249 +269,77 @@ function FrontFigure({
     onSelect,
     width,
 }: FigureProps) {
-    const height =
-        width * ASPECT_RATIO;
-
-    const getProps = (
-        id: MuscleGroupId
-    ): ShapeProps => {
-        const value =
-            getSorenessValue(
-                soreness,
-                id
-            );
-
-        return {
-            fill: getColor(value),
-            stroke:
-                selected === id
-                    ? colors.white
-                    : colors.acctSkinStroke,
-            strokeWidth:
-                selected === id
-                    ? 2.5
-                    : 1,
-        };
-    };
+    const height = width * ASPECT_RATIO;
+    const scale = width / VIEWBOX_WIDTH;
 
     return (
-        <Svg
-            width={width}
-            height={height}
-            viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
-        >
-            <BodyBase />
-
-            <MuscleRegion
-                id="shoulders"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
+        <View style={{ width, height }}>
+            <Svg
+                width={width}
+                height={height}
+                viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
             >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={
-                                LEFT_DELTOID
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "shoulders"
-                                )
-                            }
-                        />
+                <BodyBase />
 
-                        <Path
-                            d={
-                                RIGHT_DELTOID
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "shoulders"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
+                <MuscleRegion id="shoulders" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_DELTOID} {...p} />
+                            <Path d={RIGHT_DELTOID} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
 
-            <MuscleRegion
-                id="chest"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={LEFT_PEC}
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "chest"
-                                )
-                            }
-                        />
+                <MuscleRegion id="chest" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_PEC} {...p} />
+                            <Path d={RIGHT_PEC} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
 
-                        <Path
-                            d={
-                                RIGHT_PEC
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "chest"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
+                <MuscleRegion id="biceps" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_UPPER_ARM} {...p} />
+                            <Path d={RIGHT_UPPER_ARM} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
 
-            <MuscleRegion
-                id="biceps"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={
-                                LEFT_UPPER_ARM
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "biceps"
-                                )
-                            }
-                        />
-
-                        <Path
-                            d={
-                                RIGHT_UPPER_ARM
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "biceps"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
-
-            <MuscleRegion
-                id="core"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <G>
-                        {ABS.map(
-                            (
-                                cell,
-                                index
-                            ) => (
+                <MuscleRegion id="core" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            {ABS.map((cell, index) => (
                                 <Rect
-                                    key={
-                                        index
-                                    }
-                                    x={
-                                        cell.x
-                                    }
-                                    y={
-                                        cell.y
-                                    }
-                                    width={
-                                        15
-                                    }
-                                    height={
-                                        18
-                                    }
+                                    key={index}
+                                    x={cell.x}
+                                    y={cell.y}
+                                    width={15}
+                                    height={18}
                                     rx={4}
                                     {...p}
-                                    onPress={() =>
-                                        onSelect(
-                                            "core"
-                                        )
-                                    }
                                 />
-                            )
-                        )}
-                    </G>
-                )}
-            </MuscleRegion>
+                            ))}
+                        </G>
+                    )}
+                </MuscleRegion>
 
-            <MuscleRegion
-                id="legs"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={
-                                LEFT_THIGH
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
+                <MuscleRegion id="legs" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_THIGH} {...p} />
+                            <Path d={RIGHT_THIGH} {...p} />
+                            <Path d={LEFT_CALF} {...p} />
+                            <Path d={RIGHT_CALF} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
+            </Svg>
 
-                        <Path
-                            d={
-                                RIGHT_THIGH
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-
-                        <Path
-                            d={
-                                LEFT_CALF
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-
-                        <Path
-                            d={
-                                RIGHT_CALF
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
-        </Svg>
+            <HitZoneOverlay zones={FRONT_ZONES} scale={scale} onSelect={onSelect} />
+        </View>
     );
 }
 
@@ -515,189 +350,54 @@ function BackFigure({
     onSelect,
     width,
 }: FigureProps) {
-    const height =
-        width * ASPECT_RATIO;
-
-    const getProps = (
-        id: MuscleGroupId
-    ): ShapeProps => {
-        const value =
-            getSorenessValue(
-                soreness,
-                id
-            );
-
-        return {
-            fill: getColor(value),
-            stroke:
-                selected === id
-                    ? colors.white
-                    : colors.acctSkinStroke,
-            strokeWidth:
-                selected === id
-                    ? 2.5
-                    : 1,
-        };
-    };
+    const height = width * ASPECT_RATIO;
+    const scale = width / VIEWBOX_WIDTH;
 
     return (
-        <Svg
-            width={width}
-            height={height}
-            viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
-        >
-            <BodyBase />
-
-            <MuscleRegion
-                id="shoulders"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
+        <View style={{ width, height }}>
+            <Svg
+                width={width}
+                height={height}
+                viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
             >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={
-                                LEFT_DELTOID
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "shoulders"
-                                )
-                            }
-                        />
+                <BodyBase />
 
-                        <Path
-                            d={
-                                RIGHT_DELTOID
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "shoulders"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
+                <MuscleRegion id="shoulders" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_DELTOID} {...p} />
+                            <Path d={RIGHT_DELTOID} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
 
-            <MuscleRegion
-                id="back"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <Path
-                        d={BACK_SHAPE}
-                        {...p}
-                        onPress={() =>
-                            onSelect("back")
-                        }
-                    />
-                )}
-            </MuscleRegion>
+                <MuscleRegion id="back" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => <Path d={BACK_SHAPE} {...p} />}
+                </MuscleRegion>
 
-            <MuscleRegion
-                id="triceps"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={
-                                LEFT_UPPER_ARM
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "triceps"
-                                )
-                            }
-                        />
+                <MuscleRegion id="triceps" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_UPPER_ARM} {...p} />
+                            <Path d={RIGHT_UPPER_ARM} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
 
-                        <Path
-                            d={
-                                RIGHT_UPPER_ARM
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "triceps"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
+                <MuscleRegion id="legs" soreness={soreness} getColor={getColor} selected={selected}>
+                    {(p) => (
+                        <G>
+                            <Path d={LEFT_THIGH} {...p} />
+                            <Path d={RIGHT_THIGH} {...p} />
+                            <Path d={LEFT_CALF} {...p} />
+                            <Path d={RIGHT_CALF} {...p} />
+                        </G>
+                    )}
+                </MuscleRegion>
+            </Svg>
 
-            <MuscleRegion
-                id="legs"
-                soreness={soreness}
-                getColor={getColor}
-                selected={selected}
-                onSelect={onSelect}
-            >
-                {(p) => (
-                    <G>
-                        <Path
-                            d={
-                                LEFT_THIGH
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-
-                        <Path
-                            d={
-                                RIGHT_THIGH
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-
-                        <Path
-                            d={
-                                LEFT_CALF
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-
-                        <Path
-                            d={
-                                RIGHT_CALF
-                            }
-                            {...p}
-                            onPress={() =>
-                                onSelect(
-                                    "legs"
-                                )
-                            }
-                        />
-                    </G>
-                )}
-            </MuscleRegion>
-        </Svg>
+            <HitZoneOverlay zones={BACK_ZONES} scale={scale} onSelect={onSelect} />
+        </View>
     );
 }
 
@@ -709,173 +409,67 @@ function SorenessDiagram({
 }: SorenessDiagramProps) {
     const { t } = useTranslation();
 
-    const [
-        selected,
-        setSelected,
-    ] =
-        useState<MuscleGroupId | null>(
-            null
-        );
+    const [selected, setSelected] = useState<MuscleGroupId | null>(null);
+    const [figureWidth, setFigureWidth] = useState(DEFAULT_FIGURE_WIDTH);
 
-    const [
-        figureWidth,
-        setFigureWidth,
-    ] = useState(
-        DEFAULT_FIGURE_WIDTH
-    );
-
-    const toggle = (
-        id: MuscleGroupId
-    ) => {
-        setSelected(
-            (current) =>
-                current === id
-                    ? null
-                    : id
-        );
+    const toggle = (id: MuscleGroupId) => {
+        setSelected((current) => (current === id ? null : id));
     };
 
-    const handleBodymapLayout = (
-        event: LayoutChangeEvent
-    ) => {
-        const { width } =
-            event.nativeEvent.layout;
+    const handleBodymapLayout = (event: LayoutChangeEvent) => {
+        const { width } = event.nativeEvent.layout;
+        const availablePerFigure = (width - FIGURE_GAP) / 2;
 
-        const availablePerFigure =
-            (width -
-                FIGURE_GAP) /
-            2;
-
-        setFigureWidth(
-            Math.min(
-                availablePerFigure,
-                MAX_FIGURE_WIDTH
-            )
-        );
+        setFigureWidth(Math.min(availablePerFigure, MAX_FIGURE_WIDTH));
     };
 
-    const selectedValue =
-        selected
-            ? Math.round(
-                  getSorenessValue(
-                      soreness,
-                      selected
-                  )
-              )
-            : 0;
+    const selectedValue = selected
+        ? Math.round(getSorenessValue(soreness, selected))
+        : 0;
 
-    const selectedName =
-        selected
-            ? t(
-                  `user_form.muscle_groups.${selected}`,
-                  {
-                      defaultValue:
-                          selected,
-                  }
-              )
-            : "";
+    const selectedName = selected
+        ? t(`user_form.muscle_groups.${selected}`, { defaultValue: selected })
+        : "";
 
     return (
         <View>
-            <Text
-                style={
-                    styles.bodymapStatus
-                }
-            >
+            <Text style={styles.bodymapStatus}>
                 {selected ? (
                     <>
-                        <Text
-                            style={
-                                styles.bodymapStatusStrong
-                            }
-                        >
+                        <Text style={styles.bodymapStatusStrong}>
                             {selectedName}
                         </Text>
-
                         {" — "}
-
-                        {selectedValue}%{" "}
-                        {t(
-                            "account.sore_label"
-                        )}
+                        {selectedValue}% {t("account.sore_label")}
                     </>
-                ) : null}
+                ) : (
+                    "\u00A0"
+                )}
             </Text>
 
-            <View
-                style={
-                    styles.bodymap
-                }
-                onLayout={
-                    handleBodymapLayout
-                }
-            >
-                <View
-                    style={
-                        styles.bodymapFigure
-                    }
-                >
+            <View style={styles.bodymap} onLayout={handleBodymapLayout}>
+                <View style={styles.bodymapFigure}>
                     <FrontFigure
-                        soreness={
-                            soreness
-                        }
-                        getColor={
-                            getColor
-                        }
-                        selected={
-                            selected
-                        }
-                        onSelect={
-                            toggle
-                        }
-                        width={
-                            figureWidth
-                        }
+                        soreness={soreness}
+                        getColor={getColor}
+                        selected={selected}
+                        onSelect={toggle}
+                        width={figureWidth}
                     />
 
-                    <Text
-                        style={
-                            styles.bodymapCaption
-                        }
-                    >
-                        {
-                            frontLabel
-                        }
-                    </Text>
+                    <Text style={styles.bodymapCaption}>{frontLabel}</Text>
                 </View>
 
-                <View
-                    style={
-                        styles.bodymapFigure
-                    }
-                >
+                <View style={styles.bodymapFigure}>
                     <BackFigure
-                        soreness={
-                            soreness
-                        }
-                        getColor={
-                            getColor
-                        }
-                        selected={
-                            selected
-                        }
-                        onSelect={
-                            toggle
-                        }
-                        width={
-                            figureWidth
-                        }
+                        soreness={soreness}
+                        getColor={getColor}
+                        selected={selected}
+                        onSelect={toggle}
+                        width={figureWidth}
                     />
 
-                    <Text
-                        style={
-                            styles.bodymapCaption
-                        }
-                    >
-                        {
-                            backLabel
-                        }
-                    </Text>
+                    <Text style={styles.bodymapCaption}>{backLabel}</Text>
                 </View>
             </View>
         </View>

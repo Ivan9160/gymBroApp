@@ -15,7 +15,7 @@ export interface ISet {
   muscleGroup: string;
   weight: number;
   reps: number;
-  createdAt: Date ;
+  createdAt: string ;
   exercise: IExercise;
 }
 
@@ -43,8 +43,8 @@ export interface IUserProfile {
 
 export interface IUser {
   id: number;
+  accessToken: string;
   name: string;
-  auth0Id: string;
   role: string; 
   createdAt: Date;
   updatedAt: Date;

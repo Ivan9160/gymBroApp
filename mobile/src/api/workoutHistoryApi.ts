@@ -1,13 +1,13 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import type { IWorkout } from '../types'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getStoredAccessToken } from '../hooks/useAnonymousAuth';
 
 export const workoutHistoryApi = createApi({
     reducerPath: 'workoutHistoryApi',
     baseQuery: fetchBaseQuery({
         baseUrl: process.env.EXPO_PUBLIC_API_URL ,
         prepareHeaders: async (headers) => {
-            const token = await AsyncStorage.getItem("token");
+            const token = await getStoredAccessToken();
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`);
             }

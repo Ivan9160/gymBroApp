@@ -25,6 +25,7 @@ import {
 } from "../../style";
 import { useGetUserSummaryQuery } from "../../api/userApi";
 import {useEffect} from "react";
+import { getStoredAccessToken } from "../../hooks/useAnonymousAuth";
 
 function getSorenessColor(
     value: number
@@ -181,7 +182,7 @@ function Account() {
     ]);
 
     const startWorkout = async () => {
-        const token = await AsyncStorage.getItem("token");
+        const token = await getStoredAccessToken();
 
         axios
             .post(

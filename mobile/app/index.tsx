@@ -1,44 +1,39 @@
 import { useEffect } from "react";
+
 import {
     ActivityIndicator,
     View,
 } from "react-native";
-import { useAuth0 } from "react-native-auth0";
-import { router } from "expo-router";
+
+import { router, useLocalSearchParams } from "expo-router";
 
 import HomePage from "../src/components/home";
-import { useProfileToken } from "../src/hooks/useProfileToken";
+import { useAnonymousAuth } from "../src/hooks/useAnonymousAuth";
 import {
     useGetUserSummaryQuery,
 } from "../src/api/userApi";
 
 export default function Index() {
-    const {
-        user: authUser,
-        isLoading: authLoading,
-    } = useAuth0();
+    const { tokenReady } = useAnonymousAuth();
 
-    const { tokenReady } = useProfileToken();
+    const { fromCreateProfile } = useLocalSearchParams<{
+        fromCreateProfile?: string;
+    }>();
 
     const {
         data: userSummary,
         isLoading: summaryLoading,
         isFetching: summaryFetching,
         isSuccess: summarySuccess,
-        isError: summaryIsError,
-        error: summaryError,
     } = useGetUserSummaryQuery(undefined, {
-        skip:
-            !authUser ||
-            !tokenReady,
+        skip: !tokenReady,
     });
 
-    useEffect(() => {
-        if (authLoading) {
-            return;
-        }
+    const shouldReturnToHome =
+        fromCreateProfile === "true";
 
-        if (!authUser) {
+    useEffect(() => {
+        if (shouldReturnToHome) {
             return;
         }
 
@@ -58,43 +53,33 @@ export default function Index() {
             userSummary
         ) {
             router.replace("/account");
-            return;
-        }
-
-        if (summaryIsError) {
-            router.replace("/createProfile");
         }
     }, [
-        authLoading,
-        authUser,
+        shouldReturnToHome,
         tokenReady,
         summaryLoading,
         summaryFetching,
         summarySuccess,
-        summaryIsError,
         userSummary,
-        summaryError,
     ]);
 
+    if (shouldReturnToHome) {
+        return <HomePage />;
+    }
+
     if (
-        authLoading ||
+        tokenReady &&
         (
-            authUser &&
-            (
-                !tokenReady ||
-                summaryLoading ||
-                summaryFetching
-            )
+            summaryLoading ||
+            summaryFetching
         )
     ) {
         return (
             <View
                 style={{
                     flex: 1,
-                    justifyContent:
-                        "center",
-                    alignItems:
-                        "center",
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
             >
                 <ActivityIndicator />

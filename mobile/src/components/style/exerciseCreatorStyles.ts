@@ -382,9 +382,9 @@ export const exerciseCreatorStyles = StyleSheet.create({
     },
 
     sectionLabel: {
-        marginBottom: 5,
-        marginTop: 15,
-        marginLeft: 3,
+        marginBottom: 12,
+        marginTop: 5,
+        marginLeft: 12,
 
         color: colors.acctTextMuted,
         fontSize: 12,

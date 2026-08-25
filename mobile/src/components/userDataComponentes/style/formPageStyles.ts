@@ -529,4 +529,105 @@ export const formPageStyles = StyleSheet.create({
         width: 15,
         height: 15,
     },
+
+        logoutModal: {
+        flex: 1,
+
+        alignItems: "center",
+        justifyContent: "center",
+
+        paddingHorizontal: 24,
+
+    },
+
+    modalContent: {
+        width: "100%",
+        maxWidth: 360,
+
+        padding: 20,
+
+        backgroundColor: colors.acctCard,
+
+        borderWidth: 1,
+        borderColor: colors.acctBorder,
+        borderRadius: 18,
+
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 16,
+        },
+        shadowOpacity: 0.24,
+        shadowRadius: 48,
+
+        elevation: 10,
+    },
+
+    modalHeader: {
+        marginBottom: 8,
+    },
+
+    modalTitle: {
+        color: colors.acctText,
+        fontSize: 18,
+        fontWeight: "700",
+    },
+
+    modalBody: {
+        marginBottom: 20,
+    },
+
+    modalText: {
+        color: colors.acctTextSecondary,
+        fontSize: 14,
+        lineHeight: 21,
+    },
+
+    modalFooter: {
+        flexDirection: "row",
+
+        gap: 10,
+    },
+
+    modalAction: {
+        flex: 1,
+
+        alignItems: "center",
+        justifyContent: "center",
+
+        paddingVertical: 12,
+
+        borderRadius: 12,
+    },
+
+    modalCancel: {
+        backgroundColor: colors.acctCardAlt,
+
+        borderWidth: 1,
+        borderColor: colors.acctBorder,
+    },
+
+    modalCancelPressed: {
+        opacity: 0.7,
+    },
+
+    modalCancelText: {
+        color: colors.acctText,
+        fontSize: 14,
+        fontWeight: "600",
+    },
+
+    modalConfirm: {
+        backgroundColor: "#e5484d",
+    },
+
+    modalConfirmPressed: {
+        opacity: 0.85,
+    },
+
+    modalConfirmText: {
+        color: colors.white,
+        fontSize: 14,
+        fontWeight: "700",
+    },
 });

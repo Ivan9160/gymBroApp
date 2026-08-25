@@ -1,32 +1,39 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { passportJwtSecret } from 'jwks-rsa';
-import { UserService } from 'src/resources/API/user/user.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { PrismaService } from "src/prisma.service";
+
+interface JwtPayload {
+    sub: number;
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private userService: UserService) {
-    super({ 
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKeyProvider: passportJwtSecret({
-            cache: true,
-            rateLimit: true,
-            jwksRequestsPerMinute: 5,
-            jwksUri: `${process.env.AUTH0_DOMAIN}.well-known/jwks.json`,
-        }),
-        audience: process.env.AUTH0_AUDIENCE,
-        issuer: process.env.AUTH0_DOMAIN,
-        algorithms: ['RS256'],
+    constructor(private readonly prisma: PrismaService) {
+        const secret = process.env.JWT_SECRET;
+
+        if (!secret) {
+            throw new Error(
+                "JWT_SECRET is not set — refusing to start without it"
+            );
+        }
+
+        super({
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: secret,
         });
-        
     }
 
-    async validate(payload: any) {
-        const user = await this.userService.findByAuth0Id(payload.sub);
+    async validate(payload: JwtPayload) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: payload.sub },
+        });
+
         if (!user) {
-            return { auth0Id: payload.sub, isNew: true };
+            throw new UnauthorizedException("Unknown user");
         }
+
         return user;
     }
 }

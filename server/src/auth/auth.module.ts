@@ -1,12 +1,31 @@
-import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
-import { UserService } from 'src/resources/API/user/user.service';
-import { UserModule } from 'src/resources/API/user/user.module';
+import { Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
 
+import { AuthService } from "./auth.service";
+import { JwtStrategy } from "./jwt.strategy";
+import { PrismaService } from "src/prisma.service";
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'jwt' }), UserModule],
-  providers: [JwtStrategy],
-  exports: [PassportModule, JwtStrategy],
+    imports: [
+        PassportModule,
+        JwtModule.registerAsync({
+            useFactory: () => {
+                const secret = process.env.JWT_SECRET;
+
+                if (!secret) {
+                    throw new Error(
+                        "JWT_SECRET is not set — refusing to start without it"
+                    );
+                }
+
+                return {
+                    secret,
+                    signOptions: { expiresIn: "90d" },
+                };
+            },
+        }),
+    ],
+    providers: [AuthService, JwtStrategy, PrismaService],
+    exports: [AuthService],
 })
 export class AuthModule {}

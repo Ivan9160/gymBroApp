@@ -13,9 +13,9 @@ export const guestStyles = StyleSheet.create({
 
         alignSelf: "center",
 
-        paddingTop: 56,
+        paddingTop: 20,
         paddingHorizontal: 16,
-        paddingBottom: 72,
+        paddingBottom: 40,
     },
 
     guestHero: {
@@ -35,7 +35,7 @@ export const guestStyles = StyleSheet.create({
 
         gap: 7,
 
-        paddingVertical: 7,
+        paddingVertical: 8,
         paddingHorizontal: 11,
 
         backgroundColor: colors.acctCard,
@@ -43,6 +43,7 @@ export const guestStyles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.acctBorder,
         borderRadius: 999,
+        marginBottom: -8,
     },
 
     guestHeroBadgeText: {
@@ -52,8 +53,8 @@ export const guestStyles = StyleSheet.create({
     },
 
     guestHeroTitle: {
-        marginTop: 18,
-        marginBottom: 12,
+        marginTop: 24,
+        marginBottom: 5,
 
         color: colors.acctText,
 
@@ -77,74 +78,38 @@ export const guestStyles = StyleSheet.create({
         textAlign: "center",
     },
 
-    guestAuthCard: {
-        width: "100%",
-        maxWidth: 470,
+    guestHeroCta: {
+        alignItems: "center",
+        justifyContent: "center",
 
-        alignSelf: "center",
+        minWidth: 220,
 
-        marginTop: 28,
+        marginTop: 20,
 
-        padding: 22,
+        paddingVertical: 10,
+        paddingHorizontal: 34,
 
-        backgroundColor: colors.acctCard,
+        backgroundColor: colors.acctAccent,
 
-        borderWidth: 1,
-        borderColor: colors.acctBorder,
-        borderRadius: 18,
+        borderRadius: 16,
 
-        shadowColor: "#000000",
+        shadowColor: colors.acctAccent,
         shadowOffset: {
             width: 0,
-            height: 16,
+            height: 12,
         },
-        shadowOpacity: 0.18,
-        shadowRadius: 48,
+        shadowOpacity: 0.35,
+        shadowRadius: 28,
 
-        elevation: 8,
+        elevation: 6,
     },
 
-    guestAuthCopy: {
-        width: "100%",
-    },
+    guestHeroCtaText: {
+        color: colors.white,
 
-    guestAuthTitle: {
-        color: colors.acctText,
-        fontSize: 18,
-        fontWeight: "600",
-    },
-
-    guestAuthDescription: {
-        marginTop: 6,
-
-        color: colors.acctTextSecondary,
-        fontSize: 13,
-        lineHeight: 20,
-    },
-
-    guestAuthActions: {
-        gap: 10,
-
-        marginTop: 18,
-    },
-
-    guestAuthPrimary: {
-        marginBottom: 0,
-    },
-
-    guestAuthSecondary: {
-        marginBottom: 0,
-        backgroundColor: "transparent",
-    },
-
-    guestAuthNote: {
-        marginTop: 14,
-
-        color: colors.acctTextMuted,
-        fontSize: 11,
-        lineHeight: 16,
-
-        textAlign: "center",
+        fontSize: 23,
+        fontWeight: "700",
+        letterSpacing: 0.3,
     },
 
     guestFeatureGrid: {
@@ -154,7 +119,7 @@ export const guestStyles = StyleSheet.create({
 
         gap: 14,
 
-        marginTop: 58,
+        marginTop: 28,
     },
 
     guestFeatureCard: {
@@ -191,21 +156,29 @@ export const guestStyles = StyleSheet.create({
     guestFeatureTitle: {
         color: colors.acctText,
         fontSize: 15,
+        marginBottom: 8,
         fontWeight: "600",
     },
 
     guestFeatureDescription: {
-        marginTop: 8,
+        marginTop: 0,
 
         color: colors.acctTextSecondary,
         fontSize: 13,
         lineHeight: 20,
     },
 
+    guestFeatureHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    },
+
     guestStepsCard: {
         marginTop: 22,
 
         padding: 18,
+        marginHorizontal: 10,
 
         backgroundColor: colors.acctCard,
 

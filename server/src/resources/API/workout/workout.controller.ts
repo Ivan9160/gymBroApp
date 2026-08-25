@@ -5,9 +5,10 @@ import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User} from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('workouts')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class WorkoutController {
     constructor(private readonly workoutService: WorkoutService){}
     

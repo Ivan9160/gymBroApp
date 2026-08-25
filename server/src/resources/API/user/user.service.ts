@@ -1,48 +1,36 @@
-import { Injectable} from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma.service";
+import { CreateUserDto, UpdateUserDto } from "./dto/user.dto";
+import { AuthService } from "src/auth/auth.service";
 
+export interface CreateUserResult {
+    accessToken: string;
+    user: Awaited<ReturnType<UserService["findById"]>>;
+}
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prisma: PrismaService){}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly authService: AuthService
+    ) {}
+
     findAll() {
         return this.prisma.user.findMany();
     }
-    
-    
-    create(dto: CreateUserDto) {
-        return this.prisma.user.create({
-        data: {
-            name: dto.name,
-            auth0Id:dto.auth0Id,
-            
 
-            userProfile: {
-            create: {
-                age: dto.age,
-                gender: dto.gender,
-                height: dto.height,
-                weight: dto.weight,
-                goal: dto.goal,
-
-                
-            },
-            },
-        },
-
-        });
-
-        
-    }
-    update(id: number, dto: UpdateUserDto) {
-        return this.prisma.user.update({
-            where : { id },
+    /**
+     * Registration and profile setup in one call — no auth0Id,
+     * no separate anonymous step. The account only starts existing
+     * once someone actually fills the form, exactly like today,
+     * just without a third-party identity provider involved.
+     */
+    async create(dto: CreateUserDto): Promise<CreateUserResult> {
+        const user = await this.prisma.user.create({
             data: {
-                name: dto.name,                
+                name: dto.name,
                 userProfile: {
-                    update: {
-                    data: {
+                    create: {
                         age: dto.age,
                         gender: dto.gender,
                         height: dto.height,
@@ -50,35 +38,49 @@ export class UserService {
                         goal: dto.goal,
                     },
                 },
-      },
-        },
-
+            },
+            include: {
+                userProfile: true,
+            },
         });
+
+        const accessToken = this.authService.signAccessToken(user.id);
+
+        return { accessToken, user };
     }
 
-    async findByAuth0Id(auth0Id: string) { 
-        console.log('Finding user with auth0Id:', auth0Id);
-        const user = await this.prisma.user.findUnique({
-            where: { auth0Id },
-            include: {
+    /**
+     * `id` must come from the validated JWT (req.user.id in the
+     * controller), never from a client-supplied route param or
+     * body field — otherwise anyone could edit anyone else's
+     * profile just by changing a number in the URL.
+     */
+    update(id: number, dto: UpdateUserDto) {
+        return this.prisma.user.update({
+            where: { id },
+            data: {
+                name: dto.name,
                 userProfile: {
-                    
-                }
-            }
-            
+                    update: {
+                        data: {
+                            age: dto.age,
+                            gender: dto.gender,
+                            height: dto.height,
+                            weight: dto.weight,
+                            goal: dto.goal,
+                        },
+                    },
+                },
+            },
         });
-        console.log('Found user:', user);
-        return user;
-        
     }
 
     async findById(id: number) {
         return this.prisma.user.findUnique({
             where: { id },
             include: {
-                userProfile: {
-                }
-            }
+                userProfile: true,
+            },
         });
     }
 }

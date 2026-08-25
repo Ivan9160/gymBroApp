@@ -26,12 +26,16 @@
     "plugins": [
       "expo-localization",
       [
-        "react-native-auth0",
+        "expo-build-properties",
         {
-          "domain": "dev-73vaab3wzjyny4dt.us.auth0.com",
-          "customScheme": "gymbro"
+          "android": {
+            "extraGradleProperties": {
+              "org.gradle.java.home": "C:/Program Files/Eclipse Adoptium/jdk-17.0.20.8-hotspot"
+            }
+          }
         }
-      ]
+      ],
+      "expo-secure-store"
     ]
   }
 }

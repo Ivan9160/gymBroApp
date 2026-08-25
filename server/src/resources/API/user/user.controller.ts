@@ -1,41 +1,43 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/user.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from '@prisma/client'
-import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
-import { User} from '@prisma/client';
+import {
+    Body,
+    Controller,
+    Get,
+    Patch,
+    Post,
+    Req,
+    UseGuards,
+} from "@nestjs/common";
+import { Request } from "express";
 
-@Controller('users')
-@UseGuards(AuthGuard('jwt'))
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { CreateUserDto, UpdateUserDto } from "./dto/user.dto";
+import { UserService } from "./user.service";
+
+interface AuthenticatedRequest extends Request {
+    user: { id: number };
+}
+
+@Controller("users")
 export class UserController {
     constructor(private readonly userService: UserService) {}
-    @UseGuards(RolesGuard)
-    @Get()
-    @Roles(Role.ADMIN)
-    findAll() {
-        return this.userService.findAll();
-    }
-
-    @Get('me')
-    getUserByAuth0Id(@CurrentUser() user: User) {
-        return user;
-    }
 
     @Post()
     create(@Body() dto: CreateUserDto) {
         return this.userService.create(dto);
     }
 
-    @Put('me')
-    update(@CurrentUser() user: User, @Body() dto: CreateUserDto) {
-        return this.userService.update(user.id, dto);
+    @UseGuards(JwtAuthGuard)
+    @Get("me")
+    getMe(@Req() req: AuthenticatedRequest) {
+        return this.userService.findById(req.user.id);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Patch("me")
+    updateMe(
+        @Req() req: AuthenticatedRequest,
+        @Body() dto: UpdateUserDto
+    ) {
+        return this.userService.update(req.user.id, dto);
+    }
 }
-
-
-

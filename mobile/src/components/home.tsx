@@ -1,21 +1,20 @@
 import { useTranslation } from "react-i18next";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 
-
-import LoginMenu from "./login";
 import {
-styles,
-getGuestContainerStyle,
-getGuestHeroTitleStyle,
-getResponsiveStyles,
+    styles,
+    getGuestContainerStyle,
+    getGuestHeroTitleStyle,
+    getResponsiveStyles,
 } from "../style";
 
 const HomePage = () => {
     const { t } = useTranslation();
+    const router = useRouter();
 
     const responsiveStyles = getResponsiveStyles();
 
-   
     return (
         <ScrollView
             style={styles.guestPage}
@@ -44,11 +43,20 @@ const HomePage = () => {
                     <Text style={styles.guestHeroSubtitle}>
                         {t("home.subtitle", {
                             defaultValue:
-                                "GymBro допомагає вести тренування, бачити прогрес і розуміти, коли м'язи готові до наступного навантаження.",
+                                "GymBro helps you track your workouts, monitor your progress, and understand when your muscles are ready for the next challenge.",
                         })}
                     </Text>
 
-                    <LoginMenu />
+                    <Pressable
+                        style={styles.guestHeroCta}
+                        onPress={() => router.push("/login")}
+                    >
+                        <Text style={styles.guestHeroCtaText}>
+                            {t("home.cta_start", {
+                                defaultValue: "Get Started",
+                            })}
+                        </Text>
+                    </Pressable>
                 </View>
 
                 <View
@@ -58,67 +66,72 @@ const HomePage = () => {
                     ]}
                 >
                     <View style={styles.guestFeatureCard}>
-                        <View style={styles.guestFeatureIcon}>
-                            <Text style={styles.guestFeatureIconText}>
-                                📋
+                        <View style={styles.guestFeatureHeader}>
+                            <View style={styles.guestFeatureIcon}>
+                                <Text style={styles.guestFeatureIconText}>
+                                    📋
+                                </Text>
+                            </View>
+
+                            <Text style={styles.guestFeatureTitle}>
+                                {t("home.feature_workouts_title", {
+                                    defaultValue: "Training in one place",
+                                })}
                             </Text>
                         </View>
-
-                        <Text style={styles.guestFeatureTitle}>
-                            {t("home.feature_workouts_title", {
-                                defaultValue:
-                                    "Тренування в одному місці",
-                            })}
-                        </Text>
 
                         <Text style={styles.guestFeatureDescription}>
                             {t("home.feature_workouts_text", {
                                 defaultValue:
-                                    "Запускай тренування, додавай підходи та переглядай історію без зайвих кроків.",
+                                    "Launch workouts, add sets, and view your history without unnecessary steps.",
                             })}
                         </Text>
                     </View>
 
                     <View style={styles.guestFeatureCard}>
-                        <View style={styles.guestFeatureIcon}>
-                            <Text style={styles.guestFeatureIconText}>
-                                🧠
+                        <View style={styles.guestFeatureHeader}>
+                            <View style={styles.guestFeatureIcon}>
+                                <Text style={styles.guestFeatureIconText}>
+                                    🧠
+                                </Text>
+                            </View>
+
+                            <Text style={styles.guestFeatureTitle}>
+                                {t("home.feature_recovery_title", {
+                                    defaultValue:
+                                        "Control Recovery",
+                                })}
                             </Text>
                         </View>
-
-                        <Text style={styles.guestFeatureTitle}>
-                            {t("home.feature_recovery_title", {
-                                defaultValue:
-                                    "Контроль відновлення",
-                            })}
-                        </Text>
 
                         <Text style={styles.guestFeatureDescription}>
                             {t("home.feature_recovery_text", {
                                 defaultValue:
-                                    "Оцінюй втому по групах м'язів і швидко розумій, де варто зменшити навантаження.",
+                                    "Evaluate muscle soreness by group and quickly understand where you should reduce the load.",
                             })}
                         </Text>
                     </View>
 
                     <View style={styles.guestFeatureCard}>
-                        <View style={styles.guestFeatureIcon}>
-                            <Text style={styles.guestFeatureIconText}>
-                                📈
-                            </Text>
-                        </View>
+                        <View style={styles.guestFeatureHeader}>
+                            <View style={styles.guestFeatureIcon}>
+                                <Text style={styles.guestFeatureIconText}>
+                                    📈
+                                </Text>
+                            </View>
 
                         <Text style={styles.guestFeatureTitle}>
                             {t("home.feature_progress_title", {
                                 defaultValue:
-                                    "Поступовий прогрес",
+                                    "Progressive Progress",
                             })}
                         </Text>
+                        </View>
 
                         <Text style={styles.guestFeatureDescription}>
                             {t("home.feature_progress_text", {
                                 defaultValue:
-                                    "Слідкуй за рівнями навичок і своїми результатами, щоб бачити реальний розвиток.",
+                                    "Track your skill levels and results to see real development over time.",
                             })}
                         </Text>
                     </View>
@@ -127,7 +140,7 @@ const HomePage = () => {
                 <View style={styles.guestStepsCard}>
                     <Text style={styles.sectionLabel}>
                         {t("home.how_title", {
-                            defaultValue: "Як це працює",
+                            defaultValue: "How It Works",
                         })}
                     </Text>
 
@@ -226,7 +239,6 @@ const HomePage = () => {
         </View>
         </ScrollView>
     );
-
 };
 
 export default HomePage;

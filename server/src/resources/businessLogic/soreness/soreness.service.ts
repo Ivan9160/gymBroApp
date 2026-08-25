@@ -114,12 +114,12 @@ export class SorenessService {
         const hoursPassed =
             (now - new Date(set.createdAt).getTime()) / (1000 * 3600);
 
-        const timeFactor = this.biExponentialDamageResponse(hoursPassed, tauDecay);
+        const timeFactor = this.fatigueDecay(hoursPassed, tauDecay);
 
         return rawDamage * timeFactor;
     }
 
-    private biExponentialDamageResponse(hoursPassed: number, tauDecay: number): number {
+    private biExponentialDamageResponse(hoursPassed: number, tauDecay: number): number { //will be used in the future for a more accurate model of soreness response
         const tauRise = CoreMathConfig.DAMAGE_RISE_HOURS;
         if (hoursPassed < 0) return 0;
 
@@ -129,6 +129,17 @@ export class SorenessService {
 
         if (peakVal <= 0) return 0;
         return Math.max(0, raw(hoursPassed) / peakVal);
+    }
+
+    private fatigueDecay(
+        hoursPassed: number,
+        tauDecay: number,
+    ): number {
+        if (hoursPassed < 0) {
+            return 1;
+        }
+
+        return Math.exp(-hoursPassed / tauDecay);
     }
 
     private calculateRepeatedBoutMultiplier(groupWeightedSets: IWeightedSet[], now: number, excludeAfter: number): number {

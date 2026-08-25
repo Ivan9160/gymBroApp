@@ -1,4 +1,3 @@
-import { useAuth0 } from "react-native-auth0";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import {
@@ -14,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useGetExerciseGroupsQuery } from "../api/exerciseApi";
 import { useTranslation } from "react-i18next";
 import { styles, getGuestContainerStyle } from "../style";
+import { getStoredAccessToken } from "../hooks/useAnonymousAuth";
 
 interface ExerciseData {
     name: string;
@@ -30,8 +30,6 @@ function ExerciseCreator() {
     const {
         data: exerciseGroups = [],
     } = useGetExerciseGroupsQuery();
-
-    const { getCredentials } = useAuth0();
 
     const { t } = useTranslation();
 
@@ -99,14 +97,10 @@ function ExerciseCreator() {
         setShowError(false);
 
         try {
-            const credentials =
-                await getCredentials();
 
-            const token =
-                credentials.accessToken;
+            const token = await getStoredAccessToken();
 
-            const apiUrl =
-                process.env.EXPO_PUBLIC_API_URL;
+            const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
             if (!apiUrl) {
                 throw new Error(
