@@ -1,0 +1,347 @@
+{
+  "nav": {
+    "brand_aria": "Página de inicio de GymBro",
+    "account": "Cuenta",
+    "my_profile": "Mi perfil",
+    "history": "Historial",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "back": "Atrás",
+    "language": "Idioma"
+  },
+
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Cerrar"
+  },
+
+  "app": {
+    "authenticated_user": "Usuario autenticado: {{name}}",
+    "login_prompt": "Inicia sesión para comenzar a entrenar"
+  },
+
+  "account": {
+    "welcome": "¡Hola de nuevo,",
+    "stats_title": "Tus estadísticas",
+    "workouts_history": "Historial de entrenamientos",
+    "create_exercise": "Crear nuevo ejercicio",
+    "admin_badge": "Admin",
+    "edit_profile": "Editar perfil",
+    "start_workout_btn": "🚀 Comenzar entrenamiento",
+    "sore_label": "Fatiga muscular"
+  },
+
+  "active_workout": {
+    "title": "Entrenamiento en curso",
+    "timer_label": "Tiempo transcurrido:",
+    "current_sets": "Series actuales",
+    "finish_btn": "Finalizar entrenamiento",
+    "cancel_btn": "Cancelar",
+    "swipe_to_delete": "Desliza para eliminar",
+    "finish_modal_title": "Finalizar entrenamiento",
+    "finish_modal_body": "¿Seguro que quieres finalizar el entrenamiento? Tus resultados se guardarán.",
+    "form": {
+      "exercise_label": "Selecciona un ejercicio",
+      "exercise_placeholder": "Buscar ejercicio...",
+      "weight_label": "Peso (kg)",
+      "weight_placeholder": "0",
+      "reps_label": "Repeticiones",
+      "reps_placeholder": "0",
+      "add_set_button": "Añadir serie"
+    },
+    "no_sets": "Todavía no has añadido ninguna serie. ¡Registra tu primer ejercicio!"
+  },
+
+  "set_item": {
+    "set_label": "Serie",
+    "reps_count": "{{count}} repeticiones",
+    "bodyweight": "Peso corporal",
+    "deleting": "Eliminando..."
+  },
+
+  "modals": {
+    "finish_workout": {
+      "title": "Finalizar entrenamiento",
+      "body": "¿Seguro que quieres finalizar el entrenamiento? Los resultados se guardarán.",
+      "cancel": "Cancelar",
+      "confirm": "Finalizar"
+    }
+  },
+
+  "user_form": {
+    "loading": "Cargando...",
+    "title_profile": "Perfil de usuario",
+    "profile_overview": "Resumen del perfil",
+    "title_create": "Crear perfil",
+    "title_update": "Guardar cambios",
+    "hello": "Hola",
+    "name": "Nombre",
+    "age": "Edad",
+    "years": "años",
+    "gender": "Sexo",
+    "male": "Hombre",
+    "female": "Mujer",
+    "height": "Altura",
+    "cm": "cm",
+    "weight": "Peso",
+    "kg": "kg",
+    "goal": "Objetivo",
+    "workout_history": "Historial de entrenamientos",
+    "view_all_workouts": "Ver todos los entrenamientos",
+    "create_exercise": "Crear nuevo ejercicio",
+    "edit_profile": "Editar perfil",
+    "start_workout": "Comenzar entrenamiento",
+    "back_to_account": "Volver al perfil",
+    "account_settings_label": "Ajustes de la cuenta",
+    "profile_setup_label": "Primeros pasos",
+    "profile_setup_title": "Configura tu perfil",
+    "account_settings_description": "Actualiza tus datos, cambia el idioma de la interfaz y gestiona tu cuenta desde un solo lugar.",
+    "profile_setup_description": "Añade tu información básica para que GymBro personalice tu perfil, estadísticas y progreso.",
+    "personal_data": "Datos personales",
+    "personal_data_description": "Información básica que se muestra en tu perfil.",
+    "body_data": "Datos físicos",
+    "goal_description": "Elige el objetivo que mejor se adapte a tus necesidades actuales.",
+    "settings_title": "Ajustes de la cuenta",
+    "settings_description": "Gestiona el idioma de la interfaz y la sesión actual de tu cuenta.",
+    "language_title": "Idioma",
+    "language_description": "Elige el idioma que GymBro utilizará en la interfaz.",
+    "logout_title": "Cerrar sesión",
+    "logout_description": "Finaliza la sesión actual en este dispositivo.",
+    "saving": "Guardando...",
+    "goals": {
+      "lose": "Perder peso",
+      "maintain": "Mantener la forma física",
+      "gain": "Ganar masa muscular",
+      "lose_description": "Reducir el porcentaje de grasa corporal y el peso total.",
+      "maintain_description": "Mantener tu estado físico actual.",
+      "gain_description": "Aumentar la fuerza y la masa muscular."
+    },
+    "mock_data_note": "Datos de demostración",
+    "soreness_title": "Fatiga por grupo muscular",
+    "view_front": "Vista frontal",
+    "view_back": "Vista trasera",
+    "soreness_fresh": "Descansado",
+    "soreness_moderate": "Moderada",
+    "soreness_high": "Alta",
+    "muscle_groups": {
+      "chest": "Pecho",
+      "back": "Espalda",
+      "shoulders": "Hombros",
+      "biceps": "Bíceps",
+      "triceps": "Tríceps",
+      "core": "Core",
+      "legs": "Piernas"
+    },
+    "proficiency_title": "Progreso",
+    "proficiency_max_level": "Nivel máximo",
+    "proficiency_next_level": "{{percent}}% para el nivel «{{level}}»",
+    "proficiency_levels": {
+      "novice": "Novato",
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado",
+      "elite": "Élite",
+      "legendary": "Legendario"
+    }
+  },
+
+  "login": {
+    "title": "GymBro",
+    "subtitle": "Mejora tus entrenamientos desde hoy",
+    "or": "o",
+    "signup": "Crear cuenta",
+    "terms": "Al continuar, aceptas los Términos de Servicio."
+  },
+
+  "logout": {
+    "title": "¿Cerrar sesión?",
+    "body": "¿Seguro que quieres cerrar sesión? Tendrás que volver a ingresar tus credenciales para acceder a tu cuenta.",
+    "cancel": "Cancelar",
+    "confirm": "Cerrar sesión"
+  },
+
+  "home": {
+    "badge": "Tu espacio de entrenamiento",
+    "title": "Entrena mejor. Sigue tu progreso. Siéntete genial.",
+    "subtitle": "GymBro te ayuda a registrar tus entrenamientos, entender tu recuperación y ver tu progreso sin complicaciones.",
+    "cta_start": "Comenzar",
+    "features_aria": "Funciones de GymBro",
+    "feature_workouts_title": "Entrenamientos en un solo lugar",
+    "feature_workouts_text": "Inicia entrenamientos, añade series y consulta tu historial en unos pocos pasos.",
+    "feature_recovery_title": "Entiende tu recuperación",
+    "feature_recovery_text": "Consulta la fatiga por grupos musculares y decide mejor cuándo y qué entrenar a continuación.",
+    "feature_progress_title": "Consigue un progreso real",
+    "feature_progress_text": "Sigue tus niveles de habilidad y tu historial para ver tu evolución con el tiempo.",
+    "how_title": "Cómo funciona",
+    "step_one_title": "Crea tu perfil",
+    "step_one_text": "Añade información básica y elige tu objetivo principal.",
+    "step_two_title": "Comienza un entrenamiento",
+    "step_two_text": "Registra ejercicios y series a tu propio ritmo.",
+    "step_three_title": "Consulta tu progreso",
+    "step_three_text": "Revisa tus estadísticas, historial y el resumen de recuperación muscular.",
+    "auth_title": "¿Listo para empezar?",
+    "auth_subtitle": "Inicia sesión para guardar tus entrenamientos, seguir tu progreso y utilizar tu perfil personal en GymBro."
+  },
+
+  "exercise_creator": {
+    "eyebrow": "Biblioteca de ejercicios",
+    "title": "Crear nuevo ejercicio",
+    "description": "Añade un ejercicio personalizado a la biblioteca para utilizarlo en futuros entrenamientos.",
+    "back_to_account": "Volver al perfil",
+    "success_title": "Ejercicio creado",
+    "success": "«{{name}}» se ha añadido correctamente.",
+    "error_title": "No se pudo crear el ejercicio",
+    "error_message": "Inténtalo de nuevo. Si el problema persiste, comprueba tu conexión o contacta con soporte.",
+    "name_label": "Nombre del ejercicio",
+    "name_placeholder": "Ej. Press de banca",
+    "name_help": "Usa un nombre claro y fácil de buscar durante tus entrenamientos.",
+    "muscle_group": "Grupo muscular",
+    "bodyweight": "Ejercicio con peso corporal",
+    "bodyweight_help": "Actívalo si el ejercicio no requiere peso adicional (pesas, máquinas).",
+    "no_groups": "Los grupos musculares no están disponibles actualmente.",
+    "submit": "Añadir ejercicio",
+    "submitting": "Añadiendo...",
+    "tip_title": "Consejo",
+    "tip_text": "Mantén un estilo uniforme al nombrar los ejercicios. Los nombres claros facilitan la revisión de tu historial."
+  },
+
+  "workout_history": {
+    "loading": "Cargando historial...",
+    "eyebrow": "Tu diario de entrenamientos",
+    "title": "Historial de entrenamientos",
+    "description": "Revisa tus sesiones recientes, recuerda qué entrenaste y accede a los detalles de cada rutina.",
+    "back_to_account": "Volver al perfil",
+    "empty_title": "Todavía no hay entrenamientos",
+    "empty_message": "Tu primer entrenamiento aparecerá aquí cuando finalices una sesión.",
+    "start_first_workout": "Comenzar tu primer entrenamiento",
+    "set_number": "Serie {{number}}",
+    "empty": "No hay series registradas.",
+    "more": "y {{count}} series más...",
+    "view_detailed": "Ver detalles",
+    "total_volume": "Volumen total",
+    "exercises_summary": "Resumen de ejercicios",
+    "sets": "Series",
+    "sets_count_one": "1 serie",
+    "sets_count_few": "{{count}} series",
+    "sets_count_many": "{{count}} series",
+    "sets_count_other": "{{count}} series",
+    "set": "SERIE",
+    "weight": "PESO",
+    "reps": "REPS",
+    "kg": "kg",
+    "bodyweight": "Peso corporal",
+    "completed": "Completado",
+    "back_to_history": "Volver al historial",
+    "duration": "Duración",
+    "exercises": "Ejercicios",
+    "at": "Iniciado a las",
+    "hours": "h",
+    "minutes": "min"
+  },
+
+  "workout_details": {
+    "back_to_history": "Volver al historial",
+    "default_name": "Entrenamiento",
+    "eyebrow": "Resumen del entrenamiento",
+    "status_completed": "Completado",
+    "duration": "Duración",
+    "exercises_count": "Ejercicios",
+    "total_volume": "Volumen total",
+    "kg": "kg",
+    "summary_title": "Resumen de ejercicios",
+    "sets_total_one": "1 serie en total",
+    "sets_total_few": "{{count}} series en total",
+    "sets_total_many": "{{count}} series en total",
+    "sets_total_other": "{{count}} series en total",
+    "sets_label_one": "1 serie",
+    "sets_label_few": "{{count}} series",
+    "sets_label_many": "{{count}} series",
+    "sets_label_other": "{{count}} series",
+    "unknown_exercise": "Ejercicio desconocido",
+    "not_found_title": "Entrenamiento no encontrado",
+    "not_found_message": "El entrenamiento no es válido. Vuelve al historial e inténtalo de nuevo.",
+    "table": {
+      "set": "SERIE",
+      "weight": "PESO",
+      "reps": "REPS",
+      "bodyweight": "Peso corporal",
+      "kg": "kg",
+      "reps_unit": "reps."
+    }
+  },
+
+  "history": {
+    "title": "Historial de entrenamientos",
+    "no_workouts": "No se encontraron entrenamientos",
+    "hit_gym": "¡Es hora de ir al gimnasio!",
+    "start_first": "Comenzar tu primer entrenamiento",
+    "sets_count_one": "1 serie",
+    "sets_count_few": "{{count}} series",
+    "sets_count_many": "{{count}} series",
+    "sets_count_other": "{{count}} series",
+    "empty_workout": "Entrenamiento vacío",
+    "more_exercises": "y {{count}} más...",
+    "view_review": "Ver detalles",
+    "duration": "Duración",
+    "started_at": "Iniciado a las",
+    "exercise_num": "Ejercicio n.º {{index}}"
+  },
+
+  "database": {
+    "genders": {
+      "male": "Hombre",
+      "female": "Mujer"
+    },
+    "goals": {
+      "lose": "Perder peso",
+      "maintain": "Mantener la forma física",
+      "gain": "Ganar masa muscular"
+    },
+    "exercise_groups": {
+      "Chest": "Pecho",
+      "Triceps": "Tríceps",
+      "Back": "Espalda",
+      "Biceps": "Bíceps",
+      "Legs": "Piernas",
+      "Shoulders": "Hombros",
+      "Core": "Core"
+    },
+    "exercises": {
+      "Chest Fly Machine": "Aperturas en máquina (Peck Deck)",
+      "Cable Triceps Pushdown": "Extensión de tríceps en polea",
+      "Overhead Cable Extension": "Extensión de tríceps tras nuca en polea",
+      "Skull Crushers": "Press francés",
+      "Deadlift": "Peso muerto",
+      "Lat Pulldown": "Jalón al pecho",
+      "Horizontal Cable Row": "Remo en polea baja",
+      "Bicep Curls": "Curl de bíceps",
+      "Hammer Curls": "Curl martillo",
+      "Barbell Curls": "Curl de bíceps con barra",
+      "Preacher Curls": "Curl en banco Scott",
+      "Leg Press": "Prensa de piernas",
+      "Lying Leg Curl": "Curl femoral tumbado",
+      "Calf Raises": "Elevación de talones (Gemelos)",
+      "Overhead Press (Military Press)": "Press militar",
+      "Lateral Raises": "Elevaciones laterales",
+      "Front Raises": "Elevaciones frontales",
+      "Rear Delt Fly": "Elevaciones posteriores (Pájaros)",
+      "Cable Crunches": "Encogimientos en polea",
+      "Bench Press": "Press de banca",
+      "Bench press": "Press de banca",
+      "Dumbbell bench press": "Press de banca con mancuernas",
+      "Dumbbell Bench Press": "Press de banca con mancuernas",
+      "Dips": "Fondos en paralelas",
+      "Diamond Push-ups": "Flexiones diamante",
+      "Pull-ups": "Dominadas",
+      "Dumbbell Bent Over Row": "Remo con mancuerna",
+      "Bent Over Row": "Remo con barra",
+      "Chin-ups": "Dominadas supinas",
+      "Squats": "Sentadillas",
+      "Hanging Leg Raises": "Elevación de piernas colgado",
+      "Ab Wheel Rollouts": "Rueda abdominal",
+      "Plank": "Plancha",
+      "Push Ups": "Flexiones",
+      "Crunches": "Encogimientos (Crunches)"
+    }
+  }
+}

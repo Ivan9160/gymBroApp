@@ -18,6 +18,7 @@ import { useAnonymousAuth } from "../../hooks/useAnonymousAuth";
 import { ProfileFormFields } from "./profileFormFields";
 import { styles } from "../../style";
 import  LogoutButton  from "../logout";
+import { LanguagePicker } from "./languagePicker";
 
 type Goal = "lose" | "maintain" | "gain";
 
@@ -185,7 +186,7 @@ export function EditProfileForm() {
                                 </Text>
                             </View>
 
-                            <View style={styles.settingsRow}>
+                           <View style={styles.settingsRow}>
                                 <View style={styles.settingsRowContent}>
                                     <Text style={styles.settingsRowTitle}>
                                         {t("user_form.language_title")}
@@ -196,48 +197,7 @@ export function EditProfileForm() {
                                     </Text>
                                 </View>
 
-                                <View
-                                    style={styles.languageSwitcher}
-                                    accessibilityLabel={t("nav.language")}
-                                >
-                                    <Pressable
-                                        style={[
-                                            styles.languageBtn,
-                                            activeLanguage === "en" &&
-                                                styles.languageBtnActive,
-                                        ]}
-                                        onPress={() => changeLanguage("en")}
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.languageBtnText,
-                                                activeLanguage === "en" &&
-                                                    styles.languageBtnActiveText,
-                                            ]}
-                                        >
-                                            EN
-                                        </Text>
-                                    </Pressable>
-
-                                    <Pressable
-                                        style={[
-                                            styles.languageBtn,
-                                            activeLanguage === "uk" &&
-                                                styles.languageBtnActive,
-                                        ]}
-                                        onPress={() => changeLanguage("uk")}
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.languageBtnText,
-                                                activeLanguage === "uk" &&
-                                                    styles.languageBtnActiveText,
-                                            ]}
-                                        >
-                                            UK
-                                        </Text>
-                                    </Pressable>
-                                </View>
+                                <LanguagePicker />
                             </View>
 
                             <View style={[styles.settingsRow, styles.settingsRowDanger]}>

@@ -630,4 +630,101 @@ export const formPageStyles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "700",
     },
+
+    languagePickerTrigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+
+    minWidth: 110,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+
+    backgroundColor: colors.acctCardAlt,
+
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.07)",
+    borderRadius: 10,
+},
+
+    languagePickerTriggerText: {
+        flex: 1,
+
+        color: colors.acctText,
+        fontSize: 13,
+        marginLeft: -4,
+        marginRight: -4,
+        fontWeight: "600",
+    },
+
+    languagePickerOverlay: {
+        flex: 1,
+
+        justifyContent: "flex-end",
+
+        backgroundColor: "rgba(6, 7, 10, 0.6)",
+    },
+
+    languagePickerCard: {
+        maxHeight: "60%",
+
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+
+        overflow: "hidden",
+    },
+
+    languagePickerBlur: {
+        paddingTop: 16,
+        paddingBottom: 24,
+        paddingHorizontal: 16,
+
+        backgroundColor: "rgba(30, 30, 30, 0.55)",
+
+        borderTopWidth: 1,
+        borderColor: "rgba(255, 255, 255, 0.08)",
+    },
+
+    languagePickerTitle: {
+        marginBottom: 10,
+
+        color: colors.acctTextSecondary,
+        fontSize: 12,
+        fontWeight: "700",
+        letterSpacing: 1,
+        textTransform: "uppercase",
+
+        textAlign: "center",
+    },
+
+    languagePickerList: {
+        maxHeight: 360,
+        marginBottom: 30,
+    },
+
+    languagePickerOption: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+
+        paddingVertical: 14,
+        paddingHorizontal: 10,
+
+        borderRadius: 12,
+    },
+
+    languagePickerOptionActive: {
+        backgroundColor: "rgba(31, 67, 126, 0.12)",
+    },
+
+    languagePickerOptionText: {
+        color: colors.acctText,
+        fontSize: 14,
+        fontWeight: "500",
+    },
+
+    languagePickerOptionTextActive: {
+        color: colors.acctAccent,
+        fontWeight: "700",
+    },
 });
