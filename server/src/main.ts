@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { NextFunction } from 'express';
+import { join } from 'path';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -24,6 +25,11 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3000;
   app.use((req: Request, res: Response, next: NextFunction) => {
   logger.log(`Incoming request: ${req.method} ${req.url}`);
+  console.log(
+    'GIF ROOT:',
+    join(__dirname, '..', '..', 'static', 'exercise-gifs'),
+  );
+
   next();
 });
   await app.listen(port);

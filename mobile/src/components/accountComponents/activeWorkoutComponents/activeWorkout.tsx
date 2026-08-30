@@ -11,10 +11,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { workoutHistoryApi } from "../../../api/workoutHistoryApi";
 import { getStoredAccessToken } from "../../../hooks/useAnonymousAuth";
 import { userApi } from "../../../api/userApi";
+import { ExerciseAnimation } from "./exerciseAnimation";
 
 import {
     useGetExercisesQuery,
@@ -709,6 +709,7 @@ function ActiveWorkout() {
                             )
                         }
                     />
+                    <ExerciseAnimation filename={selectedExercise?.video || null} />
 
                     <View
                         style={styles.formGrid}

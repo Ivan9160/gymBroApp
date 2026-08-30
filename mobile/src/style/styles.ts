@@ -12,6 +12,7 @@ import { contentStyles } from "./contentStyles";
 import { modalStyles } from "../components/accountComponents/activeWorkoutComponents/style/modalStyles";
 import { swipeStyles } from "../components/accountComponents/activeWorkoutComponents/style/swipeStyles";
 import { exerciseCreatorStyles } from "../components/style/exerciseCreatorStyles";
+import { exerciseAnimationStyles } from "../components/accountComponents/activeWorkoutComponents/style/exerciseAnimationStyles";
 
 export const styles = StyleSheet.create({
     ...accountPageStyles,
@@ -26,4 +27,5 @@ export const styles = StyleSheet.create({
     ...modalStyles,
     ...swipeStyles,
     ...exerciseCreatorStyles,
+    ...exerciseAnimationStyles,
 });

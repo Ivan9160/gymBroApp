@@ -15,6 +15,8 @@ import { ProficiencyListener } from './resources/API/user-summary/proficiency.li
 import { UserSummaryModule } from './resources/API/user-summary/userSummary.module';
 import { Keyv } from 'keyv';
 import KeyvRedis from '@keyv/redis';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -31,6 +33,15 @@ import KeyvRedis from '@keyv/redis';
       }
     },
   }),
+  ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'static', 'exercise-gifs'),
+      serveRoot: '/exercise-gifs',
+      useGlobalPrefix: true,
+      serveStaticOptions: {
+        maxAge: '30d', 
+        immutable: true,
+      },
+    }),
     UserModule, 
     WorkoutModule, 
     SetModule, 

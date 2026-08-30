@@ -14,6 +14,7 @@ export * from "./contentStyles";
 export * from "./responsiveStyles";
 export * from "../components/style/exerciseCreatorStyles";
 export * from "./platformStyles";
+export * from "../components/accountComponents/activeWorkoutComponents/style/exerciseAnimationStyles";
 
 export * from "./styles";
 export * from "./responsiveHelpers";

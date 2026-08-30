@@ -6,6 +6,7 @@ export interface IExercise {
   isBodyweight: boolean;
   benchmark: number | null;
   factor: number;
+  video: string | null;
 }
 
 export interface ISet {
