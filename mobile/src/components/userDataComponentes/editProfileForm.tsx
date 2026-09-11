@@ -10,7 +10,7 @@ import {
 
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView, BlurTargetView } from "expo-blur";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 import { useRef } from "react";
@@ -24,6 +24,7 @@ import { ProfileFormFields } from "./profileFormFields";
 import { styles } from "../../style";
 import LogoutButton from "../logout";
 import { LanguagePicker } from "./languagePicker";
+import { setUserAge, setUserGender, setUserGoal, setUserName, setUserHeight, setUserWeight } from "../../store/slices/userSlice";
 
 type Goal = "lose" | "maintain" | "gain";
 
@@ -43,6 +44,7 @@ interface RootState {
 
 export function EditProfileForm() {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
 
     const reduxUser = useSelector(
         (state: RootState) => state.user
@@ -75,10 +77,20 @@ export function EditProfileForm() {
             goal: reduxUser.goal,
         };
 
+        dispatch(
+            setUserName(requestData.name),
+            setUserAge(requestData.age),
+            setUserGender(requestData.gender),
+            setUserHeight(requestData.height),
+            setUserWeight(requestData.weight),
+            setUserGoal(requestData.goal),
+        );
+
+        router.replace("/account");
+
         try {
             await updateUser(requestData).unwrap();
 
-            router.replace("/account");
         } catch (error) {
             console.error(
                 "Unable to update user profile:",
@@ -87,26 +99,25 @@ export function EditProfileForm() {
         }
     };
 
-    if (tokenReady && isSummaryLoading) {
-        return (
-            <View style={styles.loadingPage}>
-                <View style={styles.loadingCard}>
-                    <ActivityIndicator
-                        size="small"
-                        style={styles.loadingSpinner}
-                    />
+    // if (tokenReady && isSummaryLoading) {
+    //     return (
+    //         <View style={styles.loadingPage}>
+    //             <View style={styles.loadingCard}>
+    //                 <ActivityIndicator
+    //                     size="small"
+    //                     style={styles.loadingSpinner}
+    //                 />
 
-                    <Text style={styles.loadingText}>
-                        {t("user_form.loading")}
-                    </Text>
-                </View>
-            </View>
-        );
-    }
+    //                 <Text style={styles.loadingText}>
+    //                     {t("user_form.loading")}
+    //                 </Text>
+    //             </View>
+    //         </View>
+    //     );
+    // }
 
     return (
         <View style={styles.formPage}>
-            {/* Main blur target */}
             <BlurTargetView
                 ref={cardBlurTargetRef}
                 style={StyleSheet.absoluteFill}
@@ -135,9 +146,6 @@ export function EditProfileForm() {
                 />
             </BlurTargetView>
 
-            {/* Footer blur target.
-                IMPORTANT: it is behind ScrollView,
-                so it cannot cover the page content. */}
             <BlurTargetView
                 ref={footerBlurTargetRef}
                 style={StyleSheet.absoluteFill}

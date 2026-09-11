@@ -229,25 +229,7 @@ function Account() {
         : "?";
 
 
-    if (
-        userSummaryLoading ||
-        userSummaryFetching
-    ) {
-        return (
-            <View style={styles.loadingPage}>
-                <View style={styles.loadingCard}>
-                    <ActivityIndicator
-                        size="small"
-                        style={styles.loadingSpinner}
-                    />
-
-                    <Text style={styles.loadingText}>
-                        {t("user_form.loading")}
-                    </Text>
-                </View>
-            </View>
-        );
-    }
+    
 
 
     return (
