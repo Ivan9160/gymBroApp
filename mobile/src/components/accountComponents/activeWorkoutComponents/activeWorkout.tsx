@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     Modal,
@@ -15,32 +15,10 @@ import { workoutHistoryApi } from "../../../api/workoutHistoryApi";
 import { getStoredAccessToken } from "../../../hooks/useAnonymousAuth";
 import { userApi } from "../../../api/userApi";
 import { ExerciseAnimation } from "./exerciseAnimation";
-
-import {
-    useGetExercisesQuery,
-    useGetExerciseGroupsQuery,
-} from "../../../api/exerciseApi";
-
-import {
-    setWorkoutId,
-    setWorkoutStartTime,
-    setWorkoutSets,
-} from "../../../store/slices/workoutSlice";
-
-import {
-    setSetExerciseId,
-    setSetMuscleGroup,
-    setSetWeight,
-    setSetReps,
-} from "../../../store/slices/setSlice";
-
-import type {
-    IExercise,
-    IExerciseGroup,
-    ISet,
-    IWorkout,
-} from "../../../types";
-
+import { useGetExercisesQuery, useGetExerciseGroupsQuery } from "../../../api/exerciseApi";
+import { setWorkoutId, setWorkoutStartTime, setWorkoutSets } from "../../../store/slices/workoutSlice";
+import { setSetExerciseId, setSetMuscleGroup, setSetWeight, setSetReps } from "../../../store/slices/setSlice";
+import type { IExercise, IExerciseGroup, ISet, IWorkout } from "../../../types";
 import { styles } from "../../../style";
 import { WorkoutTimer } from "./workoutTimer";
 import { FinishWorkoutModal } from "./finishWorkoutModal";
@@ -78,14 +56,7 @@ interface DropdownProps {
     onChange: (id: number) => void;
 }
 
-function DropdownSelect({
-    label,
-    value,
-    placeholder,
-    disabled = false,
-    options,
-    onChange,
-}: DropdownProps) {
+function DropdownSelect({ label, value, placeholder, disabled = false, options, onChange }: DropdownProps) {
     const [open, setOpen] = useState(false);
 
     const handleSelect = (id: number) => {
@@ -95,9 +66,7 @@ function DropdownSelect({
 
     return (
         <View style={styles.formField}>
-            <Text style={styles.formLabel}>
-                {label}
-            </Text>
+            <Text style={styles.formLabel}>{label}</Text>
 
             <Pressable
                 disabled={disabled}
@@ -110,21 +79,13 @@ function DropdownSelect({
                         paddingVertical: 14,
                         borderRadius: 12,
                         borderWidth: 1,
-                        borderColor: disabled
-                            ? "#24242A"
-                            : "#34343C",
-                        backgroundColor: disabled
-                            ? "#15151A"
-                            : "#18181D",
+                        borderColor: disabled ? "#24242A" : "#34343C",
+                        backgroundColor: disabled ? "#15151A" : "#18181D",
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent:
-                            "space-between",
+                        justifyContent: "space-between",
                     },
-                    pressed &&
-                        !disabled && {
-                            opacity: 0.75,
-                        },
+                    pressed && !disabled && { opacity: 0.75 },
                 ]}
             >
                 <Text
@@ -134,61 +95,25 @@ function DropdownSelect({
                         marginRight: 12,
                         fontSize: 16,
                         lineHeight: 21,
-                        color: disabled
-                            ? "#5F5F68"
-                            : value
-                            ? "#FFFFFF"
-                            : "#77777F",
+                        color: disabled ? "#5F5F68" : value ? "#FFFFFF" : "#77777F",
                     }}
                 >
                     {value || placeholder}
                 </Text>
 
-                <Text
-                    style={{
-                        fontSize: 18,
-                        color: disabled
-                            ? "#5F5F68"
-                            : "#A8A8B2",
-                    }}
-                >
-                    ▾
-                </Text>
+                <Text style={{ fontSize: 18, color: disabled ? "#5F5F68" : "#A8A8B2" }}>▾</Text>
             </Pressable>
 
-            <Modal
-                visible={open}
-                transparent
-                animationType="fade"
-                onRequestClose={() =>
-                    setOpen(false)
-                }
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        backgroundColor:
-                            "rgba(0, 0, 0, 0.65)",
-                        justifyContent: "flex-end",
-                    }}
-                >
+            <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
+                <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.65)", justifyContent: "flex-end" }}>
                     <Pressable
-                        style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                        }}
-                        onPress={() =>
-                            setOpen(false)
-                        }
+                        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+                        onPress={() => setOpen(false)}
                     />
 
                     <View
                         style={{
-                            backgroundColor:
-                                "#18181D",
+                            backgroundColor: "#18181D",
                             borderTopLeftRadius: 20,
                             borderTopRightRadius: 20,
                             maxHeight: "80%",
@@ -203,112 +128,62 @@ function DropdownSelect({
                                 height: 5,
                                 borderRadius: 999,
                                 alignSelf: "center",
-                                backgroundColor:
-                                    "#3A3A42",
+                                backgroundColor: "#3A3A42",
                                 marginBottom: 14,
                             }}
                         />
 
-                        <Text
-                            style={{
-                                fontSize: 18,
-                                fontWeight: "700",
-                                color: "#FFFFFF",
-                                paddingHorizontal: 20,
-                                paddingBottom: 14,
-                            }}
-                        >
+                        <Text style={{ fontSize: 18, fontWeight: "700", color: "#FFFFFF", paddingHorizontal: 20, paddingBottom: 14 }}>
                             {label}
                         </Text>
 
                         <ScrollView
-                            style={{
-                                maxHeight: "70%",
-                            }}
-                            contentContainerStyle={{
-                                paddingHorizontal: 12,
-                                paddingBottom: 24,
-                            }}
+                            style={{ maxHeight: "70%" }}
+                            contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24 }}
                             showsVerticalScrollIndicator={true}
                             nestedScrollEnabled={true}
                             keyboardShouldPersistTaps="handled"
                         >
-                            {options.map(
-                                (option) => {
-                                    const selected =
-                                        option.label ===
-                                        value;
+                            {options.map((option) => {
+                                const selected = option.label === value;
 
-                                    return (
-                                        <Pressable
-                                            key={
-                                                option.id
-                                            }
-                                            onPress={() =>
-                                                handleSelect(
-                                                    option.id
-                                                )
-                                            }
-                                            style={({
-                                                pressed,
-                                            }) => [
-                                                {
-                                                    minHeight: 52,
-                                                    paddingHorizontal: 16,
-                                                    paddingVertical: 14,
-                                                    borderRadius: 12,
-                                                    marginBottom: 6,
-                                                    backgroundColor:
-                                                        selected
-                                                            ? "#2563EB"
-                                                            : "#202027",
-                                                    flexDirection:
-                                                        "row",
-                                                    alignItems:
-                                                        "center",
-                                                    justifyContent:
-                                                        "space-between",
-                                                },
-                                                pressed && {
-                                                    opacity: 0.75,
-                                                },
-                                            ]}
+                                return (
+                                    <Pressable
+                                        key={option.id}
+                                        onPress={() => handleSelect(option.id)}
+                                        style={({ pressed }) => [
+                                            {
+                                                minHeight: 52,
+                                                paddingHorizontal: 16,
+                                                paddingVertical: 14,
+                                                borderRadius: 12,
+                                                marginBottom: 6,
+                                                backgroundColor: selected ? "#2563EB" : "#202027",
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                            },
+                                            pressed && { opacity: 0.75 },
+                                        ]}
+                                    >
+                                        <Text
+                                            style={{
+                                                flex: 1,
+                                                fontSize: 16,
+                                                lineHeight: 21,
+                                                fontWeight: selected ? "700" : "500",
+                                                color: selected ? "#FFFFFF" : "#D0D0D7",
+                                            }}
                                         >
-                                            <Text
-                                                style={{
-                                                    flex: 1,
-                                                    fontSize: 16,
-                                                    lineHeight: 21,
-                                                    fontWeight:
-                                                        selected
-                                                            ? "700"
-                                                            : "500",
-                                                    color:
-                                                        selected
-                                                            ? "#FFFFFF"
-                                                            : "#D0D0D7",
-                                                }}
-                                            >
-                                                {
-                                                    option.label
-                                                }
-                                            </Text>
+                                            {option.label}
+                                        </Text>
 
-                                            {selected && (
-                                                <Text
-                                                    style={{
-                                                        marginLeft: 12,
-                                                        fontSize: 18,
-                                                        color: "#FFFFFF",
-                                                    }}
-                                                >
-                                                    ✓
-                                                </Text>
-                                            )}
-                                        </Pressable>
-                                    );
-                                }
-                            )}
+                                        {selected && (
+                                            <Text style={{ marginLeft: 12, fontSize: 18, color: "#FFFFFF" }}>✓</Text>
+                                        )}
+                                    </Pressable>
+                                );
+                            })}
                         </ScrollView>
                     </View>
                 </View>
@@ -318,69 +193,84 @@ function DropdownSelect({
 }
 
 function ActiveWorkout() {
-    const set = useSelector(
-        (state: RootState) => state.set
-    );
-
-    const workout = useSelector(
-        (state: RootState) => state.workout
-    );
-
+    const set = useSelector((state: RootState) => state.set);
+    const workout = useSelector((state: RootState) => state.workout);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const {
-        data: exercises,
-        isLoading: exercisesLoading,
-    } = useGetExercisesQuery();
+    const { data: exercises, isLoading: exercisesLoading } = useGetExercisesQuery();
+    const { data: exerciseGroups, isLoading: exerciseGroupsLoading } = useGetExerciseGroupsQuery();
 
-    const {
-        data: exerciseGroups,
-        isLoading: exerciseGroupsLoading,
-    } = useGetExerciseGroupsQuery();
+    const [showConfirmFinishWorkout, setShowConfirmFinishWorkout] = useState(false);
 
-    const [
-        showConfirmFinishWorkout,
-        setShowConfirmFinishWorkout,
-    ] = useState(false);
+    const [weightText, setWeightText] = useState(set.weight === 0 ? "" : String(set.weight));
+
+
+    const handleWeightChange = (rawValue: string) => {
+        if (
+            rawValue.includes("null") 
+            || (rawValue.startsWith("0") && rawValue.length > 1 && !rawValue.startsWith("0."))
+            || rawValue.startsWith(".")
+
+    ) {
+            setWeightText("");
+            dispatch(setSetWeight(0));
+            return;
+        }
+        const normalized = rawValue.replace(",", ".");
+        const isValidPartialNumber = /^\d*\.?\d*$/.test(normalized);
+
+        if (!isValidPartialNumber) {
+            return; 
+        }
+
+        setWeightText(normalized);
+
+        if (normalized === "" || normalized === "." || normalized === null) {
+            dispatch(setSetWeight(0));
+            return;
+        }
+
+        const parsed = Number(normalized);
+
+        if (!Number.isNaN(parsed)) {
+            dispatch(setSetWeight(parsed));
+        }
+    };
+
+    const handleRepsChange = (rawValue: string) => {
+        if (rawValue === "") {
+            dispatch(setSetReps(null));
+            return;
+        }
+
+        if (!/^\d+$/.test(rawValue)) {
+            return;
+        }
+
+        dispatch(setSetReps(Number(rawValue)));
+    };
 
     const isSetValid = () => {
-        const exercise = exercises?.find(
-            (item: IExercise) =>
-                item.id === set.exerciseId
-        );
+        const exercise = exercises?.find((item: IExercise) => item.id === set.exerciseId);
 
         return Boolean(
-            set.exerciseId &&
-                set.muscleGroupId &&
-                set.reps &&
-                (
-                    exercise?.isBodyweight ||
-                    set.weight
-                )
+            set.exerciseId && set.muscleGroupId && set.reps && (exercise?.isBodyweight || set.weight)
         );
     };
 
     const handleAddSet = async () => {
-    if (!isSetValid()) {
-        return;
-    }
+        if (!isSetValid()) return;
 
-    const token = await getStoredAccessToken();
-        if(!workout.id || !set.exerciseId || !set.muscleGroupId || !set.weight || !set.reps) {
-            return;
-        }
-        const exercise = exercises?.find(
-            (item: IExercise) => item.id === set.exerciseId
-        );
+        const token = await getStoredAccessToken();
 
-        const muscleGroup = exerciseGroups?.find(
-            (group: IExerciseGroup) => group.id === set.muscleGroupId
-        );
+        if (!workout.id || !set.exerciseId || !set.muscleGroupId || !set.weight || !set.reps) return;
 
-        if (!exercise || !muscleGroup) {
-            return;
-        }
+        const exercise = exercises?.find((item: IExercise) => item.id === set.exerciseId);
+        const muscleGroup = exerciseGroups?.find((group: IExerciseGroup) => group.id === set.muscleGroupId);
+
+        if (!exercise || !muscleGroup) return;
+
         const tempSet: ISet = {
             id: -Date.now(),
             workoutId: workout.id,
@@ -392,226 +282,94 @@ function ActiveWorkout() {
             exercise,
         };
 
-        dispatch(
-            setWorkoutSets([
-                ...workout.sets,
-                tempSet,
-            ])
-        );
-    try {
-        
+        dispatch(setWorkoutSets([...workout.sets, tempSet]));
 
-        const response = await axios.post(
-            `${process.env.EXPO_PUBLIC_API_URL}/sets`,
-            {
-                exerciseId: set.exerciseId ,
-                weight: set.weight ,
-                reps: set.reps,
-                workoutId: workout.id ,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        const createdSet: ISet =
-            response.data;
-
-        dispatch(
-            setWorkoutSets([
-                ...workout.sets,
-                createdSet,
-            ])
-        );
-
-        dispatch(setSetWeight(0));
-        dispatch(setSetReps(null));
-    } catch (error) {
-        console.error(
-            "Error adding set:",
-            error
-        );
-    }
-};
-
-    const handleDeleteSet = async (
-        setId: number
-    ) => {
         try {
-            const updatedSets =
-                workout.sets.filter(
-                    (item: ISet) =>
-                        item.id !== setId
-                );
-
-            dispatch(
-                setWorkoutSets(updatedSets)
+            const response = await axios.post(
+                `${process.env.EXPO_PUBLIC_API_URL}/sets`,
+                { exerciseId: set.exerciseId, weight: set.weight, reps: set.reps, workoutId: workout.id },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            const token =
-                await getStoredAccessToken();
+            const createdSet: ISet = response.data;
 
-            await axios.delete(
-                `${process.env.EXPO_PUBLIC_API_URL}/sets/${setId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            dispatch(setWorkoutSets([...workout.sets, createdSet]));
+            dispatch(setSetWeight(0));
+            dispatch(setSetReps(null));
         } catch (error) {
-            console.error(
-                "Error deleting set:",
-                error
-            );
+            console.error("Error adding set:", error);
+        }
+    };
+
+    const handleDeleteSet = async (setId: number) => {
+        try {
+            const updatedSets = workout.sets.filter((item: ISet) => item.id !== setId);
+            dispatch(setWorkoutSets(updatedSets));
+
+            const token = await getStoredAccessToken();
+
+            await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/sets/${setId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+        } catch (error) {
+            console.error("Error deleting set:", error);
         }
     };
 
     const finishWorkout = async () => {
-        if (workout.id === null) {
-            return;
-        }
+        if (workout.id === null) return;
 
         try {
-           const token =
-                await getStoredAccessToken();
+            const token = await getStoredAccessToken();
 
             await axios.put(
                 `${process.env.EXPO_PUBLIC_API_URL}/workouts/${workout.id}`,
-                {
-                    status: "COMPLETED",
-                    finishedAt:
-                        new Date().toISOString(),
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                { status: "COMPLETED", finishedAt: new Date().toISOString() },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             dispatch(setWorkoutId(null));
-
-            dispatch(
-                setWorkoutStartTime(null)
-            );
-
-            dispatch(
-                setSetExerciseId(1)
-            );
-
-            dispatch(
-                setSetMuscleGroup(1)
-            );
-
-            dispatch(
-                setWorkoutSets([])
-            );
+            dispatch(setWorkoutStartTime(null));
+            dispatch(setSetExerciseId(1));
+            dispatch(setSetMuscleGroup(1));
+            dispatch(setWorkoutSets([]));
             dispatch(workoutHistoryApi.util.invalidateTags(["WorkoutHistory"]));
-            dispatch(
-                userApi.util.invalidateTags(["UserSummary"])
-            );
+            dispatch(userApi.util.invalidateTags(["UserSummary"]));
 
             setShowConfirmFinishWorkout(false);
             router.replace("/account");
-
         } catch (error) {
-            console.error(
-                "Error finishing workout:",
-                error
-            );
+            console.error("Error finishing workout:", error);
         }
     };
 
-    const setExerciseGroup = (
-        value: number
-    ) => {
-        dispatch(
-            setSetMuscleGroup(value)
-        );
+    const setExerciseGroup = (value: number) => {
+        dispatch(setSetMuscleGroup(value));
 
-        const firstExercise =
-            exercises?.find(
-                (exercise: IExercise) =>
-                    exercise.exerciseGroupId ===
-                    value
-            );
-
-        dispatch(
-            setSetExerciseId(
-                firstExercise?.id ?? null
-            )
-        );
+        const firstExercise = exercises?.find((exercise: IExercise) => exercise.exerciseGroupId === value);
+        dispatch(setSetExerciseId(firstExercise?.id ?? null));
     };
 
-    const selectedGroup =
-        exerciseGroups?.find(
-            (group: IExerciseGroup) =>
-                group.id ===
-                set.muscleGroupId
-        );
+    const selectedGroup = exerciseGroups?.find((group: IExerciseGroup) => group.id === set.muscleGroupId);
+    const selectedExercise = exercises?.find((exercise: IExercise) => exercise.id === set.exerciseId);
 
-    const selectedExercise =
-        exercises?.find(
-            (exercise: IExercise) =>
-                exercise.id ===
-                set.exerciseId
-        );
+    const muscleGroupOptions = exerciseGroups?.map((group: IExerciseGroup) => ({
+        id: group.id,
+        label: t(`database.exercise_groups.${group.name}`, { defaultValue: group.name }),
+    })) ?? [];
 
-    const muscleGroupOptions =
-        exerciseGroups?.map(
-            (group: IExerciseGroup) => ({
-                id: group.id,
-                label: t(
-                    `database.exercise_groups.${group.name}`,
-                    {
-                        defaultValue:
-                            group.name,
-                    }
-                ),
-            })
-        ) ?? [];
+    const exerciseOptions = exercises
+        ?.filter((exercise: IExercise) => exercise.exerciseGroupId === set.muscleGroupId)
+        .map((exercise: IExercise) => ({
+            id: exercise.id,
+            label: t(`database.exercises.${exercise.name}`, { defaultValue: exercise.name }),
+        })) ?? [];
 
-    const exerciseOptions =
-        exercises
-            ?.filter(
-                (exercise: IExercise) =>
-                    exercise.exerciseGroupId ===
-                    set.muscleGroupId
-            )
-            .map(
-                (exercise: IExercise) => ({
-                    id: exercise.id,
-                    label: t(
-                        `database.exercises.${exercise.name}`,
-                        {
-                            defaultValue:
-                                exercise.name,
-                        }
-                    ),
-                })
-            ) ?? [];
-
-    if (
-        exercisesLoading ||
-        exerciseGroupsLoading
-    ) {
+    if (exercisesLoading || exerciseGroupsLoading) {
         return (
             <View style={styles.card}>
-                <View
-                    style={{
-                        minHeight: 220,
-                        justifyContent:
-                            "center",
-                        alignItems:
-                            "center",
-                    }}
-                >
-                    <ActivityIndicator
-                        size="small"
-                    />
+                <View style={{ minHeight: 220, justifyContent: "center", alignItems: "center" }}>
+                    <ActivityIndicator size="small" />
                 </View>
             </View>
         );
@@ -619,313 +377,106 @@ function ActiveWorkout() {
 
     return (
         <View style={styles.card}>
-            <View
-                style={styles.formCardHeader}
-            >
-                <Text
-                    style={styles.pageTitle}
-                >
-                    {t(
-                        "active_workout.title"
-                    )}
-                </Text>
-
+            <View style={styles.formCardHeader}>
+                <Text style={styles.pageTitle}>{t("active_workout.title")}</Text>
                 <WorkoutTimer />
             </View>
 
-            <ScrollView
-                keyboardShouldPersistTaps="handled"
-                nestedScrollEnabled
-                showsVerticalScrollIndicator={
-                    false
-                }
-            >
+            <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled showsVerticalScrollIndicator={false}>
                 <View style={styles.form}>
                     <DropdownSelect
-                        label={t(
-                            "active_workout.form.exercise_label"
-                        )}
-                        value={
-                            selectedGroup
-                                ? t(
-                                      `database.exercise_groups.${selectedGroup.name}`,
-                                      {
-                                          defaultValue:
-                                              selectedGroup.name,
-                                      }
-                                  )
-                                : ""
-                        }
-                        placeholder={t(
-                            "active_workout.form.exercise_label",
-                            {
-                                defaultValue:
-                                    "Оберіть групу м'язів",
-                            }
-                        )}
-                        options={
-                            muscleGroupOptions
-                        }
-                        onChange={
-                            setExerciseGroup
-                        }
+                        label={t("active_workout.form.exercise_group_label")}
+                        value={selectedGroup ? t(`database.exercise_groups.${selectedGroup.name}`, { defaultValue: selectedGroup.name }) : ""}
+                        placeholder={t("active_workout.form.exercise_group_placeholder", { defaultValue: "Choose a muscle group..." })}
+                        options={muscleGroupOptions}
+                        onChange={setExerciseGroup}
                     />
 
                     <DropdownSelect
-                        label={t(
-                            "active_workout.form.exercise_label"
-                        )}
-                        value={
-                            selectedExercise
-                                ? t(
-                                      `database.exercises.${selectedExercise.name}`,
-                                      {
-                                          defaultValue:
-                                              selectedExercise.name,
-                                      }
-                                  )
-                                : ""
-                        }
-                        placeholder={t(
-                            "active_workout.form.exercise_label",
-                            {
-                                defaultValue:
-                                    "Оберіть вправу",
-                            }
-                        )}
-                        disabled={
-                            !set.muscleGroupId
-                        }
-                        options={
-                            exerciseOptions
-                        }
-                        onChange={(
-                            exerciseId
-                        ) =>
-                            dispatch(
-                                setSetExerciseId(
-                                    exerciseId
-                                )
-                            )
-                        }
+                        label={t("active_workout.form.exercise_label")}
+                        value={selectedExercise ? t(`database.exercises.${selectedExercise.name}`, { defaultValue: selectedExercise.name }) : ""}
+                        placeholder={t("active_workout.form.exercise_label", { defaultValue: "Choose an exercise..." })}
+                        disabled={!set.muscleGroupId}
+                        options={exerciseOptions}
+                        onChange={(exerciseId) => dispatch(setSetExerciseId(exerciseId))}
                     />
+
                     <ExerciseAnimation filename={selectedExercise?.video || null} />
 
-                    <View
-                        style={styles.formGrid}
-                    >
-                        <View
-                            style={
-                                styles.formGridItem
-                            }
-                        >
-                            <Text
-                                style={
-                                    styles.formLabel
-                                }
-                            >
-                                {t(
-                                    "active_workout.form.weight_label"
-                                )}
-                            </Text>
-
+                    <View style={styles.formGrid}>
+                        <View style={styles.formGridItem}>
+                            <Text style={styles.formLabel}>{
+                            exercises?.find((exercise: IExercise) => exercise.id === set.exerciseId)?.isBodyweight
+                                ? t("active_workout.form.additional_weight_label")
+                                :
+                            t("active_workout.form.weight_label")
+                            }</Text>
                             <TextInput
-                                style={
-                                    styles.formControl
-                                }
+                                style={styles.formControl}
                                 keyboardType="numeric"
-                                placeholder={t(
-                                    "active_workout.form.weight_placeholder"
-                                )}
+                                placeholder={t("active_workout.form.weight_placeholder")}
                                 placeholderTextColor="#77777F"
-                                value={
-                                    set.weight ===
-                                    0
-                                        ? ""
-                                        : String(
-                                              set.weight
-                                          )
-                                }
-                                onChangeText={(
-                                    value: string
-                                ) =>
-                                    dispatch(
-                                        setSetWeight(
-                                            value
-                                                ? Number(
-                                                      value
-                                                  )
-                                                : 0
-                                        )
-                                    )
-                                }
+                                value={weightText}
+                                onChangeText={handleWeightChange}
                             />
                         </View>
 
-                        <View
-                            style={
-                                styles.formGridItem
-                            }
-                        >
-                            <Text
-                                style={
-                                    styles.formLabel
-                                }
-                            >
-                                {t(
-                                    "active_workout.form.reps_label"
-                                )}
-                            </Text>
-
+                        <View style={styles.formGridItem}>
+                            <Text style={styles.formLabel}>{t("active_workout.form.reps_label")}</Text>
                             <TextInput
-                                style={
-                                    styles.formControl
-                                }
+                                style={styles.formControl}
                                 keyboardType="numeric"
                                 placeholder="0"
                                 placeholderTextColor="#77777F"
-                                value={
-                                    set.reps === null
-                                        ? ""
-                                        : String(
-                                              set.reps
-                                          )
-                                }
-                                onChangeText={(
-                                    value: string
-                                ) =>
-                                    dispatch(
-                                        setSetReps(
-                                            value
-                                                ? Number(
-                                                      value
-                                                  )
-                                                : null
-                                        )
-                                    )
-                                }
+                                value={set.reps === null ? "" : String(set.reps)}
+                                onChangeText={handleRepsChange}
                             />
                         </View>
                     </View>
 
                     <Pressable
-                        onPress={
-                            handleAddSet
-                        }
-                        disabled={
-                            !isSetValid()
-                        }
+                        onPress={handleAddSet}
+                        disabled={!isSetValid()}
                         style={({ pressed }) => [
                             styles.primaryCta,
-                            !isSetValid() &&
-                                styles.primaryCtaDisabled,
-                            pressed &&
-                                isSetValid() &&
-                                styles.primaryCtaPressed,
+                            !isSetValid() && styles.primaryCtaDisabled,
+                            pressed && isSetValid() && styles.primaryCtaPressed,
                         ]}
                     >
-                        <Text
-                            style={
-                                styles.primaryCtaText
-                            }
-                        >
-                            {t(
-                                "active_workout.form.add_set_button"
-                            )}
-                        </Text>
+                        <Text style={styles.primaryCtaText}>{t("active_workout.form.add_set_button")}</Text>
                     </Pressable>
 
-                    {workout.sets.length >
-                        0 && (
+                    {workout.sets.length > 0 && (
                         <View>
-                            <Text
-                                style={
-                                    styles.sectionLabel
-                                }
-                            >
-                                {t(
-                                    "active_workout.current_sets"
-                                )}
-                            </Text>
+                            <Text style={styles.sectionLabel}>{t("active_workout.current_sets")}</Text>
 
-                            {workout.sets.map(
-                                (
-                                    workoutSet: ISet,
-                                    index: number
-                                ) => (
-                                    <SwipeableSetItem
-                                        key={
-                                            workoutSet.id
-                                        }
-                                        set={
-                                            workoutSet
-                                        }
-                                        exerciseName={
-                                            exercises?.find(
-                                                (
-                                                    exercise: IExercise
-                                                ) =>
-                                                    exercise.id ===
-                                                    workoutSet.exerciseId
-                                            )?.name
-                                        }
-                                        setNumber={
-                                            index + 1
-                                        }
-                                        onDelete={
-                                            handleDeleteSet
-                                        }
-                                    />
-                                )
-                            )}
+                            {workout.sets.map((workoutSet: ISet, index: number) => (
+                                <SwipeableSetItem
+                                    key={workoutSet.id}
+                                    set={workoutSet}
+                                    exerciseName={exercises?.find((exercise: IExercise) => exercise.id === workoutSet.exerciseId)?.name}
+                                    setNumber={index + 1}
+                                    onDelete={handleDeleteSet}
+                                />
+                            ))}
                         </View>
                     )}
 
-                    <View
-                        style={
-                            styles.formActions
-                        }
-                    >
+                    <View style={styles.formActions}>
                         <Pressable
-                            onPress={() =>
-                                setShowConfirmFinishWorkout(
-                                    true
-                                )
-                            }
-                            style={({
-                                pressed,
-                            }) => [
-                                styles.ghostButton,
-                                pressed &&
-                                    styles.ghostBtnPressed,
-                            ]}
+                            onPress={() => setShowConfirmFinishWorkout(true)}
+                            style={({ pressed }) => [styles.ghostButton, pressed && styles.ghostBtnPressed]}
                         >
-                            <Text
-                                style={
-                                    styles.ghostButtonText
-                                }
-                            >
-                                {t(
-                                    "active_workout.finish_btn"
-                                )}
-                            </Text>
+                            <Text style={styles.ghostButtonText}>{t("active_workout.finish_btn")}</Text>
                         </Pressable>
                     </View>
                 </View>
             </ScrollView>
 
             <FinishWorkoutModal
-                show={
-                    showConfirmFinishWorkout
-                }
-                onHide={() =>
-                    setShowConfirmFinishWorkout(
-                        false
-                    )
-                }
-                onConfirm={
-                    finishWorkout
-                }
+                show={showConfirmFinishWorkout}
+                onHide={() => setShowConfirmFinishWorkout(false)}
+                onConfirm={finishWorkout}
             />
         </View>
     );

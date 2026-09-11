@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+
+import {
+    Pressable,
+    Text,
+    TextInput,
+    View,
+    StyleSheet,
+} from "react-native";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { BlurView } from "expo-blur";
@@ -35,41 +43,58 @@ interface RootState {
     user: ReduxUser;
 }
 
+interface ProfileFormFieldsProps {
+    blurTarget: React.RefObject<View | null>;
+}
+
 const GOAL_ICONS: Record<Goal, MciName> = {
     lose: "fire",
     maintain: "yoga",
     gain: "arm-flex",
 };
 
-/**
- * Personal data / body data / goal cards, shared between
- * CreateProfileForm and EditProfileForm. Reads/writes directly
- * to the redux user slice, same as the original component did.
- */
-export function ProfileFormFields() {
+export function ProfileFormFields({
+    blurTarget,
+}: ProfileFormFieldsProps) {
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const reduxUser = useSelector((state: RootState) => state.user);
 
-    // Drives the stronger focus ring (formControlFocused) — one field
-    // can be focused at a time, so a single key is enough.
-    const [focusedField, setFocusedField] = useState<FormField | null>(null);
+    const reduxUser = useSelector(
+        (state: RootState) => state.user
+    );
+
+    const [focusedField, setFocusedField] =
+        useState<FormField | null>(null);
 
     const controlStyle = (field: FormField) => [
         styles.formControl,
-        focusedField === field && styles.formControlFocused,
+        focusedField === field &&
+            styles.formControlFocused,
     ];
 
     return (
         <>
-            <BlurView intensity={40} tint="dark" style={styles.formCard} experimentalBlurMethod="dimezisBlurView">
+            {/* PERSONAL DATA */}
+            <View style={styles.formCard}>
+                <BlurView
+                    blurTarget={blurTarget}
+                    intensity={40}
+                    tint="dark"
+                    blurMethod="dimezisBlurView"
+                    style={StyleSheet.absoluteFill}
+                />
+
                 <View style={styles.formCardHeader}>
                     <Text style={styles.sectionLabel}>
                         {t("user_form.personal_data")}
                     </Text>
 
-                    <Text style={styles.formCardDescription}>
-                        {t("user_form.personal_data_description")}
+                    <Text
+                        style={styles.formCardDescription}
+                    >
+                        {t(
+                            "user_form.personal_data_description"
+                        )}
                     </Text>
                 </View>
 
@@ -79,16 +104,29 @@ export function ProfileFormFields() {
                             <MaterialCommunityIcons
                                 name="account-outline"
                                 size={14}
-                                color={colors.acctTextSecondary}
+                                color={
+                                    colors.acctTextSecondary
+                                }
                             />
-                            <Text style={styles.formLabel}>{t("user_form.name")}</Text>
+
+                            <Text style={styles.formLabel}>
+                                {t("user_form.name")}
+                            </Text>
                         </View>
 
                         <TextInput
                             value={reduxUser.name}
-                            onChangeText={(value) => dispatch(setUserName(value))}
-                            onFocus={() => setFocusedField("name")}
-                            onBlur={() => setFocusedField(null)}
+                            onChangeText={(value) =>
+                                dispatch(
+                                    setUserName(value)
+                                )
+                            }
+                            onFocus={() =>
+                                setFocusedField("name")
+                            }
+                            onBlur={() =>
+                                setFocusedField(null)
+                            }
                             autoComplete="name"
                             style={controlStyle("name")}
                         />
@@ -99,59 +137,117 @@ export function ProfileFormFields() {
                             <MaterialCommunityIcons
                                 name="calendar-blank-outline"
                                 size={14}
-                                color={colors.acctTextSecondary}
+                                color={
+                                    colors.acctTextSecondary
+                                }
                             />
-                            <Text style={styles.formLabel}>{t("user_form.age")}</Text>
+
+                            <Text style={styles.formLabel}>
+                                {t("user_form.age")}
+                            </Text>
                         </View>
 
                         <TextInput
-                            value={reduxUser.age != null ? String(reduxUser.age) : ""}
-                            onChangeText={(value) =>
-                                dispatch(setUserAge(value ? Number(value) : null))
+                            value={
+                                reduxUser.age != null
+                                    ? String(reduxUser.age)
+                                    : ""
                             }
-                            onFocus={() => setFocusedField("age")}
-                            onBlur={() => setFocusedField(null)}
+                            onChangeText={(value) =>
+                                dispatch(
+                                    setUserAge(
+                                        value
+                                            ? Number(value)
+                                            : null
+                                    )
+                                )
+                            }
+                            onFocus={() =>
+                                setFocusedField("age")
+                            }
+                            onBlur={() =>
+                                setFocusedField(null)
+                            }
                             keyboardType="numeric"
                             style={controlStyle("age")}
                         />
                     </View>
                 </View>
-            </BlurView>
+            </View>
 
-            <BlurView intensity={40} tint="dark" style={styles.formCard} experimentalBlurMethod="dimezisBlurView">
-                <Text style={styles.sectionLabel}>{t("user_form.body_data")}</Text>
+                <BlurView
+                    blurTarget={blurTarget}
+                    intensity={40}
+                    tint="dark"
+                    blurMethod="dimezisBlurView"
+                    style={styles.formCard}
+                >
+
+                <Text style={styles.sectionLabel}>
+                    {t("user_form.body_data")}
+                </Text>
 
                 <View style={styles.formField}>
-                    <Text style={styles.formLabel}>{t("user_form.gender")}</Text>
+                    <Text style={styles.formLabel}>
+                        {t("user_form.gender")}
+                    </Text>
 
                     <View style={styles.choiceGroup}>
-                        {(["male", "female"] as const).map((gender) => {
-                            const isActive = reduxUser.gender === gender;
+                        {(
+                            ["male", "female"] as const
+                        ).map((gender) => {
+                            const isActive =
+                                reduxUser.gender === gender;
 
                             return (
                                 <Pressable
                                     key={gender}
                                     style={({ pressed }) => [
                                         styles.choiceBtn,
-                                        isActive && styles.choiceBtnActive,
-                                        pressed && !isActive && styles.choiceBtnPressed,
+                                        isActive &&
+                                            styles.choiceBtnActive,
+                                        pressed &&
+                                            !isActive &&
+                                            styles.choiceBtnPressed,
                                     ]}
-                                    onPress={() => dispatch(setUserGender(gender))}
+                                    onPress={() =>
+                                        dispatch(
+                                            setUserGender(
+                                                gender
+                                            )
+                                        )
+                                    }
                                 >
-                                    <View style={styles.choiceBtnContent}>
+                                    <View
+                                        style={
+                                            styles.choiceBtnContent
+                                        }
+                                    >
                                         <MaterialCommunityIcons
-                                            name={gender === "male" ? "gender-male" : "gender-female"}
+                                            name={
+                                                gender ===
+                                                "male"
+                                                    ? "gender-male"
+                                                    : "gender-female"
+                                            }
                                             size={16}
-                                            color={isActive ? colors.white : colors.acctTextSecondary}
+                                            color={
+                                                isActive
+                                                    ? colors.white
+                                                    : colors.acctTextSecondary
+                                            }
                                         />
 
                                         <Text
                                             style={[
                                                 styles.choiceBtnText,
-                                                isActive && styles.choiceBtnActiveText,
+                                                isActive &&
+                                                    styles.choiceBtnActiveText,
                                             ]}
                                         >
-                                            {t(`user_form.${gender}`)}
+                                            {t(
+                                                `user_form.${gender}`
+                                            )}
                                         </Text>
                                     </View>
                                 </Pressable>
@@ -162,59 +258,110 @@ export function ProfileFormFields() {
 
                 <View style={styles.formGrid}>
                     <View style={styles.formGridItem}>
-                        <View style={styles.fieldLabelRow}>
+                        <View
+                            style={
+                                styles.fieldLabelRow
+                            }
+                        >
                             <MaterialCommunityIcons
                                 name="human-male-height"
                                 size={14}
-                                color={colors.acctTextSecondary}
+                                color={
+                                    colors.acctTextSecondary
+                                }
                             />
-                            <Text style={styles.formLabel}>{t("user_form.height")}</Text>
+
+                            <Text
+                                style={styles.formLabel}
+                            >
+                                {t("user_form.height")}
+                            </Text>
                         </View>
 
                         <TextInput
                             value={
-                                reduxUser.height != null ? String(reduxUser.height) : ""
+                                reduxUser.height != null
+                                    ? String(
+                                          reduxUser.height
+                                      )
+                                    : ""
                             }
                             onChangeText={(value) => {
-                            if (value === "") {
-                            dispatch(setUserHeight(null));
-                            return;
-                            }
+                                if (value === "") {
+                                    dispatch(
+                                        setUserHeight(null)
+                                    );
+                                    return;
+                                }
 
-                            const number = Number(value);
+                                const number =
+                                    Number(value);
 
-
-                            if (!Number.isNaN(number)) {
-                                dispatch(setUserHeight(number));
-                            }
-
+                                if (
+                                    !Number.isNaN(number)
+                                ) {
+                                    dispatch(
+                                        setUserHeight(
+                                            number
+                                        )
+                                    );
+                                }
                             }}
-                            onFocus={() => setFocusedField("height")}
-                            onBlur={() => setFocusedField(null)}
+                            onFocus={() =>
+                                setFocusedField("height")
+                            }
+                            onBlur={() =>
+                                setFocusedField(null)
+                            }
                             keyboardType="numeric"
                             style={controlStyle("height")}
                         />
                     </View>
 
                     <View style={styles.formGridItem}>
-                        <View style={styles.fieldLabelRow}>
+                        <View
+                            style={
+                                styles.fieldLabelRow
+                            }
+                        >
                             <MaterialCommunityIcons
                                 name="scale-bathroom"
                                 size={14}
-                                color={colors.acctTextSecondary}
+                                color={
+                                    colors.acctTextSecondary
+                                }
                             />
-                            <Text style={styles.formLabel}>{t("user_form.weight")}</Text>
+
+                            <Text
+                                style={styles.formLabel}
+                            >
+                                {t("user_form.weight")}
+                            </Text>
                         </View>
 
                         <TextInput
                             value={
-                                reduxUser.weight != null ? String(reduxUser.weight) : ""
+                                reduxUser.weight != null
+                                    ? String(
+                                          reduxUser.weight
+                                      )
+                                    : ""
                             }
                             onChangeText={(value) =>
-                                dispatch(setUserWeight(value ? Number(value) : null))
+                                dispatch(
+                                    setUserWeight(
+                                        value
+                                            ? Number(value)
+                                            : null
+                                    )
+                                )
                             }
-                            onFocus={() => setFocusedField("weight")}
-                            onBlur={() => setFocusedField(null)}
+                            onFocus={() =>
+                                setFocusedField("weight")
+                            }
+                            onBlur={() =>
+                                setFocusedField(null)
+                            }
                             keyboardType="numeric"
                             style={controlStyle("weight")}
                         />
@@ -222,62 +369,101 @@ export function ProfileFormFields() {
                 </View>
             </BlurView>
 
-            <BlurView intensity={40} tint="dark" style={styles.formCard} experimentalBlurMethod="dimezisBlurView">
-                <Text style={styles.sectionLabel}>{t("user_form.goal")}</Text>
+            <View style={styles.formCard}>
+                <BlurView
+                    blurTarget={blurTarget}
+                    intensity={40}
+                    tint="dark"
+                    blurMethod="dimezisBlurView"
+                    style={StyleSheet.absoluteFill}
+                />
 
-                <Text style={styles.formCardDescription}>
+                <Text style={styles.sectionLabel}>
+                    {t("user_form.goal")}
+                </Text>
+
+                <Text
+                    style={styles.formCardDescription}
+                >
                     {t("user_form.goal_description")}
                 </Text>
 
                 <View style={styles.goalList}>
-                    {(["lose", "maintain", "gain"] as const).map((goal: Goal) => {
-                        const isActive = reduxUser.goal === goal;
+                    {(
+                        [
+                            "lose",
+                            "maintain",
+                            "gain",
+                        ] as const
+                    ).map((goal: Goal) => {
+                        const isActive =
+                            reduxUser.goal === goal;
 
                         return (
                             <Pressable
                                 key={goal}
                                 style={({ pressed }) => [
                                     styles.goalBtn,
-                                    isActive && styles.goalBtnActive,
-                                    pressed && !isActive && styles.goalBtnPressed,
+                                    isActive &&
+                                        styles.goalBtnActive,
+                                    pressed &&
+                                        !isActive &&
+                                        styles.goalBtnPressed,
                                 ]}
-                                onPress={() => dispatch(setUserGoal(goal))}
+                                onPress={() =>
+                                    dispatch(
+                                        setUserGoal(goal)
+                                    )
+                                }
                             >
                                 <View
                                     style={[
                                         styles.goalIconWrap,
-                                        isActive && styles.goalIconWrapActive,
+                                        isActive &&
+                                            styles.goalIconWrapActive,
                                     ]}
                                 >
                                     <MaterialCommunityIcons
-                                        name={GOAL_ICONS[goal]}
+                                        name={
+                                            GOAL_ICONS[goal]
+                                        }
                                         size={22}
-                                        color={isActive ? colors.acctAccent : colors.acctTextSecondary}
+                                        color={
+                                            isActive
+                                                ? colors.acctAccent
+                                                : colors.acctTextSecondary
+                                        }
                                     />
                                 </View>
 
                                 <Text
                                     style={[
                                         styles.goalBtnText,
-                                        isActive && styles.goalBtnActiveText,
+                                        isActive &&
+                                            styles.goalBtnActiveText,
                                     ]}
                                 >
-                                    {t(`user_form.goals.${goal}`)}
+                                    {t(
+                                        `user_form.goals.${goal}`
+                                    )}
                                 </Text>
 
                                 <Text
                                     style={[
                                         styles.goalBtnDescription,
-                                        isActive && styles.goalBtnDescriptionActive,
+                                        isActive &&
+                                            styles.goalBtnDescriptionActive,
                                     ]}
                                 >
-                                    {t(`user_form.goals.${goal}_description`)}
+                                    {t(
+                                        `user_form.goals.${goal}_description`
+                                    )}
                                 </Text>
                             </Pressable>
                         );
                     })}
                 </View>
-            </BlurView>
+            </View>
         </>
     );
 }

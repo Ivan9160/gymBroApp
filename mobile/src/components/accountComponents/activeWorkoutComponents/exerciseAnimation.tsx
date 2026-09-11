@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { Image } from "expo-image";
 import { VideoView, useVideoPlayer } from "expo-video";
+import { useEffect } from "react";
 
 import { styles } from "../../../style";
 
@@ -11,6 +12,8 @@ interface ExerciseAnimationProps {
 function Mp4Animation({ uri }: { uri: string }) {
   const player = useVideoPlayer(uri, (player) => {
     player.loop = true;
+    player.muted = true;
+    player.audioMixingMode = "mixWithOthers";
     player.play();
   });
 
@@ -19,7 +22,7 @@ function Mp4Animation({ uri }: { uri: string }) {
       <VideoView
         player={player}
         style={styles.exerciseAnimationImage}
-        contentFit="contain"
+        contentFit="cover"
         nativeControls={false}
       />
     </View>

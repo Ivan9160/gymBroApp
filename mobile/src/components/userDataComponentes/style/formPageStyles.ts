@@ -396,7 +396,7 @@ export const formPageStyles = StyleSheet.create({
     scrollContent: {
         paddingHorizontal: 16,
         paddingTop: 39,
-        paddingBottom: 110,
+        paddingBottom: 10,
     },
 
     stickyFooter: {
@@ -408,31 +408,30 @@ export const formPageStyles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 0,
         paddingBottom: 4,
+        marginBottom: 45,
 
 
     },
 
-    // Outer wrapper for the CTA — keeps the glow shadow. The LinearGradient
-    // itself is styled by primaryCtaGradient below (it provides the fill,
-    // padding, and radius; this only owns the shadow so both layers agree
-    // on shape without fighting over background color).
     formSubmit: {
-        marginTop: 0,
-        marginBottom: 47,
+        alignSelf: "stretch",
+
+        marginTop: 15,
+        marginBottom: 7,
 
         shadowColor: colors.acctAccent,
-        shadowOffset: { width: 10, height: 10 },
         shadowOpacity: 0.4,
-        shadowRadius: 18,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 4 },
+        backgroundColor: "rgba(91, 157, 255, 0.4)",
+        paddingVertical: 14,
+        paddingHorizontal: 30,
+        textAlign: "center",
 
         borderRadius: 16,
     },
 
-    // Applied to the <LinearGradient> that sits inside the Pressable, replacing a
-    // flat backgroundColor with the blue gradient fill + light glow border seen
-    // in the reference.
     primaryCtaGradient: {
+        width: "100%",
         minHeight: 54,
 
         alignItems: "center",
@@ -442,7 +441,7 @@ export const formPageStyles = StyleSheet.create({
         paddingHorizontal: 20,
 
         borderRadius: 16,
-        overflow: "hidden", // обов'язково — обрізає і blur, і градієнт під заокруглені кути
+        overflow: "hidden",
 
         borderWidth: 1.5,
         borderColor: "#5b9dff15",

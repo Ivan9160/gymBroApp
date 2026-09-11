@@ -1,5 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
@@ -13,14 +11,12 @@ type RootStackParamList = {
     WorkoutDetails: { workout: IWorkout };
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "WorkoutHistory">;
 
 interface WorkoutHistoryItemProps {
     workout: IWorkout;
 }
 
 export const WorkoutHistoryItem = ({ workout }: WorkoutHistoryItemProps) => {
-    const navigation = useNavigation<NavigationProp>();
     const { t, i18n } = useTranslation();
 
     const locale = i18n.language?.toLowerCase().startsWith("uk") ? "uk" : "en";

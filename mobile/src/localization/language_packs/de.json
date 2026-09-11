@@ -37,9 +37,12 @@
     "finish_modal_title": "Training beenden",
     "finish_modal_body": "Möchtest du das Training wirklich beenden? Deine Ergebnisse werden gespeichert.",
     "form": {
+      "exercise_group_label": "Muskelgruppe auswählen",
+      "exercise_group_placeholder": "Muskelgruppe auswählen...",
       "exercise_label": "Übung auswählen",
       "exercise_placeholder": "Übung auswählen...",
       "weight_label": "Gewicht (kg)",
+      "additional_weight_label": "Zusätzliches Gewicht (kg)",
       "weight_placeholder": "0",
       "reps_label": "Wiederholungen",
       "reps_placeholder": "0",
@@ -326,7 +329,8 @@
       "Ab Wheel Rollouts": "Bauchroller",
       "Plank": "Plank",
       "Push Ups": "Liegestütze",
-      "Crunches": "Crunches"
+      "Crunches": "Crunches",
+      "Barbell Bent Over Row": "Langhantelrudern vorgebeugt"
     }
   }
 }

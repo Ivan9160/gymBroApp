@@ -16,6 +16,7 @@ import {
     setWorkoutId,
     setWorkoutStartTime,
 } from "../../store/slices/workoutSlice";
+import { setSetWeight } from "../../store/slices/setSlice";
 import ActiveWorkout from "./activeWorkoutComponents/activeWorkout";
 import MuscleBodyMap from "./sorenessDiagram";
 import ProficiencyLevelsList from "./proficiencyLevels";
@@ -183,6 +184,7 @@ function Account() {
 
     const startWorkout = async () => {
         const token = await getStoredAccessToken();
+        dispatch(setSetWeight(0));
 
         axios
             .post(

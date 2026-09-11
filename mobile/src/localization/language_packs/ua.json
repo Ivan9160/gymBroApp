@@ -37,9 +37,12 @@
     "finish_modal_title": "Завершити тренування",
     "finish_modal_body": "Ви впевнені, що хочете завершити тренування? Ваші результати буде збережено.",
     "form": {
+      "exercise_group_label": "Оберіть групу м'язів",
+      "exercise_group_placeholder": "Оберіть групу м'язів...",
       "exercise_label": "Оберіть вправу",
       "exercise_placeholder": "Оберіть вправу...",
       "weight_label": "Вага (кг)",
+      "additional_weight_label": "Додаткова вага (кг)",
       "weight_placeholder": "0",
       "reps_label": "Повторення",
       "reps_placeholder": "0",
@@ -316,7 +319,7 @@
       "Dumbbell bench press": "Жим гантелей лежачи",
       "Dumbbell Bench Press": "Жим гантелей лежачи",
       "Dips": "Віджимання на брусах",
-      "Diamond Push-ups": "Алмазні віджимання",
+      "Diamond Push-ups": "Діамантові віджимання",
       "Pull-ups": "Підтягування",
       "Dumbbell Bent Over Row": "Тяга гантелі в нахилі",
       "Bent Over Row": "Тяга в нахилі",
@@ -326,7 +329,8 @@
       "Ab Wheel Rollouts": "Розкатування колеса для преса",
       "Plank": "Планка",
       "Push Ups": "Віджимання",
-      "Crunches": "Скручування"
+      "Crunches": "Скручування",
+      "Barbell Bent Over Row": "Тяга штанги в нахилі"
     }
   }
 }

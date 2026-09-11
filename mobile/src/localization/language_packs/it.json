@@ -41,9 +41,12 @@
 "finish_modal_title": "Termina allenamento",
 "finish_modal_body": "Sei sicuro di voler terminare l'allenamento? I tuoi risultati verranno salvati.",
 "form": {
+"exercise_group_label": "Scegli un gruppo muscolare",
+"exercise_group_placeholder": "Scegli un gruppo muscolare...",
 "exercise_label": "Scegli un esercizio",
 "exercise_placeholder": "Scegli un esercizio...",
 "weight_label": "Peso (kg)",
+"additional_weight_label": "Peso aggiuntivo (kg)",
 "weight_placeholder": "0",
 "reps_label": "Ripetizioni",
 "reps_placeholder": "0",
@@ -344,7 +347,8 @@
   "Ab Wheel Rollouts": "Ab wheel",
   "Plank": "Plank",
   "Push Ups": "Piegamenti",
-  "Crunches": "Crunch"
+  "Crunches": "Crunch",
+  "Barbell Bent Over Row": "Rematore con bilanciere a busto flesso"
 }
 
 }

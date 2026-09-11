@@ -1,23 +1,28 @@
 import {
     ActivityIndicator,
     BackHandler,
-    ImageBackground,
     Pressable,
     ScrollView,
     Text,
     View,
     StyleSheet,
+    Image,
 } from "react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
+import { BlurView, BlurTargetView } from "expo-blur";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import { useCreateUserMutation, userApi } from "../../api/userApi";
+import {
+    useCreateUserMutation,
+    userApi,
+} from "../../api/userApi";
+
 import { storeAccessToken } from "../../hooks/useAnonymousAuth";
 import { ProfileFormFields } from "./profileFormFields";
-import { styles } from "../../style";
+import { styles as sharedStyles } from "../../style";
 import { store } from "../../store/store";
 
 type Goal = "lose" | "maintain" | "gain";
@@ -35,9 +40,11 @@ interface ReduxUser {
 export function CreateProfileForm() {
     const { t } = useTranslation();
 
-    // No auth check here at all — there's no account yet to be
-    // authenticated as. This request IS what creates one.
-    const [createUser, { isLoading: isSaving }] = useCreateUserMutation();
+    const cardBlurTargetRef = useRef<View | null>(null);
+    const footerBlurTargetRef = useRef<View | null>(null);
+
+    const [createUser, { isLoading: isSaving }] =
+        useCreateUserMutation();
 
     useEffect(() => {
         const subscription = BackHandler.addEventListener(
@@ -79,24 +86,40 @@ export function CreateProfileForm() {
         };
 
         try {
-            const result = await createUser(requestData).unwrap();
+            const result =
+                await createUser(requestData).unwrap();
+
             await storeAccessToken(result.accessToken);
-            store.dispatch(userApi.util.invalidateTags(['UserSummary']));
+
+            store.dispatch(
+                userApi.util.invalidateTags([
+                    "UserSummary",
+                ])
+            );
 
             router.replace("/account");
         } catch (error) {
-            console.error("Unable to create user profile:", error);
+            console.error(
+                "Unable to create user profile:",
+                error
+            );
         }
     };
 
     return (
-        <ImageBackground
-            source={require("./style/gym_background.jpg")}
-            style={styles.formPage}
-            resizeMode="cover"
+        <View style={sharedStyles.formPage}><BlurTargetView
+            ref={cardBlurTargetRef}
+            style={StyleSheet.absoluteFill}
+            collapsable={false}
         >
+            <Image
+                source={require("./style/gym_background.jpg")}
+                style={StyleSheet.absoluteFill}
+                resizeMode="cover"
+            />
+
             <View
-                style={styles.pageBaseOverlay}
+                style={sharedStyles.pageBaseOverlay}
                 pointerEvents="none"
             />
 
@@ -107,80 +130,144 @@ export function CreateProfileForm() {
                     "rgba(6,7,10,0)",
                 ]}
                 locations={[0, 0.55, 1]}
-                style={styles.topOverlay}
+                style={sharedStyles.topOverlay}
                 pointerEvents="none"
             />
+        </BlurTargetView>
 
-            <ScrollView
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
+
+            <BlurTargetView
+                ref={footerBlurTargetRef}
+                style={StyleSheet.absoluteFill}
+                collapsable={false}
             >
-                <View style={styles.formContainer}>
-                    <View style={styles.formColumn}>
-                        <View style={styles.pageHeading}>
-                            <View style={styles.pageHeadingText}>
-                                <Text style={styles.pageEyebrow}>
-                                    {t("user_form.profile_setup_label")}
-                                </Text>
+                <Image
+                    source={require("./style/gym_background.jpg")}
+                    style={StyleSheet.absoluteFill}
+                    resizeMode="cover"
+                />
 
-                                <Text style={styles.pageTitle}>
-                                    {t("user_form.profile_setup_title")}
-                                </Text>
+                <View
+                    style={sharedStyles.pageBaseOverlay}
+                    pointerEvents="none"
+                />
 
-                                <Text style={styles.pageDescription}>
-                                    {t("user_form.profile_setup_description")}
-                                </Text>
+                <LinearGradient
+                    colors={[
+                        "rgba(6,7,10,0.95)",
+                        "rgba(6,7,10,0.55)",
+                        "rgba(6,7,10,0)",
+                    ]}
+                    locations={[0, 0.55, 1]}
+                    style={sharedStyles.topOverlay}
+                    pointerEvents="none"
+                />
+                <ScrollView
+                    contentContainerStyle={[
+                        sharedStyles.scrollContent,
+                        {
+                            paddingBottom: 120,
+                        },
+                    ]}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={sharedStyles.formContainer}>
+                        <View style={sharedStyles.formColumn}>
+
+                            <View
+                                style={sharedStyles.pageHeading}
+                            >
+                                <View
+                                    style={
+                                        sharedStyles.pageHeadingText
+                                    }
+                                >
+                                    <Text
+                                        style={
+                                            sharedStyles.pageEyebrow
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.profile_setup_label"
+                                        )}
+                                    </Text>
+
+                                    <Text
+                                        style={
+                                            sharedStyles.pageTitle
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.profile_setup_title"
+                                        )}
+                                    </Text>
+
+                                    <Text
+                                        style={
+                                            sharedStyles.pageDescription
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.profile_setup_description"
+                                        )}
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
 
-                        <View style={styles.form}>
-                            <ProfileFormFields />
+                            <View style={sharedStyles.form}>
+                                <ProfileFormFields
+                                    blurTarget={cardBlurTargetRef}
+                                />
+                            </View>
+
                         </View>
                     </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </BlurTargetView>
 
-            <View style={styles.stickyFooter}>
+            <BlurView
+                blurTarget={footerBlurTargetRef}
+                intensity={30}
+                tint="dark"
+                style={sharedStyles.stickyFooter}
+                blurMethod="dimezisBlurView"
+                pointerEvents="box-none"
+            >
                 <Pressable
-                    style={[
-                        styles.formSubmit,
-                        isSaving && { opacity: 0.7 },
-                    ]}
-                    disabled={isSaving}
+                    style={sharedStyles.formSubmit}
                     onPress={handleSubmit}
+                    disabled={isSaving}
                 >
-                    <BlurView
-                        intensity={45}
-                        tint="dark"
-                        style={styles.primaryCtaGradient}
-                        experimentalBlurMethod="dimezisBlurView"
-                    >
-                        <LinearGradient
-                            colors={[
-                                "#173a8c0a",
-                                "#5b9dff2d",
-                                "#173a8c0a",
-                            ]}
-                            locations={[0, 0.5, 1]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={StyleSheet.absoluteFillObject}
-                        />
+                    <LinearGradient
+                        colors={[
+                            "#173a8c0a",
+                            "#5b9dff2d",
+                            "#173a8c0a",
+                        ]}
+                        locations={[0, 0.5, 1]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={StyleSheet.absoluteFill}
+                        pointerEvents="none"
+                    />
 
-                        {isSaving ? (
-                            <ActivityIndicator
-                                size="small"
-                                color="#ffffff"
-                            />
-                        ) : (
-                            <Text style={styles.primaryCtaText}>
-                                {t("user_form.title_create")}
-                            </Text>
-                        )}
-                    </BlurView>
+                    {isSaving ? (
+                        <ActivityIndicator
+                            size="small"
+                            color="#ffffff"
+                        />
+                    ) : (
+                        <Text
+                            style={
+                                sharedStyles.primaryCtaText
+                            }
+                        >
+                            {t("user_form.title_create")}
+                        </Text>
+                    )}
                 </Pressable>
-            </View>
-        </ImageBackground>
+            </BlurView>
+        </View>
     );
 }
 

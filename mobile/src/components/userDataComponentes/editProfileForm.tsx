@@ -1,23 +1,28 @@
 import {
     ActivityIndicator,
-    ImageBackground,
+    Image,
     Pressable,
     ScrollView,
     Text,
     View,
     StyleSheet,
 } from "react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
+import { BlurView, BlurTargetView } from "expo-blur";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
+import { useRef } from "react";
 
-import { useGetUserSummaryQuery, useUpdateUserMutation } from "../../api/userApi";
+import {
+    useGetUserSummaryQuery,
+    useUpdateUserMutation,
+} from "../../api/userApi";
 import { useAnonymousAuth } from "../../hooks/useAnonymousAuth";
 import { ProfileFormFields } from "./profileFormFields";
 import { styles } from "../../style";
-import  LogoutButton  from "../logout";
+import LogoutButton from "../logout";
 import { LanguagePicker } from "./languagePicker";
 
 type Goal = "lose" | "maintain" | "gain";
@@ -36,45 +41,25 @@ interface RootState {
     user: ReduxUser;
 }
 
-/**
- * Derives up to 2 initials from a display name for the avatar placeholder.
- * Swap this out once real profile photos / uploaded assets are supported.
- */
-function getInitials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean);
-
-    if (parts.length === 0) {
-        return "?";
-    }
-
-    return parts
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase())
-        .join("");
-}
-
 export function EditProfileForm() {
-    const { t, i18n } = useTranslation();
-    const reduxUser = useSelector((state: RootState) => state.user);
+    const { t } = useTranslation();
 
-    // Only readiness matters here — there's no separate "user"
-    // object anymore. Who the request is for is decided server-side
-    // from the token itself, never sent by the client.
+    const reduxUser = useSelector(
+        (state: RootState) => state.user
+    );
+
+    const cardBlurTargetRef = useRef<View | null>(null);
+    const footerBlurTargetRef = useRef<View | null>(null);
+
     const { tokenReady } = useAnonymousAuth();
 
-    const { isLoading: isSummaryLoading } = useGetUserSummaryQuery(undefined, {
-        skip: !tokenReady,
-    });
+    const { isLoading: isSummaryLoading } =
+        useGetUserSummaryQuery(undefined, {
+            skip: !tokenReady,
+        });
 
-    const [updateUser, { isLoading: isSaving }] = useUpdateUserMutation();
-
-    const activeLanguage = i18n.language?.toLowerCase().startsWith("uk")
-        ? "uk"
-        : "en";
-
-    const changeLanguage = (language: "en" | "uk") => {
-        i18n.changeLanguage(language);
-    };
+    const [updateUser, { isLoading: isSaving }] =
+        useUpdateUserMutation();
 
     const handleSubmit = async () => {
         if (isSaving || !tokenReady) {
@@ -92,9 +77,13 @@ export function EditProfileForm() {
 
         try {
             await updateUser(requestData).unwrap();
+
             router.replace("/account");
         } catch (error) {
-            console.error("Unable to update user profile:", error);
+            console.error(
+                "Unable to update user profile:",
+                error
+            );
         }
     };
 
@@ -102,156 +91,282 @@ export function EditProfileForm() {
         return (
             <View style={styles.loadingPage}>
                 <View style={styles.loadingCard}>
-                    <ActivityIndicator size="small" style={styles.loadingSpinner} />
+                    <ActivityIndicator
+                        size="small"
+                        style={styles.loadingSpinner}
+                    />
 
-                    <Text style={styles.loadingText}>{t("user_form.loading")}</Text>
+                    <Text style={styles.loadingText}>
+                        {t("user_form.loading")}
+                    </Text>
                 </View>
             </View>
         );
     }
 
     return (
-        <ImageBackground
-            source={require("./style/gym_background.jpg")}
-            style={styles.formPage}
-            resizeMode="cover"
-        >
-            <View style={styles.pageBaseOverlay} pointerEvents="none" />
+        <View style={styles.formPage}>
+            {/* Main blur target */}
+            <BlurTargetView
+                ref={cardBlurTargetRef}
+                style={StyleSheet.absoluteFill}
+                collapsable={false}
+            >
+                <Image
+                    source={require("./style/gym_background.jpg")}
+                    style={StyleSheet.absoluteFill}
+                    resizeMode="cover"
+                />
 
-            <LinearGradient
-                colors={["rgba(6,7,10,0.95)", "rgba(6,7,10,0.55)", "rgba(6,7,10,0)"]}
-                locations={[0, 0.55, 1]}
-                style={styles.topOverlay}
+                <View
+                    style={styles.pageBaseOverlay}
+                    pointerEvents="none"
+                />
+
+                <LinearGradient
+                    colors={[
+                        "rgba(6,7,10,0.95)",
+                        "rgba(6,7,10,0.55)",
+                        "rgba(6,7,10,0)",
+                    ]}
+                    locations={[0, 0.55, 1]}
+                    style={styles.topOverlay}
+                    pointerEvents="none"
+                />
+            </BlurTargetView>
+
+            {/* Footer blur target.
+                IMPORTANT: it is behind ScrollView,
+                so it cannot cover the page content. */}
+            <BlurTargetView
+                ref={footerBlurTargetRef}
+                style={StyleSheet.absoluteFill}
+                collapsable={false}
                 pointerEvents="none"
-            />
+            >
+                <Image
+                    source={require("./style/gym_background.jpg")}
+                    style={StyleSheet.absoluteFill}
+                    resizeMode="cover"
+                />
 
+                <View
+                    style={styles.pageBaseOverlay}
+                    pointerEvents="none"
+                />
+
+                <LinearGradient
+                    colors={[
+                        "rgba(6,7,10,0.95)",
+                        "rgba(6,7,10,0.55)",
+                        "rgba(6,7,10,0)",
+                    ]}
+                    locations={[0, 0.55, 1]}
+                    style={styles.topOverlay}
+                    pointerEvents="none"
+                />
+            </BlurTargetView>
+
+            {/* Main content */}
             <ScrollView
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={[
+                    styles.scrollContent,
+                    {
+                        paddingBottom: 120,
+                    },
+                ]}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.formContainer}>
                     <View style={styles.formColumn}>
                         <Pressable
                             style={styles.backLink}
-                            onPress={() => router.replace("/account")}
+                            onPress={() =>
+                                router.replace("/account")
+                            }
                         >
-                            <Text style={styles.backLinkArrow}>‹</Text>
+                            <Text style={styles.backLinkArrow}>
+                                ‹
+                            </Text>
 
                             <Text style={styles.backLinkText}>
-                                {t("user_form.back_to_account")}
+                                {t(
+                                    "user_form.back_to_account"
+                                )}
                             </Text>
                         </Pressable>
 
                         <View style={styles.pageHeading}>
                             <View style={styles.pageHeadingText}>
                                 <Text style={styles.pageEyebrow}>
-                                    {t("user_form.account_settings_label")}
+                                    {t(
+                                        "user_form.account_settings_label"
+                                    )}
                                 </Text>
 
-                                <Text style={styles.pageTitle}>{t("nav.my_profile")}</Text>
+                                <Text style={styles.pageTitle}>
+                                    {t("nav.my_profile")}
+                                </Text>
 
-                                <Text style={styles.pageDescription}>
-                                    {t("user_form.account_settings_description")}
+                                <Text
+                                    style={
+                                        styles.pageDescription
+                                    }
+                                >
+                                    {t(
+                                        "user_form.account_settings_description"
+                                    )}
                                 </Text>
                             </View>
-
-                            {/*
-                                Placeholder initials avatar — swap for the real profile
-                                photo / uploaded image once that's supported.
-                            */}
-                            {/* <View style={styles.avatarCircle}>
-                                <Text style={styles.avatarText}>
-                                    {getInitials(reduxUser.name || "?")}
-                                </Text>
-                            </View> */}
                         </View>
 
                         <View style={styles.form}>
-                            <ProfileFormFields />
+                            <ProfileFormFields
+                                blurTarget={cardBlurTargetRef}
+                            />
                         </View>
 
+                        {/* Settings card */}
                         <BlurView
+                            blurTarget={cardBlurTargetRef}
                             intensity={40}
                             tint="dark"
                             style={styles.settingsCard}
-                            experimentalBlurMethod="dimezisBlurView"
+                            blurMethod="dimezisBlurView"
+                            collapsable={false}
                         >
                             <View style={styles.settingsHeader}>
                                 <Text style={styles.sectionLabel}>
-                                    {t("user_form.settings_title")}
+                                    {t(
+                                        "user_form.settings_title"
+                                    )}
                                 </Text>
 
-                                <Text style={styles.settingsDescription}>
-                                    {t("user_form.settings_description")}
+                                <Text
+                                    style={
+                                        styles.settingsDescription
+                                    }
+                                >
+                                    {t(
+                                        "user_form.settings_description"
+                                    )}
                                 </Text>
                             </View>
 
-                           <View style={styles.settingsRow}>
-                                <View style={styles.settingsRowContent}>
-                                    <Text style={styles.settingsRowTitle}>
-                                        {t("user_form.language_title")}
+                            <View style={styles.settingsRow}>
+                                <View
+                                    style={
+                                        styles.settingsRowContent
+                                    }
+                                >
+                                    <Text
+                                        style={
+                                            styles.settingsRowTitle
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.language_title"
+                                        )}
                                     </Text>
 
-                                    <Text style={styles.settingsRowDescription}>
-                                        {t("user_form.language_description")}
+                                    <Text
+                                        style={
+                                            styles.settingsRowDescription
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.language_description"
+                                        )}
                                     </Text>
                                 </View>
 
                                 <LanguagePicker />
                             </View>
 
-                            <View style={[styles.settingsRow, styles.settingsRowDanger]}>
-                                <View style={styles.settingsRowContent}>
-                                    <Text style={styles.settingsRowTitle}>
-                                        {t("user_form.logout_title")}
+                            <View
+                                style={[
+                                    styles.settingsRow,
+                                    styles.settingsRowDanger,
+                                ]}
+                            >
+                                <View
+                                    style={
+                                        styles.settingsRowContent
+                                    }
+                                >
+                                    <Text
+                                        style={
+                                            styles.settingsRowTitle
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.logout_title"
+                                        )}
                                     </Text>
- 
-                                    <Text style={styles.settingsRowDescription}>
-                                        {t("user_form.logout_description")}
+
+                                    <Text
+                                        style={
+                                            styles.settingsRowDescription
+                                        }
+                                    >
+                                        {t(
+                                            "user_form.logout_description"
+                                        )}
                                     </Text>
                                 </View>
- 
+
                                 <LogoutButton />
                             </View>
-
-                            
                         </BlurView>
                     </View>
                 </View>
             </ScrollView>
 
-
-            <View style={styles.stickyFooter}>
+            {/* Sticky footer blur */}
+            <BlurView
+                blurTarget={footerBlurTargetRef}
+                intensity={30}
+                tint="dark"
+                style={styles.stickyFooter}
+                blurMethod="dimezisBlurView"
+                pointerEvents="box-none"
+            >
                 <Pressable
-                    style={[styles.formSubmit, isSaving && { opacity: 0.7 }]}
+                    style={[
+                        styles.formSubmit,
+                        isSaving && { opacity: 0.7 },
+                    ]}
                     disabled={isSaving}
                     onPress={handleSubmit}
                 >
-                    <BlurView
-                        intensity={45}
-                        tint="dark"
-                        style={styles.primaryCtaGradient}
-                        experimentalBlurMethod="dimezisBlurView"
-                    >
-                        <LinearGradient
-                            colors={["#173a8c0a", "#5b9dff2d", "#173a8c0a"]}
-                            locations={[0, 0.5, 1]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={StyleSheet.absoluteFillObject}
-                        />
+                    <LinearGradient
+                        colors={[
+                            "#173a8c0a",
+                            "#5b9dff2d",
+                            "#173a8c0a",
+                        ]}
+                        locations={[0, 0.5, 1]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={StyleSheet.absoluteFill}
+                        pointerEvents="none"
+                    />
 
-                        {isSaving ? (
-                            <ActivityIndicator size="small" color="#ffffff" />
-                        ) : (
-                            <Text style={styles.primaryCtaText}>
-                                {t("user_form.title_update")}
-                            </Text>
-                        )}
-                    </BlurView>
+                    {isSaving ? (
+                        <ActivityIndicator
+                            size="small"
+                            color="#ffffff"
+                        />
+                    ) : (
+                        <Text
+                            style={styles.primaryCtaText}
+                        >
+                            {t("user_form.title_update")}
+                        </Text>
+                    )}
                 </Pressable>
-            </View>
-        </ImageBackground>
+            </BlurView>
+        </View>
     );
 }
 

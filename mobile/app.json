@@ -1,42 +1,50 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "GymBro",
+    "slug": "gymbro",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "scheme": "gymbro",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gymbro.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#E6F4FE"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.mobile"
+      "package": "com.gymbro.mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-localization",
+      "expo-secure-store",
+      "expo-video",
       [
         "expo-build-properties",
         {
           "android": {
-            "extraGradleProperties": {
-              "org.gradle.java.home": "C:/Program Files/Eclipse Adoptium/jdk-17.0.20.8-hotspot"
-            }
+            "buildArchs": [
+              "arm64-v8a"
+            ]
           }
         }
       ],
-      "expo-secure-store",
-      "expo-video"
-    ]
+      "expo-router"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c3be4c91-0b0b-4ed7-8e2e-0bcd8f9b5e99"
+      }
+    },
+    "owner": "gymbro-lans"
   }
 }

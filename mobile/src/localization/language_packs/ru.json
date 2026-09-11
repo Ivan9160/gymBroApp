@@ -37,9 +37,12 @@
     "finish_modal_title": "Завершить тренировку",
     "finish_modal_body": "Вы уверены, что хотите завершить тренировку? Ваши результаты будут сохранены.",
     "form": {
+      "exercise_group_label": "Выберите группу мышц",
+      "exercise_group_placeholder": "Выберите группу мышц...",
       "exercise_label": "Выберите упражнение",
       "exercise_placeholder": "Выберите упражнение...",
       "weight_label": "Вес (кг)",
+      "additional_weight_label": "Дополнительный вес (кг)",
       "weight_placeholder": "0",
       "reps_label": "Повторения",
       "reps_placeholder": "0",
@@ -326,7 +329,8 @@
       "Ab Wheel Rollouts": "Ролик для пресса",
       "Plank": "Планка",
       "Push Ups": "Отжимания от пола",
-      "Crunches": "Скручивания"
+      "Crunches": "Скручивания",
+      "Barbell Bent Over Row": "Тяга штанги в наклоне"
     }
   }
 }

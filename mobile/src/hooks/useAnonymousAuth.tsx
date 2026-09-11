@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
 const TOKEN_KEY = "accessToken";
+const LAST_TOKEN_KEY = "lastAccessToken";
 
 export function useAnonymousAuth() {
     const [tokenReady, setTokenReady] = useState(false);
@@ -48,5 +49,22 @@ export async function storeAccessToken(token: string): Promise<void> {
 }
 
 export async function removeAccessToken(): Promise<void> {
+    const token = await SecureStore.getItemAsync(TOKEN_KEY);
+    console.log("Removing access token:", token);
+    await SecureStore.setItemAsync(LAST_TOKEN_KEY, token || "");
     await SecureStore.deleteItemAsync(TOKEN_KEY);
+}
+
+export async function getLastAccessToken(): Promise<string | null> {
+    return SecureStore.getItemAsync(LAST_TOKEN_KEY);
+}
+
+export async function clearLastAccessToken(): Promise<void> {
+    await SecureStore.deleteItemAsync(LAST_TOKEN_KEY);
+}
+
+export async function setAccessTokenFromLastToken(): Promise<string | null> {
+    const lastToken = await getLastAccessToken();
+    await storeAccessToken(lastToken || "");
+    return lastToken;
 }

@@ -37,9 +37,12 @@
     "finish_modal_title": "Terminer l'entraînement",
     "finish_modal_body": "Êtes-vous sûr de vouloir terminer l'entraînement ? Vos résultats seront enregistrés.",
     "form": {
+      "exercise_group_label": "Choisissez un groupe musculaire",
+      "exercise_group_placeholder": "Choisissez un groupe musculaire...",
       "exercise_label": "Choisissez un exercice",
       "exercise_placeholder": "Choisissez un exercice...",
       "weight_label": "Poids (kg)",
+      "additional_weight_label": "Poids supplémentaire (kg)",
       "weight_placeholder": "0",
       "reps_label": "Répétitions",
       "reps_placeholder": "0",
@@ -326,7 +329,8 @@
       "Ab Wheel Rollouts": "Roue abdominale",
       "Plank": "Planche",
       "Push Ups": "Pompes",
-      "Crunches": "Crunchs"
+      "Crunches": "Crunchs",
+      "Barbell Bent Over Row": "Rowing barre buste penché"
     }
   }
 }

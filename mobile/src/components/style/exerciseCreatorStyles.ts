@@ -303,35 +303,29 @@ export const exerciseCreatorStyles = StyleSheet.create({
         lineHeight: 16,
     },
 
-    formActions: {
+        formActions: {
         flexDirection: "row",
-
         gap: 10,
-
         paddingTop: 2,
     },
 
     ghostButton: {
         flex: 1,
-
         minHeight: 48,
-
         alignItems: "center",
         justifyContent: "center",
-
         paddingHorizontal: 16,
-
-        backgroundColor: "transparent",
-
+        
+        backgroundColor: colors.successBg ?? "#14311F",
         borderWidth: 1,
-        borderColor: colors.acctBorder,
+        borderColor: colors.successBorder ?? "#2E7D4F",
         borderRadius: 12,
     },
 
     ghostButtonText: {
-        color: colors.acctText,
-        fontSize: 14,
-        fontWeight: "500",
+        color:  "#d7fad2",
+        fontSize: 15,
+        fontWeight: "700",
     },
 
     primaryCta: {
@@ -358,6 +352,7 @@ export const exerciseCreatorStyles = StyleSheet.create({
         color: colors.acctText,
         fontSize: 16,
         fontWeight: "600",
+        textAlign: "center",
     },
 
     tipCard: {
@@ -383,8 +378,7 @@ export const exerciseCreatorStyles = StyleSheet.create({
 
     sectionLabel: {
         marginBottom: 12,
-        marginTop: 5,
-        marginLeft: 12,
+        marginTop: 10,
 
         color: colors.acctTextMuted,
         fontSize: 12,

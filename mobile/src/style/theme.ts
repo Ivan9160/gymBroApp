@@ -31,8 +31,11 @@ export const colors = {
     blueLight: "#7ab3f0",
 
     goalGreen: "#8fce4d",
+    successBg: "#14311F",
+    successBorder: "#2E7D4F",
 
     successText: "#a9df6c",
+    successTextLight: "#beeb8d",
     errorText: "#ff9c9b",
     errorTextLight: "#f27b7a",
     errorTextHover: "#ff9695",

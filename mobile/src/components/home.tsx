@@ -9,6 +9,8 @@ import {
     getResponsiveStyles,
 } from "../style";
 
+import LoginButton from "./login"; 
+
 const HomePage = () => {
     const { t } = useTranslation();
     const router = useRouter();
@@ -49,7 +51,7 @@ const HomePage = () => {
 
                     <Pressable
                         style={styles.guestHeroCta}
-                        onPress={() => router.push("/login")}
+                        onPress={() => router.push("/signup")}
                     >
                         <Text style={styles.guestHeroCtaText}>
                             {t("home.cta_start", {
@@ -57,6 +59,8 @@ const HomePage = () => {
                             })}
                         </Text>
                     </Pressable>
+
+                    <LoginButton />
                 </View>
 
                 <View

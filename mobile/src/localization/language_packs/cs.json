@@ -37,9 +37,12 @@
     "finish_modal_title": "Dokončit trénink",
     "finish_modal_body": "Opravdu chcete trénink dokončit? Vaše výsledky budou uloženy.",
     "form": {
+      "exercise_group_label": "Vyberte svalovou skupinu",
+      "exercise_group_placeholder": "Vyberte svalovou skupinu...",
       "exercise_label": "Vyberte cvik",
       "exercise_placeholder": "Vyberte cvik...",
       "weight_label": "Hmotnost (kg)",
+      "additional_weight_label": "Dodatečná hmotnost (kg)",
       "weight_placeholder": "0",
       "reps_label": "Opakování",
       "reps_placeholder": "0",
@@ -326,7 +329,8 @@
       "Ab Wheel Rollouts": "Rolování s kolečkem",
       "Plank": "Plank",
       "Push Ups": "Kliky",
-      "Crunches": "Sedy-lehy"
+      "Crunches": "Sedy-lehy",
+      "Barbell Bent Over Row": "Přítahy velké činky v předklonu"
     }
   }
 }

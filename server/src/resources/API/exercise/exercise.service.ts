@@ -21,7 +21,8 @@ export class ExerciseService {
 
   findAll() {
     return this.prisma.exercise.findMany({
-      include: { exerciseGroup: true }
+      include: { exerciseGroup: true }, 
+      orderBy: { id: 'asc' }
     });
   }
 

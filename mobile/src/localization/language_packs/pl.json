@@ -37,9 +37,12 @@
     "finish_modal_title": "Zakończ trening",
     "finish_modal_body": "Czy na pewno chcesz zakończyć trening? Twoje wyniki zostaną zapisane.",
     "form": {
+      "exercise_group_label": "Wybierz grupę mięśniową",
+      "exercise_group_placeholder": "Wybierz grupę mięśniową...",
       "exercise_label": "Wybierz ćwiczenie",
       "exercise_placeholder": "Wybierz ćwiczenie...",
       "weight_label": "Ciężar (kg)",
+      "additional_weight_label": "Dodatkowy ciężar (kg)",
       "weight_placeholder": "0",
       "reps_label": "Powtórzenia",
       "reps_placeholder": "0",
@@ -326,7 +329,8 @@
       "Ab Wheel Rollouts": "Rollouty z kółkiem do ćwiczeń brzucha",
       "Plank": "Deska",
       "Push Ups": "Pompki",
-      "Crunches": "Spięcia brzucha"
+      "Crunches": "Spięcia brzucha",
+      "Barbell Bent Over Row": "Wiosłowanie sztangą w opadzie"
     }
   }
 }

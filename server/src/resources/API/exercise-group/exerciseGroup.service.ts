@@ -15,7 +15,9 @@ export class ExerciseGroupService {
   }
 
   findAll() {
-    return this.prisma.exerciseGroup.findMany();
+    return this.prisma.exerciseGroup.findMany({
+      orderBy: { id: 'asc' }
+    });
   }
 
   findOne(id: number) {
@@ -27,7 +29,7 @@ export class ExerciseGroupService {
   update(id: number, updateExerciseGroupDto: UpdateExerciseGroupDto) {
     return this.prisma.exerciseGroup.update({
       where: { id },
-      data: updateExerciseGroupDto
+      data: updateExerciseGroupDto,
     });
   }
 

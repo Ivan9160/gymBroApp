@@ -37,9 +37,12 @@
     "finish_modal_title": "Finish workout",
     "finish_modal_body": "Are you sure you want to finish your workout? Your workout will be saved.",
     "form": {
+      "exercise_group_label": "Select muscle group",
+      "exercise_group_placeholder": "Choose a muscle group...",
       "exercise_label": "Select exercise",
       "exercise_placeholder": "Choose an exercise...",
       "weight_label": "Weight (kg)",
+      "additional_weight_label": "Additional weight (kg)",
       "weight_placeholder": "0",
       "reps_label": "Reps",
       "reps_placeholder": "0",
@@ -319,7 +322,8 @@
       "Ab Wheel Rollouts": "Ab Wheel Rollouts",
       "Plank": "Plank",
       "Push Ups": "Push Ups",
-      "Crunches": "Crunches"
+      "Crunches": "Crunches",
+      "Barbell Bent Over Row": "Barbell Bent Over Row"
     }
   }
 }

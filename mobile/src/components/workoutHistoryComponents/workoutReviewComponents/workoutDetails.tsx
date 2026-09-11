@@ -1,8 +1,6 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { useLocalSearchParams } from "expo-router";
 
 import type { IExerciseGroup, ISet, IWorkout } from "../../../types";
 import {
@@ -12,14 +10,6 @@ import {
 import { Group } from "./group";
 import { styles, getGuestContainerStyle } from "../../../style";
 
-type RootStackParamList = {
-    Account: undefined;
-    WorkoutHistory: undefined;
-    WorkoutDetails: { workout: IWorkout };
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
 type WorkoutDetailsProps = {
     route: {
         params?: { workout?: IWorkout };
@@ -27,7 +17,7 @@ type WorkoutDetailsProps = {
 };
 
 function WorkoutDetails({}: WorkoutDetailsProps) {
-    const navigation = useNavigation<NavigationProp>();
+    const router = useRouter();
     const { workout: workoutString } = useLocalSearchParams<{ workout?: string }>();
     const workout = workoutString ? JSON.parse(workoutString) : undefined;
 
@@ -58,7 +48,7 @@ function WorkoutDetails({}: WorkoutDetailsProps) {
                                 styles.historyEmptyBtn,
                                 pressed && styles.primaryCtaDisabled,
                             ]}
-                            onPress={() => navigation.navigate("WorkoutHistory")}
+                            onPress={() => router.back()}
                         >
                             <Text style={styles.primaryCtaText}>
                                 {t("workout_details.back_to_history")}
@@ -117,7 +107,7 @@ function WorkoutDetails({}: WorkoutDetailsProps) {
                 <View style={styles.contentContainer}>
                     <Pressable
                         style={styles.backLink}
-                        onPress={() => navigation.navigate("WorkoutHistory")}
+                        onPress={() => router.back()}
                     >
                         <Text style={styles.backLinkArrow}>‹</Text>
                         <Text style={styles.backLinkText}>
@@ -126,7 +116,6 @@ function WorkoutDetails({}: WorkoutDetailsProps) {
                     </Pressable>
 
                     <View style={styles.detailsCard}>
-                        {/* Hero */}
                         <View style={styles.detailsHero}>
                             <View style={styles.detailsHeroContent}>
                                 <Text style={styles.pageEyebrow}>
@@ -152,7 +141,6 @@ function WorkoutDetails({}: WorkoutDetailsProps) {
                             </View>
                         </View>
 
-                        {/* Stats */}
                         <View style={[styles.detailsStats, styles.detailsStatsTwo]}>
                             <View style={styles.detailsStat}>
                                 <View style={styles.detailsStatLabel}>
@@ -184,7 +172,6 @@ function WorkoutDetails({}: WorkoutDetailsProps) {
                             </View>
                         </View>
 
-                        {/* Body */}
                         <View style={styles.detailsBody}>
                             <View style={styles.detailsSectionHeading}>
                                 <Text style={[styles.sectionLabel, styles.detailsSectionLabel]}>

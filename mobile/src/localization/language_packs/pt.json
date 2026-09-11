@@ -41,9 +41,12 @@
   "finish_modal_title": "Finalizar treino",
   "finish_modal_body": "Tem certeza de que deseja finalizar o treino? Seus resultados serão salvos.",
   "form": {
+  "exercise_group_label": "Escolha um grupo muscular",
+  "exercise_group_placeholder": "Escolha um grupo muscular...",
   "exercise_label": "Escolha um exercício",
   "exercise_placeholder": "Escolha um exercício...",
   "weight_label": "Peso (kg)",
+  "additional_weight_label": "Peso adicional (kg)",
   "weight_placeholder": "0",
   "reps_label": "Repetições",
   "reps_placeholder": "0",
@@ -344,7 +347,8 @@
     "Ab Wheel Rollouts": "Abdominal com roda",
     "Plank": "Prancha",
     "Push Ups": "Flexões",
-    "Crunches": "Abdominal"
+    "Crunches": "Abdominal",
+    "Barbell Bent Over Row": "Remada curvada com barra"
   }
 
   }

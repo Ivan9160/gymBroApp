@@ -8,6 +8,7 @@ import setReducer from "./slices/setSlice";
 import { exerciseApi } from "../api/exerciseApi";
 import { workoutHistoryApi } from "../api/workoutHistoryApi";
 import { userApi } from "../api/userApi";
+import { qrAuthApi } from "../api/qrAuthApi";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   [userApi.reducerPath]: userApi.reducer,
   [exerciseApi.reducerPath]: exerciseApi.reducer,
   [workoutHistoryApi.reducerPath]: workoutHistoryApi.reducer,
+  [qrAuthApi.reducerPath]: qrAuthApi.reducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -49,7 +51,8 @@ export const store = configureStore({
     }).concat(
       exerciseApi.middleware,
       workoutHistoryApi.middleware,
-      userApi.middleware
+      userApi.middleware,
+      qrAuthApi.middleware
     ),
 });
 

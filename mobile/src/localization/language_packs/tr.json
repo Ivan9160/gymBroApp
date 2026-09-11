@@ -37,9 +37,12 @@
     "finish_modal_title": "Antrenmanı bitir",
     "finish_modal_body": "Antrenmanı bitirmek istediğinden emin misin? Sonuçların kaydedilecek.",
     "form": {
+      "exercise_group_label": "Kas grubu seç",
+      "exercise_group_placeholder": "Kas grubu seç...",
       "exercise_label": "Egzersiz seç",
       "exercise_placeholder": "Egzersiz seç...",
       "weight_label": "Ağırlık (kg)",
+      "additional_weight_label": "Ek ağırlık (kg)",
       "weight_placeholder": "0",
       "reps_label": "Tekrar",
       "reps_placeholder": "0",
@@ -314,7 +317,8 @@
       "Ab Wheel Rollouts": "Karın tekerleği",
       "Plank": "Plank",
       "Push Ups": "Şınav",
-      "Crunches": "Crunch"
+      "Crunches": "Crunch",
+      "Barbell Bent Over Row": "Eğik barfiks row"
     }
   }
 }
