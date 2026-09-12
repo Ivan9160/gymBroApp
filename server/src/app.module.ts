@@ -17,6 +17,9 @@ import { Keyv } from 'keyv';
 import KeyvRedis from '@keyv/redis';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { QrAuthModule } from './auth/qr-auth/qr-auth.module';
+import { QrAuthController } from './auth/qr-auth/qr-auth.controller';
+import { QrAuthService } from './auth/qr-auth/qr-auth.service';
 
 @Module({
   imports: [
@@ -48,7 +51,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     AuthModule, 
     ExerciseModule, 
     ExerciseGroupModule, 
-    UserSummaryModule
+    UserSummaryModule,
+    QrAuthModule
   ],
   controllers: [AppController],
   providers: [
@@ -56,7 +60,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ProficiencyListener,
     PrismaService, 
     AppService, 
-    {provide: 'APP_GUARD', useClass: AuthModule}
+    {provide: 'APP_GUARD', useClass: AuthModule},
 
 
 

@@ -9,7 +9,7 @@ import {
     getResponsiveStyles,
 } from "../style";
 
-import LoginButton from "./login"; 
+import LoginButton from "./loginComponents/login"; 
 
 const HomePage = () => {
     const { t } = useTranslation();

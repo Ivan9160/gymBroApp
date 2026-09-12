@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../../style"
+import { colors } from "../../../style"
 
 export const loginStyles = StyleSheet.create({
     loginTriggerButton: {

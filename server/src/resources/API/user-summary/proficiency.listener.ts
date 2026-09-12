@@ -34,9 +34,9 @@ export class ProficiencyListener {
                     proficiencySince.getDate() -
                         UserSummaryConfig.PROFICIENCY_DATA_DAYS,
                 );
-            const workouts = await this.workoutService.findAllByUserId(payload.userId, { since: proficiencySince });
+            const workouts = await this.workoutService.findAllByUserId(payload.userId, 1, 200, { since: proficiencySince });
             const exerciseGroups = await this.exerciseGroupService.findAll();
-            await this.proficiencyService.calculateAndSaveProficiency(user, workouts, exerciseGroups);
+            await this.proficiencyService.calculateAndSaveProficiency(user, workouts.workouts, exerciseGroups);
             this.logger.log(`[Proficiency recalculated]: for userId: ${payload.userId}`);
         } catch (error: any) {
             this.logger.error(`[Error recalculating proficiency]: for userId: ${payload.userId}`, error.stack);

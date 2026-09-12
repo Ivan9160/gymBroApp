@@ -1,2 +1,2 @@
-import LoginScreen from "../src/components/login";
+import LoginScreen from "../src/components/loginComponents/login";
 export default LoginScreen;

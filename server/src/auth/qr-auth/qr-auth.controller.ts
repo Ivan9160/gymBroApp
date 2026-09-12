@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, UseGuards, Get, Query } from "@nestjs/common";
 import { QrAuthService } from "./qr-auth.service";
 import { ExchangeQrDto, ConfirmQrDto } from "./dto/qr-auth.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard"; // твій existing guard
@@ -29,5 +29,11 @@ export class QrAuthController {
     @Post("exchange")
     async exchange(@Body() dto: ExchangeQrDto) {
         return this.qrAuthService.exchange(dto.pairingCode);
+    }
+
+    @Get("status")
+    @UseGuards(JwtAuthGuard)
+    async status(@Query("pairingCode") pairingCode: string, @CurrentUser() user: { id: string }) {
+        return this.qrAuthService.status(pairingCode, user.id);
     }
 }

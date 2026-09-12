@@ -39,16 +39,16 @@ export class UserSummaryService {
 
     const [proficiencyWorkouts, sorenessWorkouts] =
         await Promise.all([
-            this.workoutService.findAllByUserId(user.id, {
+            this.workoutService.findAllByUserId(user.id, 1, 200, {
                 since: proficiencySince,
             }),
 
-            this.workoutService.findAllByUserId(user.id, {
+            this.workoutService.findAllByUserId(user.id, 1, 200, {
                 since: sorenessSince,
             }),
         ]);
-    const proficiency: IProficiency[] = await this.proficiencyService.getProficiencyForAllMuscleGroups(user, proficiencyWorkouts, exerciseGroups);
-    const soreness: ISoreness[] = await this.sorenessService.getSorenessForAllMuscleGroups(user, sorenessWorkouts, exerciseGroups, proficiency);
+    const proficiency: IProficiency[] = await this.proficiencyService.getProficiencyForAllMuscleGroups(user, proficiencyWorkouts.workouts, exerciseGroups);
+    const soreness: ISoreness[] = await this.sorenessService.getSorenessForAllMuscleGroups(user, sorenessWorkouts.workouts, exerciseGroups, proficiency);
 
     return {
       user,

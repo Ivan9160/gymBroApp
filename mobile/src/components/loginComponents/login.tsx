@@ -10,17 +10,18 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { QrLoginScanner } from "./QrLoginScanner";
 
 import {
     getLastAccessToken,
     setAccessTokenFromLastToken,
     storeAccessToken,
-} from "../hooks/useAnonymousAuth";
+} from "../../hooks/useAnonymousAuth";
 
 import { loginStyles } from "./style/loginStyles";
-import { useGetUserSummaryQuery } from "../api/userApi";
-import { store } from "../store/store";
-import { userApi } from "../api/userApi";
+import { useGetUserSummaryQuery } from "../../api/userApi";
+import { store } from "../../store/store";
+import { userApi } from "../../api/userApi";
 
 const LoginButton = () => {
     const { t } = useTranslation();
@@ -34,6 +35,9 @@ const LoginButton = () => {
     const [isLoadingLastAccount, setIsLoadingLastAccount] = useState(false);
     const [isSubmittingToken, setIsSubmittingToken] = useState(false);
     const [shouldFetchSummary, setShouldFetchSummary] = useState(false);
+
+
+    const [qrScannerVisible, setQrScannerVisible] = useState(false);
 
     const {
         data: userSummary,
@@ -101,7 +105,8 @@ const LoginButton = () => {
     };
 
     const handleScanQrCode = () => {
-        // TODO: додати логіку сканування QR-коду
+        setModalVisible(false);
+        setQrScannerVisible(true);
     };
 
     const handleSubmitToken = async () => {
@@ -264,6 +269,14 @@ const LoginButton = () => {
                     </View>
                 </Pressable>
             </Modal>
+            <QrLoginScanner
+                visible={qrScannerVisible}
+                onClose={() => setQrScannerVisible(false)}
+                onSuccess={() => {
+                    setQrScannerVisible(false);
+                    goToApp();
+                }}
+            />
         </>
     );
 };

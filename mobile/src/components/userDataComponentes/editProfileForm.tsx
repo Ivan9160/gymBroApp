@@ -25,6 +25,7 @@ import { styles } from "../../style";
 import LogoutButton from "../logout";
 import { LanguagePicker } from "./languagePicker";
 import { setUserAge, setUserGender, setUserGoal, setUserName, setUserHeight, setUserWeight } from "../../store/slices/userSlice";
+import { QrLoginTransfer } from "./QrLoginTransfer";
 
 type Goal = "lose" | "maintain" | "gain";
 
@@ -98,23 +99,6 @@ export function EditProfileForm() {
             );
         }
     };
-
-    // if (tokenReady && isSummaryLoading) {
-    //     return (
-    //         <View style={styles.loadingPage}>
-    //             <View style={styles.loadingCard}>
-    //                 <ActivityIndicator
-    //                     size="small"
-    //                     style={styles.loadingSpinner}
-    //                 />
-
-    //                 <Text style={styles.loadingText}>
-    //                     {t("user_form.loading")}
-    //                 </Text>
-    //             </View>
-    //         </View>
-    //     );
-    // }
 
     return (
         <View style={styles.formPage}>
@@ -324,6 +308,17 @@ export function EditProfileForm() {
                                 </View>
 
                                 <LogoutButton />
+                            </View>
+
+                            <View style={styles.settingsRow}>
+                                <View style={styles.settingsRowContent}>
+                                    <Text style={styles.settingsRowTitle}>Log in on another device</Text>
+                                    <Text style={styles.settingsRowDescription}>
+                                        Scan a QR code to sign in on your new phone.
+                                    </Text>
+                                </View>
+
+                                <QrLoginTransfer />
                             </View>
                         </BlurView>
                     </View>

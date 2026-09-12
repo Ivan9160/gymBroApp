@@ -726,4 +726,27 @@ export const formPageStyles = StyleSheet.create({
         color: colors.acctAccent,
         fontWeight: "700",
     },
+
+    qrButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+
+        gap: 8,
+
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+
+        backgroundColor: colors.successBg,
+
+        borderWidth: 1,
+        borderColor: colors.successBorder,
+        borderRadius: 12,
+    },
+
+    qrButtonText: {
+        color: colors.successText,
+        fontSize: 14,
+        fontWeight: "600",
+    },
 });

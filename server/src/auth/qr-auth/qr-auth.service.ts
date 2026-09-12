@@ -1,4 +1,3 @@
-// auth/qr-auth.service.ts
 import { Inject, Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import type { Cache } from "cache-manager";
@@ -23,7 +22,6 @@ export class QrAuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    // Крок 1: пристрій A генерує pairing code
     async generate(userId: string): Promise<{ pairingCode: string; expiresAt: number }> {
         const pairingCode = nanoid(32);
 
@@ -37,7 +35,6 @@ export class QrAuthService {
         };
     }
 
-    // Крок 2: пристрій B сканує QR
     async requestExchange(pairingCode: string): Promise<{ status: QrSessionStatus }> {
         const key = `${QR_KEY_PREFIX}${pairingCode}`;
         const session = await this.cache.get<QrSession>(key);
@@ -48,14 +45,13 @@ export class QrAuthService {
 
         if (session.status === "pending") {
             const scannedSession: QrSession = { ...session, status: "scanned" };
-            await this.cache.set(key, scannedSession, 60 * 1000); // трохи більше часу на підтвердження
+            await this.cache.set(key, scannedSession, 60 * 1000); 
             return { status: "scanned" };
         }
 
         return { status: session.status };
     }
 
-    // Крок 3: пристрій A підтверджує вхід
     async confirm(pairingCode: string, confirmingUserId: string): Promise<void> {
         const key = `${QR_KEY_PREFIX}${pairingCode}`;
         const session = await this.cache.get<QrSession>(key);
@@ -95,5 +91,20 @@ export class QrAuthService {
         );
 
         return { accessToken, refreshToken: accessToken }; 
+    }
+
+
+    async status(pairingCode: string, userId: string): Promise<{ status: QrSessionStatus }> {
+        const session = await this.cache.get<QrSession>(`${QR_KEY_PREFIX}${pairingCode}`);
+
+        if (!session) {
+            throw new NotFoundException("QR code expired or invalid");
+        }
+
+        if (session.userId !== userId) {
+            throw new BadRequestException("You can only access your own QR session");
+        }
+
+        return { status: session.status };
     }
 }
