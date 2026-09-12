@@ -88,8 +88,11 @@ export class WorkoutService {
         return this.prisma.workout.findMany();
     }
 
-    findAllByUserId(id: number, 
-        options?: IWorkoutFilterOptions
+    async findAllByUserId(
+        id: number, 
+        page: number,
+        limit: number,
+        options?: IWorkoutFilterOptions,
     ) {
         const whereClause: Prisma.WorkoutWhereInput = {
             user_id: id,
@@ -101,7 +104,9 @@ export class WorkoutService {
             };
         }
 
-        return this.prisma.workout.findMany({
+        const skip = (page - 1) * limit;
+
+        const workouts = await this.prisma.workout.findMany({
             where: whereClause,
             include: {
                 sets: {
@@ -117,8 +122,15 @@ export class WorkoutService {
             },
             orderBy: {
                 createdAt: 'desc'
-            }
+            },
+            skip,
+            take: limit+1
         })
+        const hasNextPage = workouts.length > limit;
+        return {
+            workouts: workouts.slice(0, limit),
+            hasNextPage
+        };
     }
 
 }

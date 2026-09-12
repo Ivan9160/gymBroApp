@@ -7,8 +7,10 @@ export const historyStyles = StyleSheet.create({
     },
 
     historyList: {
-        gap: 12,
-        marginBottom: 24,
+        gap: 1,
+        marginBottom: 34,
+        marginTop: 12,
+        marginHorizontal: -6,
     },
 
     historyCard: {
@@ -19,6 +21,7 @@ export const historyStyles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.acctBorder,
         borderRadius: 16,
+        marginBottom: 12,
     },
 
     historyCardPressed: {

@@ -33,7 +33,7 @@
     "current_sets": "Current sets",
     "finish_btn": "Finish workout",
     "cancel_btn": "Cancel",
-    "swipe_to_delete": "Swipe to delete",
+    "swipe_to_delete": "Swipe left to delete set",
     "finish_modal_title": "Finish workout",
     "finish_modal_body": "Are you sure you want to finish your workout? Your workout will be saved.",
     "form": {

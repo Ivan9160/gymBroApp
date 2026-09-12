@@ -22,6 +22,8 @@ export const colors = {
     acctModerate: "#ba7517",
     acctSore: "#e24b4a",
 
+    acctSwipeBg: "#750000",
+
     acctSkin: "#2a2a30",
     acctSkinStroke: "rgba(255, 255, 255, 0.08)",
 

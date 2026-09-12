@@ -142,7 +142,7 @@ function DropdownSelect({ label, value, placeholder, disabled = false, options, 
                             contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24 }}
                             showsVerticalScrollIndicator={true}
                             nestedScrollEnabled={true}
-                            keyboardShouldPersistTaps="handled"
+                            keyboardShouldPersistTaps="always"
                         >
                             {options.map((option) => {
                                 const selected = option.label === value;
@@ -294,7 +294,6 @@ function ActiveWorkout() {
             const createdSet: ISet = response.data;
 
             dispatch(setWorkoutSets([...workout.sets, createdSet]));
-            dispatch(setSetWeight(0));
             dispatch(setSetReps(null));
         } catch (error) {
             console.error("Error adding set:", error);
@@ -345,6 +344,8 @@ function ActiveWorkout() {
 
     const setExerciseGroup = (value: number) => {
         dispatch(setSetMuscleGroup(value));
+        dispatch(setSetWeight(0));
+        dispatch(setSetReps(null));
 
         const firstExercise = exercises?.find((exercise: IExercise) => exercise.exerciseGroupId === value);
         dispatch(setSetExerciseId(firstExercise?.id ?? null));
@@ -382,7 +383,7 @@ function ActiveWorkout() {
                 <WorkoutTimer />
             </View>
 
-            <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled showsVerticalScrollIndicator={false}>
+            <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled showsVerticalScrollIndicator={false}>
                 <View style={styles.form}>
                     <DropdownSelect
                         label={t("active_workout.form.exercise_group_label")}
@@ -459,6 +460,8 @@ function ActiveWorkout() {
                                     onDelete={handleDeleteSet}
                                 />
                             ))}
+                            { workout.sets.length > 0 && <Text style={styles.swipeLabel}>{t("active_workout.swipe_to_delete")}</Text> }
+                               
                         </View>
                     )}
 

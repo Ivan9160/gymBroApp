@@ -386,4 +386,13 @@ export const exerciseCreatorStyles = StyleSheet.create({
         letterSpacing: 0.5,
         textTransform: "uppercase",
     },
+
+    swipeLabel: {
+        color: colors.acctTextMuted,
+        fontSize: 13,
+        marginLeft: 6,
+        marginTop: -4,
+
+
+    },
 });

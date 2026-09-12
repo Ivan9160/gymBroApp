@@ -9,7 +9,7 @@ export const swipeStyles = StyleSheet.create({
 
         overflow: "hidden",
 
-        backgroundColor: colors.acctSore,
+        backgroundColor: colors.acctSwipeBg,
 
         borderRadius: 12,
     },

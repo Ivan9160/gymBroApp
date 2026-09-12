@@ -8,6 +8,7 @@ export const accountPageStyles = StyleSheet.create({
         backgroundColor: colors.acctBg,
         color: colors.acctText,
         marginHorizontal: -8,
+        marginTop: 12,
     },
 
     profileRowLink: {

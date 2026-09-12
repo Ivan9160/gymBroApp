@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, UseGuards, Query, Res} from '@nestjs/common';
 import { CreateWorkoutDto, UpdateWorkoutDto } from './dto/workout.dto';
 import { WorkoutService } from './workout.service';
-import { ParseParamToIntPipe } from 'src/pipes/parseParamToInt';
-import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/decorators/get-user.decorator';
 import { User} from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { WorkoutPaginationDto } from './dto/workout.pagination.dto';
+import { Response } from "express";
 
 @Controller('workouts')
 @UseGuards(JwtAuthGuard)
@@ -30,8 +30,24 @@ export class WorkoutController {
     }
 
     @Get()
-    findAllByUserId(@CurrentUser() user: User){
-        return this.workoutService.findAllByUserId(user.id)
+    async findAllByUserId(
+        @CurrentUser() user: User,
+        @Query() pagination: WorkoutPaginationDto,
+        @Res({ passthrough: true }) res: Response,
+    ){
+        const { workouts, hasNextPage } =
+            await this.workoutService.findAllByUserId(
+                user.id,
+                pagination.page,
+                pagination.limit,
+            );
+
+        res.setHeader(
+            "X-Has-Next-Page",
+            String(hasNextPage),
+        );
+
+        return workouts;
     }
 
 
