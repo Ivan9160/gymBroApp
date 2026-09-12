@@ -159,7 +159,7 @@ const LoginButton = () => {
                         <View style={loginStyles.modalHandle} />
 
                         <Text style={loginStyles.modalTitle}>
-                            {t("login.title", { defaultValue: "Log In" })}
+                            {t("login.modal_title", { defaultValue: "Log In" })}
                         </Text>
 
                         {hasLastAccount ? (

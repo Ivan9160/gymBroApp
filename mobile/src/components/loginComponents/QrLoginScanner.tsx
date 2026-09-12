@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-
+import { useTranslation } from "react-i18next";
 import { storeAccessToken } from "../../hooks/useAnonymousAuth";
 
 interface QrLoginScannerProps {
@@ -11,6 +11,7 @@ interface QrLoginScannerProps {
 }
 
 export function QrLoginScanner({ visible, onClose, onSuccess }: QrLoginScannerProps) {
+    const { t } = useTranslation();
     const [permission, requestPermission] = useCameraPermissions();
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -113,15 +114,15 @@ export function QrLoginScanner({ visible, onClose, onSuccess }: QrLoginScannerPr
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.8)" }}>
                     <View style={{ padding: 24, backgroundColor: "#18181D", borderRadius: 20 }}>
                         <Text style={{ color: "#FFF", marginBottom: 20 }}>
-                            Camera permission is required to scan the QR code.
+                            {t("qr_login.camera_permission_required")}
                         </Text>
 
                         <Pressable onPress={requestPermission}>
-                            <Text style={{ color: "#FFF" }}>Allow camera</Text>
+                            <Text style={{ color: "#FFF" }}>{t("qr_login.allow_camera")}</Text>
                         </Pressable>
 
                         <Pressable onPress={onClose} style={{ marginTop: 16 }}>
-                            <Text style={{ color: "#A8A8B2" }}>Cancel</Text>
+                            <Text style={{ color: "#A8A8B2" }}>{t("qr_login.cancel")}</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -141,7 +142,7 @@ export function QrLoginScanner({ visible, onClose, onSuccess }: QrLoginScannerPr
 
                 <View style={{ position: "absolute", top: 60, left: 20, right: 20, alignItems: "center" }}>
                     <Text style={{ color: "#FFF", fontSize: 20, fontWeight: "700" }}>
-                        Scan GymBro QR code
+                        {t("qr_login.scan_title")}
                     </Text>
 
                     {isProcessing && (
@@ -150,7 +151,7 @@ export function QrLoginScanner({ visible, onClose, onSuccess }: QrLoginScannerPr
                 </View>
 
                 <Pressable onPress={onClose} style={{ position: "absolute", bottom: 50, alignSelf: "center" }}>
-                    <Text style={{ color: "#FFF", fontSize: 16 }}>Cancel</Text>
+                    <Text style={{ color: "#FFF", fontSize: 16 }}>{t("qr_login.cancel")}</Text>
                 </Pressable>
             </View>
         </Modal>

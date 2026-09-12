@@ -383,6 +383,21 @@ function ActiveWorkout() {
                 <WorkoutTimer />
             </View>
 
+            <Text
+                style={{
+                    fontSize: 13,
+                    lineHeight: 18,
+                    color: "#A8A8B2",
+                    paddingHorizontal: 0,
+                    marginBottom: 12,
+                }}
+            >
+                {t("active_workout.instructions", {
+                    defaultValue:
+                        "Виконали підхід — одразу вкажіть вагу та кількість повторень і натисніть «Додати підхід». Це потрібно робити після кожного зробленого підходу, а не наприкінці тренування.",
+                })}
+            </Text>
+
             <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled showsVerticalScrollIndicator={false}>
                 <View style={styles.form}>
                     <DropdownSelect

@@ -36,6 +36,8 @@
     "swipe_to_delete": "Przesuń, aby usunąć",
     "finish_modal_title": "Zakończ trening",
     "finish_modal_body": "Czy na pewno chcesz zakończyć trening? Twoje wyniki zostaną zapisane.",
+    "instructions": "Wykonałeś serię — od razu wpisz ciężar i liczbę powtórzeń i naciśnij «Dodaj serię». Rób to po każdej wykonanej serii, a nie na końcu treningu.",
+    "add_set_hint": "Naciskaj ten przycisk zaraz po każdej wykonanej serii — to właśnie zapisuje twój postęp.",
     "form": {
       "exercise_group_label": "Wybierz grupę mięśniową",
       "exercise_group_placeholder": "Wybierz grupę mięśniową...",
@@ -93,6 +95,8 @@
     "profile_setup_title": "Skonfiguruj swój profil",
     "account_settings_description": "Aktualizuj swoje dane, zmieniaj język interfejsu i zarządzaj kontem w jednym miejscu.",
     "profile_setup_description": "Dodaj podstawowe informacje, aby GymBro mógł spersonalizować Twój profil, statystyki i postępy.",
+    "soreness_description": "Pokazuje, jak bardzo zmęczony jest każdy mięsień po ostatnich treningach. Dotknij strefy na sylwetce, aby zobaczyć wartość procentową. Im cięższe i świeższe obciążenie, tym wyższy wskaźnik; z czasem, w miarę regeneracji, maleje.",
+    "proficiency_description": "Twój poziom siły w każdej grupie mięśniowej względem wartości referencyjnych ćwiczeń, z uwzględnieniem płci i wagi ciała. Liczą się głównie ostatnie treningi — starsze serie mają mniejszy wpływ.",
     "personal_data": "Dane osobowe",
     "personal_data_description": "Podstawowe informacje wyświetlane w Twoim profilu.",
     "body_data": "Dane fizyczne",
@@ -145,7 +149,13 @@
     "subtitle": "Popraw swoje treningi już dziś",
     "or": "lub",
     "signup": "Utwórz konto",
-    "terms": "Kontynuując, akceptujesz Warunki korzystania z usługi."
+    "terms": "Kontynuując, akceptujesz Warunki korzystania z usługi.",
+    "modal_title": "Zaloguj się",
+    "last_account": "Zaloguj się na ostatnie konto",
+    "scan_qr": "Zeskanuj kod QR",
+    "token_placeholder": "Wprowadź swój token",
+    "submit_token": "Zaloguj się tokenem",
+    "enter_token": "Wprowadź token"
   },
   "logout": {
     "title": "Wylogować się z konta?",
@@ -173,7 +183,8 @@
     "step_three_title": "Obserwuj postępy",
     "step_three_text": "Wracaj do statystyk, historii i podsumowania regeneracji mięśni.",
     "auth_title": "Gotowy, aby zacząć?",
-    "auth_subtitle": "Zaloguj się, aby zapisywać treningi, śledzić postępy i korzystać ze swojego profilu GymBro."
+    "auth_subtitle": "Zaloguj się, aby zapisywać treningi, śledzić postępy i korzystać ze swojego profilu GymBro.",
+    "cta_login": "Zaloguj się"
   },
   "exercise_creator": {
     "eyebrow": "Biblioteka ćwiczeń",
@@ -332,5 +343,20 @@
       "Crunches": "Spięcia brzucha",
       "Barbell Bent Over Row": "Wiosłowanie sztangą w opadzie"
     }
-  }
+  },
+  "qr_login": {
+    "settings_row_title": "Zaloguj się na innym urządzeniu",
+    "settings_row_description": "Zeskanuj kod QR, aby zalogować się na nowym telefonie.",
+    "button_label": "Pobierz kod QR",
+    "camera_permission_required": "Do zeskanowania kodu QR wymagany jest dostęp do aparatu.",
+    "allow_camera": "Zezwól na aparat",
+    "cancel": "Anuluj",
+    "scan_title": "Zeskanuj kod QR GymBro",
+    "modal_title": "Zaloguj się na innym urządzeniu",
+    "status_pending": "Zeskanuj ten kod QR na nowym urządzeniu.",
+    "status_scanned": "Kod QR zeskanowany. Potwierdź logowanie na tym urządzeniu.",
+    "status_confirmed": "Logowanie potwierdzone. Drugie urządzenie może dokończyć logowanie.",
+    "confirm_login": "Potwierdź logowanie",
+    "expires_in": "Wygasa za {{seconds}}s"
+}
 }

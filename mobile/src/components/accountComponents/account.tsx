@@ -527,12 +527,15 @@ function Account() {
                     </View>
                 </View>
 
-                <Text
-                    style={styles.sectionLabel}
-                >
-                    {t(
-                        "user_form.soreness_title"
-                    )}
+                <Text style={styles.sectionLabel}>
+                    {t("user_form.soreness_title")}
+                </Text>
+
+                <Text style={styles.historySubtitle}>
+                    {t("user_form.soreness_description", {
+                        defaultValue:
+                            "Показує, наскільки втомлений кожен м'яз після останніх тренувань. Торкніться зони на фігурі, щоб побачити відсоток. Чим важче й свіжіше було навантаження — тим вищий показник; він поступово знижується в міру відновлення.",
+                    })}
                 </Text>
 
                 <View style={styles.card}>
@@ -634,12 +637,15 @@ function Account() {
                     </View>
                 </View>
 
-                <Text
-                    style={styles.sectionLabel}
-                >
-                    {t(
-                        "user_form.proficiency_title"
-                    )}
+                <Text style={styles.sectionLabel}>
+                    {t("user_form.proficiency_title")}
+                </Text>
+
+                <Text style={styles.historySubtitle}>
+                    {t("user_form.proficiency_description", {
+                        defaultValue:
+                            "Ваш рівень сили в кожній групі м'язів відносно контрольних показників вправ, з урахуванням статі та ваги тіла. Рахуються переважно останні тренування — старі сети мають менший вплив.",
+                    })}
                 </Text>
 
                 <View style={styles.card}>

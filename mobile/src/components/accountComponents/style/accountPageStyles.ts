@@ -354,6 +354,8 @@ export const accountPageStyles = StyleSheet.create({
 
     historySubtitle: {
         marginTop: 2,
+        marginBottom: 10,
+        marginLeft: 2,
 
         color: colors.acctTextSecondary,
         fontSize: 12,
@@ -362,7 +364,7 @@ export const accountPageStyles = StyleSheet.create({
     ghostBtnLink: {
         width: "100%",
         marginTop: 10,
-        marginBottom: 30,
+        marginBottom: 40,
     },
 
     ghostBtnLinkAction: {

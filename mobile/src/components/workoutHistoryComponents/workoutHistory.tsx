@@ -40,12 +40,12 @@ const WorkoutHistory = () => {
 
     const pageWorkouts = data?.workouts ?? [];
     useEffect(() => {
+        if (!data?.workouts) return;
+
         setWorkouts((current) =>
-            page === 1
-                ? pageWorkouts
-                : [...current, ...pageWorkouts]
+            page === 1 ? data.workouts : [...current, ...data.workouts]
         );
-    }, [pageWorkouts, page]);
+    }, [data, page]);
 
     const hasNextPage = pageWorkouts.length === 20 && data?.hasNextPage;
 

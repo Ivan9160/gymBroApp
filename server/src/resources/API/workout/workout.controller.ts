@@ -35,11 +35,13 @@ export class WorkoutController {
         @Query() pagination: WorkoutPaginationDto,
         @Res({ passthrough: true }) res: Response,
     ){
+        const page = Number(pagination.page) || 1;
+        const limit = Number(pagination.limit) || 20;
         const { workouts, hasNextPage } =
             await this.workoutService.findAllByUserId(
                 user.id,
-                pagination.page,
-                pagination.limit,
+                page,
+                limit,
             );
 
         res.setHeader(

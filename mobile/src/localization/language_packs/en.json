@@ -36,6 +36,8 @@
     "swipe_to_delete": "Swipe left to delete set",
     "finish_modal_title": "Finish workout",
     "finish_modal_body": "Are you sure you want to finish your workout? Your workout will be saved.",
+    "instructions": "Once you finish a set, enter the weight and reps right away and tap “Add set”. Do this after every set you complete, not at the end of the workout.",
+    "add_set_hint": "Tap this button right after each set you complete — that's what logs your progress.",
     "form": {
       "exercise_group_label": "Select muscle group",
       "exercise_group_placeholder": "Choose a muscle group...",
@@ -93,6 +95,8 @@
     "profile_setup_title": "Set up your profile",
     "account_settings_description": "Update your details, change the interface language, and manage your account in one place.",
     "profile_setup_description": "Add a few basic details so GymBro can personalize your profile, statistics, and progress.",
+    "soreness_description": "Shows how tired each muscle is after your recent workouts. Tap a zone on the figure to see the percentage. The heavier and more recent the load, the higher the score; it gradually decreases as you recover.",
+    "proficiency_description": "Your strength level for each muscle group relative to exercise benchmarks, adjusted for gender and body weight. Recent workouts count more — older sets have less influence.",
     "personal_data": "Personal data",
     "personal_data_description": "Basic information shown in your profile.",
     "body_data": "Physical data",
@@ -145,7 +149,13 @@
     "subtitle": "Elevate your training today",
     "or": "or",
     "signup": "Create an account",
-    "terms": "By continuing, you agree to the Terms of Service."
+    "terms": "By continuing, you agree to the Terms of Service.",
+    "modal_title": "Log In",
+    "last_account": "Login to your last account",
+    "scan_qr": "Scan QR code",
+    "token_placeholder": "Enter your token",
+    "submit_token": "Login with token",
+    "enter_token": "Enter a token"
   },
 
   "logout": {
@@ -159,6 +169,7 @@
     "title": "Train smarter. Track your progress. Feel better.",
     "subtitle": "GymBro helps you organize workouts, understand recovery, and see your progress without unnecessary complexity.",
     "cta_start": "Get started",
+    "cta_login": "Log In",
     "features_aria": "GymBro features",
     "feature_workouts_title": "Workouts in one place",
     "feature_workouts_text": "Start a session, add sets, and review your workout history with only a few taps.",
@@ -325,5 +336,20 @@
       "Crunches": "Crunches",
       "Barbell Bent Over Row": "Barbell Bent Over Row"
     }
-  }
+  },
+  "qr_login": {
+    "settings_row_title": "Log in on another device",
+    "settings_row_description": "Scan a QR code to sign in on your new phone.",
+    "button_label": "Get QR code",
+    "camera_permission_required": "Camera permission is required to scan the QR code.",
+    "allow_camera": "Allow camera",
+    "cancel": "Cancel",
+    "scan_title": "Scan GymBro QR code",
+    "modal_title": "Log in on another device",
+    "status_pending": "Scan this QR code with your new device.",
+    "status_scanned": "QR code scanned. Confirm login on this device.",
+    "status_confirmed": "Login confirmed. The other device can finish signing in.",
+    "confirm_login": "Confirm login",
+    "expires_in": "Expires in {{seconds}}s"
+}
 }

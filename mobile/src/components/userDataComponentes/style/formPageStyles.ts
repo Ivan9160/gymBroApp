@@ -661,7 +661,7 @@ export const formPageStyles = StyleSheet.create({
 
         justifyContent: "flex-end",
 
-        backgroundColor: "rgba(6, 7, 10, 0.6)",
+        backgroundColor: "rgba(6, 7, 10, 0.9)",
     },
 
     languagePickerCard: {

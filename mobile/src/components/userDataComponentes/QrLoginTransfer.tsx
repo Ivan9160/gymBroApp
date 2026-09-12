@@ -4,6 +4,7 @@ import QRCode from "react-native-qrcode-svg";
 
 import { getStoredAccessToken } from "../../hooks/useAnonymousAuth";
 import { styles } from "../../style";
+import { useTranslation } from "react-i18next";
 
 interface QrLoginTransferProps {
     onClose?: () => void;
@@ -12,6 +13,7 @@ interface QrLoginTransferProps {
 type QrStatus = "pending" | "scanned" | "confirmed";
 
 export function QrLoginTransfer({ onClose }: QrLoginTransferProps) {
+    const { t } = useTranslation();
     const [visible, setVisible] = useState(false);
     const [pairingCode, setPairingCode] = useState<string | null>(null);
     const [status, setStatus] = useState<QrStatus>("pending");
@@ -170,13 +172,13 @@ export function QrLoginTransfer({ onClose }: QrLoginTransferProps) {
           })
         : "";
 
-    return (
+     return (
         <>
             <Pressable onPress={generateQr} disabled={isGenerating} style={styles.qrButton}>
                 {isGenerating ? (
                     <ActivityIndicator />
                 ) : (
-                    <Text style={styles.qrButtonText}>Log in on another device</Text>
+                    <Text style={styles.qrButtonText}>{t("qr_login.button_label")}</Text>
                 )}
             </Pressable>
 
@@ -184,31 +186,31 @@ export function QrLoginTransfer({ onClose }: QrLoginTransferProps) {
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.8)" }}>
                     <View style={{ padding: 24, borderRadius: 20, backgroundColor: "#18181D", alignItems: "center" }}>
                         <Text style={{ color: "#FFF", fontSize: 20, fontWeight: "700", marginBottom: 20 }}>
-                            Log in on another device
+                            {t("qr_login.modal_title")}
                         </Text>
 
                         {pairingCode && <QRCode value={qrValue} size={240} backgroundColor="#FFFFFF" />}
 
                         <Text style={{ color: "#A8A8B2", textAlign: "center", marginTop: 20 }}>
-                            {status === "pending" && "Scan this QR code with your new device."}
-                            {status === "scanned" && "QR code scanned. Confirm login on this device."}
-                            {status === "confirmed" && "Login confirmed. The other device can finish signing in."}
+                            {status === "pending" && t("qr_login.status_pending")}
+                            {status === "scanned" && t("qr_login.status_scanned")}
+                            {status === "confirmed" && t("qr_login.status_confirmed")}
                         </Text>
 
                         {status === "scanned" && (
                             <Pressable onPress={confirmLogin} disabled={isConfirming} style={{ marginTop: 20 }}>
-                                {isConfirming ? <ActivityIndicator /> : <Text style={{ color: "#FFF" }}>Confirm login</Text>}
+                                {isConfirming ? <ActivityIndicator /> : <Text style={{ color: "#FFF" }}>{t("qr_login.confirm_login")}</Text>}
                             </Pressable>
                         )}
 
                         {expiresAt && (
                             <Text style={{ color: "#77777F", marginTop: 12 }}>
-                                Expires in {secondsLeft}s
+                                {t("qr_login.expires_in", { seconds: secondsLeft })}
                             </Text>
                         )}
 
                         <Pressable onPress={close} style={{ marginTop: 20 }}>
-                            <Text style={{ color: "#A8A8B2" }}>Cancel</Text>
+                            <Text style={{ color: "#A8A8B2" }}>{t("qr_login.cancel")}</Text>
                         </Pressable>
                     </View>
                 </View>

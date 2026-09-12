@@ -30,7 +30,6 @@ export function LanguagePicker() {
     const { i18n, t } = useTranslation();
     const [open, setOpen] = useState(false);
 
-    // i18n.language може бути "en-US" тощо — беремо перші 2 символи
     const activeCode = i18n.language?.toLowerCase().slice(0, 2);
     const active =
         LANGUAGES.find((l) => l.code === activeCode) ?? LANGUAGES[0];

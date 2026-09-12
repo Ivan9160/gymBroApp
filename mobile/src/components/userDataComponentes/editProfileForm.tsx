@@ -312,9 +312,9 @@ export function EditProfileForm() {
 
                             <View style={styles.settingsRow}>
                                 <View style={styles.settingsRowContent}>
-                                    <Text style={styles.settingsRowTitle}>Log in on another device</Text>
+                                    <Text style={styles.settingsRowTitle}>{t("qr_login.settings_row_title")}</Text>
                                     <Text style={styles.settingsRowDescription}>
-                                        Scan a QR code to sign in on your new phone.
+                                        {t("qr_login.settings_row_description")}
                                     </Text>
                                 </View>
 
@@ -325,7 +325,6 @@ export function EditProfileForm() {
                 </View>
             </ScrollView>
 
-            {/* Sticky footer blur */}
             <BlurView
                 blurTarget={footerBlurTargetRef}
                 intensity={30}

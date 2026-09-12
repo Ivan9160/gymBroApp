@@ -163,7 +163,7 @@ export const exerciseCreatorStyles = StyleSheet.create({
     },
 
     form: {
-        gap: 18,
+        gap: 10,
     },
 
     formField: {
@@ -377,8 +377,8 @@ export const exerciseCreatorStyles = StyleSheet.create({
     },
 
     sectionLabel: {
-        marginBottom: 12,
-        marginTop: 10,
+        marginBottom: 6,
+        marginTop: 15,
 
         color: colors.acctTextMuted,
         fontSize: 12,
