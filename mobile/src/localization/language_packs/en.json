@@ -36,7 +36,7 @@
     "swipe_to_delete": "Swipe left to delete set",
     "finish_modal_title": "Finish workout",
     "finish_modal_body": "Are you sure you want to finish your workout? Your workout will be saved.",
-    "instructions": "Once you finish a set, enter the weight and reps right away and tap “Add set”. Do this after every set you complete, not at the end of the workout.",
+    "instructions": "Once you finish a set, enter the weight and reps right away and tap “Add set”. Do this after every set you complete, not at the end of the workout. For dumbbell exercises, enter the weight for one dumbbell",
     "add_set_hint": "Tap this button right after each set you complete — that's what logs your progress.",
     "form": {
       "exercise_group_label": "Select muscle group",
@@ -334,7 +334,16 @@
       "Plank": "Plank",
       "Push Ups": "Push Ups",
       "Crunches": "Crunches",
-      "Barbell Bent Over Row": "Barbell Bent Over Row"
+      "Barbell Bent Over Row": "Barbell Bent Over Row",
+      "Incline Bench Press": "Incline Bench Press",
+      "Barbell Row": "Barbell Row",
+      "Romanian Deadlift": "Romanian Deadlift",
+      "Barbell Hip Thrust": "Barbell Hip Thrust",
+      "Leg Extension": "Leg Extension",
+      "Face Pull": "Face Pull",
+      "Arnold Press": "Arnold Press",
+      "Barbell Shrug": "Barbell Shrug",
+      "Walking Lunges": "Walking Lunges"
     }
   },
   "qr_login": {
